@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-    <Header/>
-    <FooterTable/>
-    <InfoContainer/>
+    <Header />
+    <FooterTable />
+    <InfoContainer />
   </div>
 </template>
 
@@ -13,8 +13,8 @@ import InfoContainer from "@/components/InfoContainer";
 
 export default {
   name: "Home",
-  components: {InfoContainer, FooterTable, Header},
-}
+  components: { InfoContainer, FooterTable, Header },
+};
 </script>
 
 <style lang="scss" scoped>

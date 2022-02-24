@@ -1,8 +1,10 @@
 <template>
   <ul class="wrapper">
-    <li v-for="item in titles" :key="item.name"
-        :class="{active:item.name===selected.name}"
-        @click="select(item)"
+    <li
+      v-for="item in titles"
+      :key="item.name"
+      :class="{ active: item.name === selected.name }"
+      @click="select(item)"
     >
       {{ item.name }}
     </li>
@@ -15,22 +17,22 @@ export default {
   data() {
     return {
       titles: [
-        {name: "区域分布"},
-        {name: "重点企业分布"},
-        {name: "重点产业分布"},
-        {name: "楼宇经济"},
+        { name: "区域分布" },
+        { name: "重点企业分布" },
+        { name: "重点产业分布" },
+        { name: "楼宇经济" },
       ],
       selected: {
-        name: "区域分布"
-      }
-    }
+        name: "区域分布",
+      },
+    };
   },
   methods: {
     select(item) {
-      this.selected = item
-    }
-  }
-}
+      this.selected = item;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -54,7 +56,7 @@ export default {
     line-height: 48px;
     font-size: 20px;
     font-weight: 400;
-    color: #FFFFFF;
+    color: #ffffff;
     -webkit-border-radius: 24px;
     -moz-border-radius: 24px;
     border-radius: 24px;

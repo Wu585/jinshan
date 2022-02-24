@@ -9,11 +9,13 @@ a {
   color: inherit;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
-button, input {
+button,
+input {
   font: inherit;
 }
 
@@ -21,7 +23,12 @@ button, input {
   outline: none;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: normal;
 }
 
@@ -32,7 +39,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
-  Microsoft YaHei, Arial, sans-serif;
+    Microsoft YaHei, Arial, sans-serif;
 }
 
 html {
