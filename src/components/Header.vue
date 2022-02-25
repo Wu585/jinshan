@@ -37,7 +37,7 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-  width: 809px;
+  width: vw(809);
   height: 53px;
   border: 1px solid #79eef3;
   position: absolute;
@@ -48,6 +48,8 @@ export default {
   display: flex;
   background: rgba(15, 44, 87, 0.58);
   border-radius: 24px;
+  white-space: nowrap;
+  min-width: 520px;
 
   > li {
     height: 100%;

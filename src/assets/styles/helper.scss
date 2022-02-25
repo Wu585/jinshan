@@ -1,0 +1,11 @@
+// 根据设计稿宽度360，设计的vw适应
+$base_width: 1920;
+$base_height: 1080;
+
+@function vw($px) {
+  @return ($px / $base_width) * 100vw;
+}
+
+@function vh($px) {
+  @return ($px / $base_height) * 100vh;
+}
