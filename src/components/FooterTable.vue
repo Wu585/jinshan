@@ -96,6 +96,7 @@ $background-light: rgba(31, 62, 100, 0.4);
 }
 
 .container {
+  z-index: 999;
   padding: 0 15px;
   width: 50%;
   height: 290px;

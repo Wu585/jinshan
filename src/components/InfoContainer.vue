@@ -12,8 +12,10 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  z-index: 999;
   width: 353px;
   height: 206px;
   background-image: url(../assets/images/container.png);
+  position: absolute;
 }
 </style>

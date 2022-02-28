@@ -30,6 +30,11 @@ export default {
   methods: {
     select(item) {
       this.selected = item;
+      switch (item.name) {
+        case "楼宇经济":
+          this.$emit("setBuildsDialogVisible");
+          break;
+      }
     },
   },
 };
@@ -37,6 +42,7 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
+  z-index: 999;
   width: vw(809);
   height: 53px;
   border: 1px solid #79eef3;

@@ -22,4 +22,8 @@ module.exports = {
       },
     },
   ],
+  globals: {
+    Cesium: true,
+    viewer: true,
+  },
 };
