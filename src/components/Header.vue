@@ -1,81 +1,34 @@
 <template>
-  <ul class="wrapper">
-    <li
-      v-for="item in titles"
-      :key="item.name"
-      :class="{ active: item.name === selected.name }"
-      @click="select(item)"
-    >
-      {{ item.name }}
-    </li>
-  </ul>
+  <div class="header">
+    <div class="content">金山地图中台展示系统</div>
+  </div>
 </template>
 
 <script>
 export default {
   name: "Header",
-  data() {
-    return {
-      titles: [
-        { name: "区域分布" },
-        { name: "重点企业分布" },
-        { name: "重点产业分布" },
-        { name: "楼宇经济" },
-      ],
-      selected: {
-        name: "区域分布",
-      },
-    };
-  },
-  methods: {
-    select(item) {
-      this.selected = item;
-      switch (item.name) {
-        case "楼宇经济":
-          this.$emit("setBuildsDialogVisible");
-          break;
-      }
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
+.header {
   z-index: 999;
-  width: vw(809);
-  height: 53px;
-  border: 1px solid #79eef3;
   position: absolute;
-  left: 50%;
-  top: 48px;
-  transform: translateX(-50%);
-  color: #fff;
+  width: 100%;
+  top: -25px;
+  color: rgba(178, 227, 255, 1);
+  background-image: url("../assets/images/header-bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 81px;
   display: flex;
-  background: rgba(15, 44, 87, 0.58);
-  border-radius: 24px;
-  white-space: nowrap;
-  min-width: 520px;
-
-  > li {
-    height: 100%;
-    width: 25%;
-    text-align: center;
-    line-height: 48px;
-    font-size: 20px;
-    font-weight: 400;
-    color: #ffffff;
-    -webkit-border-radius: 24px;
-    -moz-border-radius: 24px;
-    border-radius: 24px;
-
-    &.active {
-      background: rgba(121, 238, 243, 0.58);
-    }
-
-    &:hover {
-      cursor: pointer;
-    }
+  align-items: center;
+  justify-content: center;
+  .content {
+    margin-top: 20px;
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: 2px;
   }
 }
 </style>

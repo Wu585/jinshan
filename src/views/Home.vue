@@ -1,22 +1,19 @@
 <template>
   <div class="home" id="cesiumContainer">
-    <Header
-      @setBuildsDialogVisible="buildsDialogVisible = !buildsDialogVisible"
-    />
-    <!--    <FooterTable />-->
-    <!--    <InfoContainer />-->
-    <Building v-show="buildsDialogVisible" />
+    <Header />
+    <Layers />
   </div>
 </template>
 
 <script>
-import Header from "@/components/Header";
 import axios from "axios";
-import Building from "@/components/Buildings";
+import Header from "@/components/Header";
+import Layers from "@/components/Layers";
+import { setViewport } from "@/utils/view";
 
 export default {
   name: "Home",
-  components: { Building, Header },
+  components: { Layers, Header },
   data() {
     return {
       EARTH_RADIUS: 6378137.0,
@@ -43,150 +40,81 @@ export default {
     });
     const { viewer } = window;
     const { scene } = viewer;
-
-    viewer.camera.setView({
-      destination: new Cesium.Cartesian3.fromDegrees(
-        121.2084528228285,
-        31.2214951000063,
-        100
-      ),
-      orientation: {
-        heading: 6.119334705779381,
-        pitch: -0.7930082176213968,
-        roll: 6.283185307179558,
-      },
-    }); // 开启泛光
+    viewer.scene.mode = Cesium.SceneMode.COLUMBUS_VIEW; //平面场景
+    viewer.scene.globe.depthTestAgainstTerrain = false;
+    setViewport(
+      -44284.506684487686,
+      -35422.487200479954,
+      130.52507693413645,
+      2.416732144074675,
+      -0.04451864534215688,
+      6.283185307179586
+    );
     scene.bloomEffect.show = true;
     scene.bloomEffect.threshold = 0.3;
     scene.bloomEffect.bloomIntensity = 1;
     // 加载s3M服务
     await this.addAllLayers();
-
-    setTimeout(() => {
-      /*this.addLightLine([121.30688903427414, 31.217951080645553], [121.30740665748, 31.217906414430226]);
-      this.addLightLine([121.30688903427414, 31.217951080645553], [121.30774075058393, 31.217797948094746]);
-      this.changeTransparency();*/
-    }, 1000);
+    this.addTraceLayers();
   },
   methods: {
     async addAllLayers() {
-      const { data } = await axios.get(
-        "http://192.168.0.145:8090/iserver/services/3D-jjlu/rest/realspace/datas.json"
+      const { data: data1 } = await axios.get(
+        `${iServerIP_Port}/iserver/services/3D-JS_Model/rest/realspace/datas.json`
       );
-      console.log("data");
-      console.log(data);
-      data.map((layer) => {
+      const { data: data2 } = await axios.get(
+        `${iServerIP_Port}/iserver/services/3D-CBD2/rest/realspace/datas.json`
+      );
+      data1.map((layer) => {
         const url = layer.path + "/config";
         const name = layer.name;
         viewer.scene.addS3MTilesLayerByScp(url, { name });
       });
-    },
-    getRad(d) {
-      return (d * this.PI) / 180.0;
-    },
-    getGreatCircleDistance(lng1, lat1, lng2, lat2) {
-      const radLat1 = this.getRad(lat1);
-      const radLat2 = this.getRad(lat2);
-
-      const a = radLat1 - radLat2;
-      const b = this.getRad(lng1) - this.getRad(lng2);
-
-      let s =
-        2 *
-        Math.asin(
-          Math.sqrt(
-            Math.pow(Math.sin(a / 2), 2) +
-              Math.cos(radLat1) *
-                Math.cos(radLat2) *
-                Math.pow(Math.sin(b / 2), 2)
-          )
-        );
-      s = s * this.EARTH_RADIUS;
-      s = Math.round(s * 10000) / 10000.0;
-      return s;
-    },
-    addAirLines(startpoint, endpoint) {
-      const color1 = new Cesium.Color(34 / 255, 165 / 255, 255 / 255);
-      const color2 = new Cesium.Color(255 / 255, 59 / 255, 179 / 255);
-      const distance = this.getGreatCircleDistance(
-        parseFloat(startpoint[0]),
-        parseFloat(startpoint[1]),
-        parseFloat(endpoint[0]),
-        parseFloat(endpoint[1])
-      );
-      const pointArray = [
-        parseFloat(startpoint[0]),
-        parseFloat(startpoint[1]),
-        parseFloat(endpoint[0]),
-        parseFloat(endpoint[1]),
+      data2.map((layer) => {
+        const url = layer.path + "/config";
+        const name = layer.name;
+        viewer.scene.addS3MTilesLayerByScp(url, { name });
+      });
+      const mapUrls = [
+        {
+          name: "矢量底图",
+          url: `${iServerIP_Port}/iserver/services/map-ugcv5-JSmap2d/rest/maps/JS_map_2d`,
+        },
+        /*{
+          name: "影像底图",
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapair/rest`
+        },
+        {
+          name: "暗色底图",
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapdark/rest`
+        },
+        {
+          name: "政务底图",
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemaplight/rest`
+        },
+        {
+          name: "金山区边界地图",
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-jsmaskboundary/rest`
+        },
+        {
+          name: "水系地图",
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-wbshsx/rest`
+        }*/
       ];
-      Math.random() < 0.5
-        ? (this.linecolor = color1)
-        : (this.linecolor = color2);
-      viewer.entities.add({
-        polyline: {
-          positions: Cesium.Cartesian3.fromDegreesArray(pointArray),
-          width: 0.5, // 线的宽度，像素为单位
-          material: Cesium.Color.fromCssColorString("rgba(118, 233, 241, 0.1)"),
-        },
+      mapUrls.forEach((map) => {
+        const layer = new Cesium.SuperMapImageryProvider({
+          url: map.url, //影像服务的地址
+          name: map.name,
+        });
+        viewer.imageryLayers.addImageryProvider(layer);
       });
-      viewer.entities.add({
-        name: "PolylineDynamic",
-        show: true,
-        polyline: {
-          positions: Cesium.Cartesian3.fromDegreesArray(pointArray),
-          width: 8,
-          hMax: distance / 15,
-          material: new Cesium.PolylineDynamicMaterialProperty({
-            color: this.linecolor,
-            outlineWidth: 0,
-            outlineColor: Cesium.Color.BLACK,
-            bAsy: true,
-            period: 10000,
-          }),
-        },
-      });
-      // viewer.flyTo(lineEntity);
     },
-    addLightLine(startpoint, endpoint) {
-      viewer.entities.add({
-        // 背景线
-        description: "background-line",
-        polyline: {
-          width: 3,
-          positions: Cesium.Cartesian3.fromDegreesArray([
-            ...startpoint,
-            ...endpoint,
-          ]),
-          material: new Cesium.PolylineDashMaterialProperty({
-            color: new Cesium.Color(255 / 255, 249 / 255, 0, 0.5),
-          }),
-        },
-      });
-
-      const lineEntity = viewer.entities.add({
-        // 尾迹线
-        description: "trail-line",
-        polyline: {
-          width: 5,
-          positions: Cesium.Cartesian3.fromDegreesArray([
-            ...startpoint,
-            ...endpoint,
-          ]),
-          material: new Cesium.PolylineTrailMaterialProperty({
-            // 尾迹线材质
-            color: Cesium.Color.fromCssColorString("rgba(118, 233, 241, 1.0)"),
-            trailLength: 0.2,
-            period: 5.0,
-          }),
-        },
-      });
-      viewer.flyTo(lineEntity);
-    },
-    changeTransparency() {
-      viewer.scene.layers.find("经济楼宇");
-      // louyu.style3D.fillForeColor.alpha = 0.1
-      // louyu.setObjsColor([1],Cesium.Color.fromCssColorString('rgba(255, 255, 255, 1)'))
+    addTraceLayers() {
+      for (let i = 1; i <= 17; i++) {
+        const name = "traceLayer" + i;
+        window[name] = new Cesium.CustomDataSource("traceLayer");
+        viewer.dataSources.add(window[name]);
+      }
     },
   },
 };

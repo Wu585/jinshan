@@ -25,5 +25,6 @@ module.exports = {
   globals: {
     Cesium: true,
     viewer: true,
+    iServerIP_Port: true,
   },
 };
