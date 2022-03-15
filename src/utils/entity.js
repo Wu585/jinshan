@@ -42,7 +42,7 @@ export function createEntity({ id, x, y, imagePath, name, text }) {
 
 export function addEntity(imagePath, lon, lat, text = "") {
   return viewer.entities.add({
-    position: Cesium.Cartesian3.fromDegrees(lon, lat, 60),
+    position: Cesium.Cartesian3.fromDegrees(lon, lat, 20),
     billboard: {
       image: imagePath,
       width: 40,
@@ -58,6 +58,16 @@ export function addEntity(imagePath, lon, lat, text = "") {
       outlineColor: Cesium.Color.WHITE,
       outlineWidth: 3,
       pixelOffset: new Cesium.Cartesian2(0.0, -20),
+    },
+  });
+}
+
+export function addCameraEntity(lon, lat) {
+  return viewer.entities.add({
+    position: Cesium.Cartesian3.fromDegrees(lon, lat, 60),
+    point: {
+      color: Cesium.Color.YELLOW, //颜色
+      pixelSize: 4, //点大小
     },
   });
 }

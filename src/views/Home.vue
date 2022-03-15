@@ -38,10 +38,9 @@ export default {
         },
       },
     });
-    const { viewer } = window;
     const { scene } = viewer;
-    viewer.scene.mode = Cesium.SceneMode.COLUMBUS_VIEW; //平面场景
-    viewer.scene.globe.depthTestAgainstTerrain = false;
+    scene.mode = Cesium.SceneMode.COLUMBUS_VIEW; // 平面场景
+    scene.globe.depthTestAgainstTerrain = false; // 图标不埋地下
     setViewport(
       -44284.506684487686,
       -35422.487200479954,
@@ -50,9 +49,9 @@ export default {
       -0.04451864534215688,
       6.283185307179586
     );
-    scene.bloomEffect.show = true;
+    /*scene.bloomEffect.show = true;
     scene.bloomEffect.threshold = 0.3;
-    scene.bloomEffect.bloomIntensity = 1;
+    scene.bloomEffect.bloomIntensity = 1;*/
     // 加载s3M服务
     await this.addAllLayers();
     this.addTraceLayers();
@@ -76,29 +75,29 @@ export default {
         viewer.scene.addS3MTilesLayerByScp(url, { name });
       });
       const mapUrls = [
-        {
+        /*{
           name: "矢量底图",
           url: `${iServerIP_Port}/iserver/services/map-ugcv5-JSmap2d/rest/maps/JS_map_2d`,
-        },
-        /*{
+        },*/
+        {
           name: "影像底图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapair/rest`
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapair/rest/maps/basemap_air`,
         },
         {
           name: "暗色底图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapdark/rest`
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapdark/rest/maps/basemap_dark`,
         },
         {
           name: "政务底图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemaplight/rest`
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemaplight/rest/maps/basemap_light`,
         },
         {
-          name: "金山区边界地图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-jsmaskboundary/rest`
+          name: "金山区边界底图",
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-jsmaskboundary/rest/maps/jsmaskboundary`,
         },
-        {
-          name: "水系地图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-wbshsx/rest`
+        /*{
+          name: "水系底图",
+          url: `${iServerIP_Port}/iserver/services/map-arcgis-wbshsx/rest/maps/wb_sh_sx`
         }*/
       ];
       mapUrls.forEach((map) => {
@@ -108,6 +107,13 @@ export default {
         });
         viewer.imageryLayers.addImageryProvider(layer);
       });
+      setTimeout(() => {
+        viewer.imageryLayers._layers.forEach((item, index) => {
+          if (index > 0) {
+            item.show = false;
+          }
+        });
+      }, 2000);
     },
     addTraceLayers() {
       for (let i = 1; i <= 17; i++) {
