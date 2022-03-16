@@ -71,3 +71,14 @@ export function addCameraEntity(lon, lat) {
     },
   });
 }
+
+export function addPolyline(pointArray, id) {
+  return viewer.entities.add({
+    id,
+    polyline: {
+      positions: Cesium.Cartesian3.fromDegreesArray(pointArray),
+      width: 10,
+      material: Cesium.Color.RED,
+    },
+  });
+}

@@ -1,10 +1,10 @@
 import axios from "axios";
 
 // 查询所有poi坐标
-export function queryPoi(dataSourceName, dataSetName) {
+export function queryPoi(serviceName, dataSourceName, dataSetName) {
   const dataServiceUrl =
     iServerIP_Port +
-    `/iserver/services/data-${dataSourceName}/rest/data/featureResults.rjson?returnContent=true`; // 数据服务URL
+    `/iserver/services/data-${serviceName}/rest/data/featureResults.rjson?returnContent=true`; // 数据服务URL
   const queryObj = {
     getFeatureMode: "SQL",
     datasetNames: [dataSourceName + ":" + dataSetName],
@@ -17,6 +17,15 @@ export function queryPoi(dataSourceName, dataSetName) {
     method: "post",
     url: dataServiceUrl,
     data: queryObj,
+  });
+}
+
+// 查询数据集下所有子集名
+export function queryChildren(serviceName, dataSourceName) {
+  const url = `${iServerIP_Port}/iserver/services/data-${serviceName}/rest/data/datasources/${dataSourceName}/datasets.json`;
+  return axios({
+    method: "get",
+    url,
   });
 }
 

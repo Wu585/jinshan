@@ -1,24 +1,109 @@
 <template>
   <div class="header">
-    <div class="content" @click="setView">金山区地图中台展示系统</div>
+    <div class="title">
+      <div class="logo"></div>
+      <span>金山区地图中台展示系统</span>
+    </div>
+    <div class="features">
+      <div
+        v-for="item in featuresArray"
+        @click="handleSelect(item)"
+        :key="item.name"
+        :class="{
+          active: selectedFeature && selectedFeature.name === item.name,
+        }"
+        class="feature-wrapper"
+      >
+        <el-popover
+          placement="bottom-start"
+          width="200"
+          trigger="hover"
+          :visible-arrow="false"
+          :disabled="!item.isPopover"
+        >
+          <ul class="content">
+            <li style="display: flex; align-items: center">
+              <img src="../assets/images/header/gdcl.png" alt="" />
+              <span style="padding: 12px">建筑物高度测量</span>
+            </li>
+            <li style="display: flex; align-items: center">
+              <img src="../assets/images/header/jlcl.png" alt="" />
+              <span style="padding: 12px">距离测量</span>
+            </li>
+          </ul>
+          <div slot="reference" class="feature-wrapper">
+            <div class="icon" :style="backgroundStyle(item.image)"></div>
+            <span>{{ item.name }}</span>
+          </div>
+        </el-popover>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { setViewport } from "@/utils/view";
-
 export default {
   name: "Header",
+  data() {
+    return {
+      featuresArray: [
+        {
+          name: "点查询",
+          image: require("../assets/images/header/dcx.png"),
+          isPopover: false,
+        },
+        {
+          name: "框选",
+          image: require("../assets/images/header/kuangxuan.png"),
+          isPopover: false,
+        },
+        {
+          name: "测量",
+          image: require("../assets/images/header/celiang.png"),
+          isPopover: true,
+        },
+        {
+          name: "全景",
+          image: require("../assets/images/header/quanjing.png"),
+          isPopover: false,
+        },
+        {
+          name: "视点管理",
+          image: require("../assets/images/header/shidian.png"),
+          isPopover: false,
+        },
+        {
+          name: "场景漫游",
+          image: require("../assets/images/header/manyou.png"),
+          isPopover: false,
+        },
+        {
+          name: "天际线分析",
+          image: require("../assets/images/header/tjxfx.png"),
+          isPopover: false,
+        },
+        {
+          name: "可视域分析",
+          image: require("../assets/images/header/ksyfx.png"),
+          isPopover: false,
+        },
+      ],
+      selectedFeature: null,
+    };
+  },
+  computed: {
+    backgroundStyle() {
+      return (imgPath) => ({
+        backgroundImage: "url(" + imgPath + ")",
+        width: "22px",
+        height: "22px",
+        backgroundRepeat: "no-repeat",
+      });
+    },
+  },
   methods: {
-    setView() {
-      setViewport(
-        -44284.506684487686,
-        -35422.487200479954,
-        130.52507693413645,
-        2.416732144074675,
-        -0.04451864534215688,
-        6.283185307179586
-      );
+    handleSelect(item) {
+      this.selectedFeature = item;
     },
   },
 };
@@ -29,24 +114,68 @@ export default {
   z-index: 999;
   position: absolute;
   width: 100%;
-  top: -25px;
-  color: rgba(178, 227, 255, 1);
-  background-image: url("../assets/images/header-bg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 81px;
+  height: 78px;
+  background: rgb(19, 42, 74);
+  background: linear-gradient(
+    90deg,
+    rgba(19, 42, 74, 1) 0%,
+    rgba(28, 36, 32, 1) 100%
+  );
   display: flex;
   align-items: center;
-  justify-content: center;
+  color: white;
+  padding-left: 26px;
+  justify-content: space-between;
 
-  .content {
-    margin-top: 20px;
-    font-size: 32px;
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 600;
-    letter-spacing: 2px;
+    font-size: 24px;
 
-    &:hover {
-      cursor: pointer;
+    .logo {
+      width: 31px;
+      height: 31px;
+      margin-right: 14px;
+      background-image: url("../assets/images/header/logo.png");
+    }
+  }
+
+  .features {
+    height: 100%;
+    display: flex;
+
+    .feature-wrapper {
+      width: 105px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      &.active {
+        background: rgba(85, 174, 249, 0.26);
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      &:not(:first-child) {
+        &:before {
+          display: inline-block;
+          content: "";
+          width: 2px;
+          height: 40px;
+          position: absolute;
+          transform: translateX(-53px);
+          background: linear-gradient(to top, black, white, black);
+        }
+      }
+
+      .icon {
+      }
     }
   }
 }

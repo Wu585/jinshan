@@ -1,25 +1,43 @@
 <template>
   <div class="home" id="cesiumContainer">
     <Header />
-    <Layers />
+    <SideBar
+      @show-layers-tree="layersTreeVisible = true"
+      @change-title="handleChangeTitle"
+    />
+    <!--    <Layers />-->
+    <LayersTree
+      v-if="layersTreeVisible"
+      @close-layers-tree="layersTreeVisible = false"
+      :title="layersTreeTitle"
+      :tree-data="layersTreeData"
+    />
+    <Map />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import Header from "@/components/Header";
-import Layers from "@/components/Layers";
 import { setViewport } from "@/utils/view";
+import SideBar from "@/components/SideBar";
+import LayersTree from "@/components/LayersTree";
+import Map from "@/components/Map";
+import { MapUrlHashmap } from "@/assets/js/map-url";
+import { s3mUrlHashmap } from "@/assets/js/s3m-url";
 
 export default {
   name: "Home",
-  components: { Layers, Header },
+  components: { Map, LayersTree, SideBar, Header },
   data() {
     return {
       EARTH_RADIUS: 6378137.0,
       PI: Math.PI,
       linecolor: undefined,
       buildsDialogVisible: false,
+      layersTreeVisible: false,
+      layersTreeTitle: "",
+      layersTreeData: null,
     };
   },
   async mounted() {
@@ -49,71 +67,47 @@ export default {
       -0.04451864534215688,
       6.283185307179586
     );
-    /*scene.bloomEffect.show = true;
-    scene.bloomEffect.threshold = 0.3;
-    scene.bloomEffect.bloomIntensity = 1;*/
-    // 加载s3M服务
+
     await this.addAllLayers();
     this.addTraceLayers();
   },
   methods: {
-    async addAllLayers() {
-      const { data: data1 } = await axios.get(
-        `${iServerIP_Port}/iserver/services/3D-JS_Model/rest/realspace/datas.json`
-      );
-      const { data: data2 } = await axios.get(
-        `${iServerIP_Port}/iserver/services/3D-CBD2/rest/realspace/datas.json`
-      );
-      data1.map((layer) => {
-        const url = layer.path + "/config";
-        const name = layer.name;
-        viewer.scene.addS3MTilesLayerByScp(url, { name });
-      });
-      data2.map((layer) => {
-        const url = layer.path + "/config";
-        const name = layer.name;
-        viewer.scene.addS3MTilesLayerByScp(url, { name });
-      });
-      const mapUrls = [
-        /*{
-          name: "矢量底图",
-          url: `${iServerIP_Port}/iserver/services/map-ugcv5-JSmap2d/rest/maps/JS_map_2d`,
-        },*/
-        {
-          name: "影像底图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapair/rest/maps/basemap_air`,
-        },
-        {
-          name: "暗色底图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapdark/rest/maps/basemap_dark`,
-        },
-        {
-          name: "政务底图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-basemaplight/rest/maps/basemap_light`,
-        },
-        {
-          name: "金山区边界底图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-jsmaskboundary/rest/maps/jsmaskboundary`,
-        },
-        /*{
-          name: "水系底图",
-          url: `${iServerIP_Port}/iserver/services/map-arcgis-wbshsx/rest/maps/wb_sh_sx`
-        }*/
-      ];
-      mapUrls.forEach((map) => {
+    handleChangeTitle(title, treeData) {
+      this.layersTreeTitle = title;
+      this.layersTreeData = treeData.children;
+    },
+    addMapLayers() {
+      MapUrlHashmap.forEach((map) => {
         const layer = new Cesium.SuperMapImageryProvider({
           url: map.url, //影像服务的地址
           name: map.name,
         });
         viewer.imageryLayers.addImageryProvider(layer);
       });
-      setTimeout(() => {
-        viewer.imageryLayers._layers.forEach((item, index) => {
-          if (index > 0) {
-            item.show = false;
-          }
-        });
-      }, 2000);
+      viewer.imageryLayers._layers.forEach((item, index) => {
+        if (index > 0) {
+          item.show = false;
+        }
+      });
+    },
+    async addS3mLayers() {
+      for (let i = 0; i < s3mUrlHashmap.length; i++) {
+        for (let j = 0; j < s3mUrlHashmap[i].urls.length; j++) {
+          const { data } = await axios.get(s3mUrlHashmap[i].urls[j]);
+          data.map((layer) => {
+            const url = layer.path + "/config";
+            const name = layer.name;
+            const promise = viewer.scene.addS3MTilesLayerByScp(url, { name });
+            promise.then((item) => {
+              item.visible = false;
+            });
+          });
+        }
+      }
+    },
+    async addAllLayers() {
+      this.addMapLayers();
+      await this.addS3mLayers();
     },
     addTraceLayers() {
       for (let i = 1; i <= 17; i++) {

@@ -1,0 +1,116 @@
+<template>
+  <ul class="sidebar">
+    <li
+      v-for="item in layersArray"
+      :key="item.name"
+      @click="handleClick(item)"
+      :class="{ active: selectedItem && selectedItem.name === item.name }"
+    >
+      <div :style="backgroundStyle(item.image)"></div>
+      <span>{{ item.name }}</span>
+    </li>
+  </ul>
+</template>
+
+<script>
+import layersTreeJson from "../assets/json/layer.json";
+
+export default {
+  name: "SideBar",
+  data() {
+    return {
+      layersArray: [
+        {
+          name: "时空基础数据",
+          image: require("../assets/images/sidebar/skjc-active.png"),
+        },
+        {
+          name: "资源调查数据",
+          image: require("../assets/images/sidebar/zydc.png"),
+        },
+        {
+          name: "规划管控数据",
+          image: require("../assets/images/sidebar/ghgk.png"),
+        },
+        {
+          name: "工程建设项目数据",
+          image: require("../assets/images/sidebar/gcjsxm.png"),
+        },
+        {
+          name: "公共专题数据",
+          image: require("../assets/images/sidebar/ggzt.png"),
+        },
+        {
+          name: "物联感知数据",
+          image: require("../assets/images/sidebar/wlgz.png"),
+        },
+        {
+          name: "部门专题数据",
+          image: require("../assets/images/sidebar/bmzt.png"),
+        },
+        {
+          name: "市级城运体征数据",
+          image: require("../assets/images/sidebar/sjcy.png"),
+        },
+        {
+          name: "城市地下空间数据",
+          image: require("../assets/images/sidebar/csdxkj.png"),
+        },
+        {
+          name: "社会POI数据",
+          image: require("../assets/images/sidebar/shpoi.png"),
+        },
+      ],
+      selectedItem: null,
+    };
+  },
+  computed: {
+    backgroundStyle() {
+      return (imgPath) => ({
+        backgroundImage: "url(" + imgPath + ")",
+        width: "30px",
+        height: "30px",
+        backgroundRepeat: "no-repeat",
+      });
+    },
+  },
+  methods: {
+    handleClick(item) {
+      this.selectedItem = item;
+      const treeData = layersTreeJson.find((layer) => layer.name === item.name);
+      this.$emit("show-layers-tree");
+      this.$emit("change-title", item.name, treeData);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.sidebar {
+  position: absolute;
+  z-index: 999;
+  left: 10px;
+  top: 11+78px;
+  color: white;
+  background-size: cover;
+  background: rgba(19, 48, 82, 0.6);
+  border: 3px solid #2175a9;
+
+  > li {
+    padding: 16px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.active {
+      background: rgba(10, 232, 252, 0.2);
+      color: #0ae8fc;
+    }
+  }
+}
+</style>
