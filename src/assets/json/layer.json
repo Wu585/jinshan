@@ -848,7 +848,10 @@
           {
             "id": 242,
             "name": "其他",
-            "type": "poi"
+            "type": "poi",
+            "datasetName": [
+              "公安机关"
+            ]
           }
         ]
       },
@@ -1343,7 +1346,11 @@
         "children": [
           {
             "id": 326,
-            "name": "酒店"
+            "name": "酒店",
+            "type": "poi",
+            "datasetName": [
+              "酒店"
+            ]
           },
           {
             "id": 327,
@@ -1351,7 +1358,11 @@
           },
           {
             "id": 328,
-            "name": "小区"
+            "name": "小区",
+            "type": "poi",
+            "datasetName": [
+              "小区"
+            ]
           },
           {
             "id": 329,
@@ -1365,19 +1376,35 @@
         "children": [
           {
             "id": 330,
-            "name": "大厦"
+            "name": "大厦",
+            "type": "poi",
+            "datasetName": [
+              "大厦"
+            ]
           },
           {
             "id": 331,
-            "name": "办公室"
+            "name": "办公室",
+            "type": "poi",
+            "datasetName": [
+              "公司企业"
+            ]
           },
           {
             "id": 332,
-            "name": "农林牧渔场"
+            "name": "农林牧渔场",
+            "type": "poi",
+            "datasetName": [
+              "农林牧渔场"
+            ]
           },
           {
             "id": 333,
-            "name": "厂区"
+            "name": "厂区",
+            "type": "poi",
+            "datasetName": [
+              "厂区"
+            ]
           }
         ]
       },
@@ -1387,7 +1414,11 @@
         "children": [
           {
             "id": 334,
-            "name": "中餐"
+            "name": "中餐",
+            "type": "poi",
+            "datasetName": [
+              "餐饮"
+            ]
           },
           {
             "id": 335,
@@ -1413,7 +1444,11 @@
         "children": [
           {
             "id": 339,
-            "name": "商场"
+            "name": "商场",
+            "type": "poi",
+            "datasetName": [
+              "商场"
+            ]
           },
           {
             "id": 340,
@@ -1443,7 +1478,11 @@
         "children": [
           {
             "id": 345,
-            "name": "车站"
+            "name": "车站",
+            "type": "poi",
+            "datasetName": [
+              "火车站"
+            ]
           },
           {
             "id": 346,
@@ -1451,11 +1490,19 @@
           },
           {
             "id": 347,
-            "name": "服务区"
+            "name": "服务区",
+            "type": "poi",
+            "datasetName": [
+              "服务区"
+            ]
           },
           {
             "id": 348,
-            "name": "收费站"
+            "name": "收费站",
+            "type": "poi",
+            "datasetName": [
+              "收费站"
+            ]
           },
           {
             "id": 349,
@@ -1477,11 +1524,19 @@
         "children": [
           {
             "id": 352,
-            "name": "金融"
+            "name": "金融",
+            "type": "poi",
+            "datasetName": [
+              "金融保险"
+            ]
           },
           {
             "id": 353,
-            "name": "通讯营业厅"
+            "name": "通讯营业厅",
+            "type": "poi",
+            "datasetName": [
+              "通讯营业厅"
+            ]
           },
           {
             "id": 354,
@@ -1531,7 +1586,11 @@
           },
           {
             "id": 364,
-            "name": "风景名胜"
+            "name": "风景名胜",
+            "type": "poi",
+            "datasetName": [
+              "风景名胜"
+            ]
           },
           {
             "id": 365,
@@ -1539,7 +1598,11 @@
           },
           {
             "id": 366,
-            "name": "休闲活动"
+            "name": "休闲活动",
+            "type": "poi",
+            "datasetName": [
+              "休闲活动"
+            ]
           }
         ]
       },
@@ -1549,15 +1612,28 @@
         "children": [
           {
             "id": 367,
-            "name": "学校"
+            "name": "学校",
+            "type": "poi",
+            "datasetName": [
+              "中小学",
+              "大专院校"
+            ]
           },
           {
             "id": 368,
-            "name": "科研机构"
+            "name": "科研机构",
+            "type": "poi",
+            "datasetName": [
+              "科研机构"
+            ]
           },
           {
             "id": 369,
-            "name": "培训机构"
+            "name": "培训机构",
+            "type": "poi",
+            "datasetName": [
+              "教育文化"
+            ]
           },
           {
             "id": 370,
@@ -1589,7 +1665,11 @@
           },
           {
             "id": 377,
-            "name": "档案馆"
+            "name": "档案馆",
+            "type": "poi",
+            "datasetName": [
+              "档案馆"
+            ]
           }
         ]
       },
@@ -1599,7 +1679,12 @@
         "children": [
           {
             "id": 378,
-            "name": "医院"
+            "name": "医院",
+            "type": "poi",
+            "datasetName": [
+              "医院",
+              "卫生社保"
+            ]
           },
           {
             "id": 379,
@@ -1641,7 +1726,11 @@
         "children": [
           {
             "id": 387,
-            "name": "政府机关"
+            "name": "政府机关",
+            "type": "poi",
+            "datasetName": [
+              "政府机关"
+            ]
           },
           {
             "id": 388,
@@ -1653,7 +1742,11 @@
           },
           {
             "id": 390,
-            "name": "司法机关"
+            "name": "司法机关",
+            "type": "poi",
+            "datasetName": [
+              "司法机关"
+            ]
           },
           {
             "id": 391,
@@ -1671,7 +1764,11 @@
         "children": [
           {
             "id": 393,
-            "name": "厕所"
+            "name": "厕所",
+            "type": "poi",
+            "datasetName": [
+              "公测"
+            ]
           },
           {
             "id": 394,
@@ -1687,7 +1784,11 @@
           },
           {
             "id": 397,
-            "name": "消防设施"
+            "name": "消防设施",
+            "type": "poi",
+            "datasetName": [
+              "公用设施"
+            ]
           },
           {
             "id": 398,

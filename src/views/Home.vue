@@ -7,7 +7,7 @@
     />
     <!--    <Layers />-->
     <LayersTree
-      v-if="layersTreeVisible"
+      v-show="layersTreeVisible"
       @close-layers-tree="layersTreeVisible = false"
       :title="layersTreeTitle"
       :tree-data="layersTreeData"
@@ -69,7 +69,7 @@ export default {
     );
 
     await this.addAllLayers();
-    this.addTraceLayers();
+    // this.addTraceLayers();
   },
   methods: {
     handleChangeTitle(title, treeData) {

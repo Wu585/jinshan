@@ -28,7 +28,7 @@
 <script>
 import { s3mUrlHashmap } from "@/assets/js/s3m-url";
 import axios from "axios";
-import { queryChildren, queryPoi } from "@/apis/queryPoi";
+import { queryPoi } from "@/apis/queryPoi";
 import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
 import { addCameraEntity, addPolyline } from "@/utils/entity";
 
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     async handleCheckChange(data, checked) {
-      const { name } = data;
+      const { name, id } = data;
       console.log(data, checked);
       if (data?.type === "map") {
         viewer.imageryLayers._layers.find(
@@ -84,15 +84,37 @@ export default {
           addPolyline(pointsArray, name);
         }
       } else if (data?.type === "poi") {
+        let traceLayer = `traceLayer${id}`;
         if (!checked) {
-          window.traceLayer.entities.show = checked;
+          window[traceLayer].entities.show = checked;
         } else {
-          window.traceLayer = new Cesium.CustomDataSource("traceLayer");
-          viewer.dataSources.add(window.traceLayer);
-          const { serviceName, dataSource } = dataServiceUrlHashmap.find(
-            (item) => item.name === name
-          );
-          const res = await queryChildren(serviceName, dataSource);
+          window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+          viewer.dataSources.add(window[traceLayer]);
+          const { datasetName } = data;
+          if (datasetName) {
+            console.log("--datasetName---");
+            console.log(datasetName);
+            datasetName.map(async (name) => {
+              const { serviceName, dataSource } = dataServiceUrlHashmap.find(
+                (item) => item.dataSets.indexOf(name) >= 0
+              );
+              const res = await queryPoi(serviceName, dataSource, name);
+              console.log("res");
+              console.log(res);
+              res.data.features.forEach((item) => {
+                window[traceLayer].entities.add(
+                  addCameraEntity(
+                    item.geometry.center.x,
+                    item.geometry.center.y
+                  )
+                );
+              });
+            });
+          }
+
+          // const res = await queryPoi(serviceName,dataSource,datasetName)
+
+          /*const res = await queryChildren(serviceName, dataSource);
           res.data.datasetNames.map(async (datasetName) => {
             const childRes = await queryPoi(
               serviceName,
@@ -104,7 +126,7 @@ export default {
                 addCameraEntity(item.geometry.center.x, item.geometry.center.y)
               );
             });
-          });
+          });*/
         }
       }
     },
