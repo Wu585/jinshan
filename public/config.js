@@ -1,1 +1,1 @@
-var iServerIP_Port = "http://192.168.0.145:8090";
+var iServerIP_Port = "http://10.233.250.25:8090";

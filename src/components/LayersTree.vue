@@ -6,6 +6,7 @@
     </div>
     <div class="layer-tree-wrapper">
       <el-tree
+        ref="tree"
         :data="treeData"
         show-checkbox
         node-key="id"
@@ -13,13 +14,31 @@
         check-on-click-node
         :props="defaultProps"
         @check-change="handleCheckChange"
+        :render-after-expand="false"
+        :default-checked-keys="defaultCheckedKeys"
+        :render-content="renderContent"
       >
-        <!--        <span class="custom-tree-node" slot-scope="{ node, data }">
-                  <span>
-                    <img class="organization-img" src="../assets/images/layersTree/jian.png" alt="">
-                    {{ node.label }}
-                  </span>
-                </span>-->
+        <span class="custom-tree-node" slot-scope="{ node, data }">
+          <span
+            style="display: flex; align-items: center; justify-content: center"
+          >
+            <img
+              v-if="data.imagePath"
+              class="organization-img"
+              :src="data.imagePath"
+              style="
+                transform: translate(-3px, 1px);
+                margin-right: 2px;
+                width: 14px;
+                height: 14px;
+              "
+            />
+            <span>{{ node.label }}</span>
+            <!--            <img v-if="data.imagePath" class="organization-img" src="/images/layersTree/guotutiaocha.png"
+                             style="transform: translate(-3px,1px);margin-right: 2px;width: 14px;height: 14px;">
+                        <span>{{ node.label }}</span>-->
+          </span>
+        </span>
       </el-tree>
     </div>
   </div>
@@ -30,7 +49,9 @@ import { s3mUrlHashmap } from "@/assets/js/s3m-url";
 import axios from "axios";
 import { queryPoi } from "@/apis/queryPoi";
 import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
-import { addCameraEntity, addPolyline } from "@/utils/entity";
+import { addPolyline } from "@/utils/entity";
+import { PointCluster } from "@/utils/pointCluster";
+import { transformGeometricPosition } from "@/utils/view";
 
 export default {
   name: "LayersTree",
@@ -40,6 +61,7 @@ export default {
         children: "children",
         label: "name",
       },
+      defaultCheckedKeys: [],
     };
   },
   props: {
@@ -49,15 +71,54 @@ export default {
     treeData: {
       type: Array,
     },
+    checkedKeys: {
+      type: Array,
+    },
   },
   methods: {
+    renderContent(h, { node, data }) {
+      if (data.children) {
+        return (
+          <span class="custom-tree-node">
+            <img
+              class="organization-img"
+              src={data.imagePath}
+              alt=""
+              style="transform: translate(-3px,1px);margin-right: 2px;width: 14px;height: 14px;"
+            />
+            {data.count ? (
+              <span>{node.label + "（" + data.count + "）"}</span>
+            ) : (
+              <span>{node.label}</span>
+            )}
+          </span>
+        );
+      } else {
+        if (data.count) {
+          return (
+            <span class="custom-tree-node">
+              <span>{node.label + "（" + data.count + "）"}</span>
+            </span>
+          );
+        } else {
+          return (
+            <span class="custom-tree-node">
+              <span>{node.label}</span>
+            </span>
+          );
+        }
+      }
+    },
     async handleCheckChange(data, checked) {
       const { name, id } = data;
+      this.defaultCheckedKeys = this.$refs.tree.getCheckedKeys();
       console.log(data, checked);
       if (data?.type === "map") {
-        viewer.imageryLayers._layers.find(
+        const mapLayer = viewer.imageryLayers._layers.find(
           (item) => item._imageryProvider.name === name
-        ).show = checked;
+        );
+        mapLayer.show = checked;
+        viewer.imageryLayers.raiseToTop(mapLayer);
       } else if (data?.type === "s3m") {
         const s3mNameArr = [];
         const s3mItem = s3mUrlHashmap.find((item) => name === item.name);
@@ -88,49 +149,46 @@ export default {
         if (!checked) {
           window[traceLayer].entities.show = checked;
         } else {
-          window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-          viewer.dataSources.add(window[traceLayer]);
+          // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+          // viewer.dataSources.add(window[traceLayer]);
           const { datasetName } = data;
           if (datasetName) {
-            console.log("--datasetName---");
-            console.log(datasetName);
+            const arr = [];
             datasetName.map(async (name) => {
               const { serviceName, dataSource } = dataServiceUrlHashmap.find(
                 (item) => item.dataSets.indexOf(name) >= 0
               );
               const res = await queryPoi(serviceName, dataSource, name);
-              console.log("res");
-              console.log(res);
               res.data.features.forEach((item) => {
-                window[traceLayer].entities.add(
-                  addCameraEntity(
-                    item.geometry.center.x,
-                    item.geometry.center.y
-                  )
+                const { longitude, latitude } = transformGeometricPosition(
+                  item.geometry.center.x,
+                  item.geometry.center.y
                 );
+                arr.push([longitude, latitude]);
+                /*window[traceLayer].entities.add(
+                  addCameraEntity(
+                    longitude,
+                    latitude
+                  )
+                );*/
               });
+              const juhePoint = new PointCluster(viewer, arr);
+              window[traceLayer] = juhePoint.dataSource;
             });
           }
-
-          // const res = await queryPoi(serviceName,dataSource,datasetName)
-
-          /*const res = await queryChildren(serviceName, dataSource);
-          res.data.datasetNames.map(async (datasetName) => {
-            const childRes = await queryPoi(
-              serviceName,
-              dataSource,
-              datasetName
-            );
-            childRes.data.features.forEach((item) => {
-              window.traceLayer.entities.add(
-                addCameraEntity(item.geometry.center.x, item.geometry.center.y)
-              );
-            });
-          });*/
         }
       }
     },
   },
+  /* mounted() {
+     console.log("this.checkedKeys");
+     console.log(this.checkedKeys);
+     this.defaultCheckedKeys = sessionStorage.getItem(this.title) && JSON.parse(sessionStorage.getItem(this.title));
+   },
+   beforeDestroy() {
+     const checkedKeys = this.$refs.tree.getCheckedKeys();
+     sessionStorage.setItem(this.title, JSON.stringify(checkedKeys));
+   }*/
 };
 </script>
 
@@ -152,6 +210,12 @@ export default {
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
   background: #ededed;
   border-radius: 10px;
+}
+
+::v-deep .is-leaf {
+  .custom-tree-node {
+    border: 1px solid red;
+  }
 }
 
 ::v-deep .el-tree-node:focus > .el-tree-node__content {

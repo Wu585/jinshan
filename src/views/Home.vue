@@ -7,10 +7,11 @@
     />
     <!--    <Layers />-->
     <LayersTree
-      v-show="layersTreeVisible"
+      v-if="layersTreeVisible"
       @close-layers-tree="layersTreeVisible = false"
       :title="layersTreeTitle"
       :tree-data="layersTreeData"
+      :checked-keys="checkedKeys"
     />
     <Map />
   </div>
@@ -38,6 +39,7 @@ export default {
       layersTreeVisible: false,
       layersTreeTitle: "",
       layersTreeData: null,
+      checkedKeys: [],
     };
   },
   async mounted() {
@@ -69,12 +71,12 @@ export default {
     );
 
     await this.addAllLayers();
-    // this.addTraceLayers();
   },
   methods: {
-    handleChangeTitle(title, treeData) {
+    handleChangeTitle(title, treeData, checkedKeys) {
       this.layersTreeTitle = title;
       this.layersTreeData = treeData.children;
+      this.checkedKeys = checkedKeys;
     },
     addMapLayers() {
       MapUrlHashmap.forEach((map) => {
@@ -108,13 +110,6 @@ export default {
     async addAllLayers() {
       this.addMapLayers();
       await this.addS3mLayers();
-    },
-    addTraceLayers() {
-      for (let i = 1; i <= 17; i++) {
-        const name = "traceLayer" + i;
-        window[name] = new Cesium.CustomDataSource("traceLayer");
-        viewer.dataSources.add(window[name]);
-      }
     },
   },
 };

@@ -21,4 +21,11 @@ export const s3mUrlHashmap = [
       `${iServerIP_Port}/iserver/services/3D-JS_Model/rest/realspace/datas.json`,
     ],
   },
+  {
+    name: "倾斜影像",
+    urls: [
+      // `${iServerIP_Port}/iserver/services/3D-QX_partA/rest/realspace/datas.json`,
+      `${iServerIP_Port}/iserver/services/3D-FJGZ/rest/realspace/datas.json`,
+    ],
+  },
 ];

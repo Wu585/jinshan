@@ -42,6 +42,9 @@
 </template>
 
 <script>
+import { featureMap } from "@/utils/featureMap";
+import * as tools from "@/utils/tools";
+
 export default {
   name: "Header",
   data() {
@@ -87,6 +90,11 @@ export default {
           image: require("../assets/images/header/ksyfx.png"),
           isPopover: false,
         },
+        {
+          name: "清除",
+          image: require("../assets/images/header/clear.png"),
+          isPopover: false,
+        },
       ],
       selectedFeature: null,
     };
@@ -104,6 +112,7 @@ export default {
   methods: {
     handleSelect(item) {
       this.selectedFeature = item;
+      tools[featureMap[item.name]]?.();
     },
   },
 };

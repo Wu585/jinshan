@@ -7,6 +7,8 @@
       {
         "id": 11,
         "name": "行政区",
+        "imagePath": "../../images/layersTree/hangzhengqu-3.png",
+        "count": 3,
         "children": [
           {
             "id": 100,
@@ -15,7 +17,8 @@
           {
             "id": 101,
             "name": "区级行政区",
-            "type": "map"
+            "type": "map",
+            "count": 1
           },
           {
             "id": 102,
@@ -25,7 +28,8 @@
           {
             "id": 103,
             "name": "村居行政区",
-            "type": "map"
+            "type": "map",
+            "count": 1
           },
           {
             "id": 104,
@@ -36,11 +40,14 @@
       {
         "id": 12,
         "name": "测绘遥感数据",
+        "imagePath": "../../images/layersTree/a-20yaoganshuju.png",
+        "count": 2,
         "children": [
           {
             "id": 105,
             "name": "数字正射影像图",
-            "type": "map"
+            "type": "map",
+            "count": 1
           },
           {
             "id": 106,
@@ -48,13 +55,17 @@
           },
           {
             "id": 107,
-            "name": "倾斜影像"
+            "name": "倾斜影像",
+            "type": "s3m",
+            "count": 1
           }
         ]
       },
       {
         "id": 13,
         "name": "三维模型",
+        "imagePath": "../../images/layersTree/sanwei.png",
+        "count": 3,
         "children": [
           {
             "id": 108,
@@ -67,7 +78,8 @@
           {
             "id": 110,
             "name": "建筑三维模型",
-            "type": "s3m"
+            "type": "s3m",
+            "count": 4
           },
           {
             "id": 112,
@@ -76,7 +88,8 @@
           {
             "id": 113,
             "name": "管线管廊三维模型",
-            "type": "s3m"
+            "type": "s3m",
+            "count": 1
           },
           {
             "id": 114,
@@ -85,7 +98,8 @@
           {
             "id": 115,
             "name": "其它三维模型",
-            "type": "s3m"
+            "type": "s3m",
+            "count": 1
           }
         ]
       }
@@ -99,6 +113,7 @@
       {
         "id": 14,
         "name": "国土调查",
+        "imagePath": "../../images/layersTree/guotutiaocha.png",
         "children": [
           {
             "id": 116,
@@ -109,6 +124,7 @@
       {
         "id": 15,
         "name": "地质调查",
+        "imagePath": "../../images/layersTree/dizhi.png",
         "children": [
           {
             "id": 117,
@@ -131,6 +147,7 @@
       {
         "id": 16,
         "name": "耕地资源",
+        "imagePath": "../../images/layersTree/gengdi.png",
         "children": [
           {
             "id": 121,
@@ -145,6 +162,7 @@
       {
         "id": 17,
         "name": "水资源",
+        "imagePath": "../../images/layersTree/shuiziyuan3.png",
         "children": [
           {
             "id": 123,
@@ -167,6 +185,7 @@
       {
         "id": 18,
         "name": "房屋普查",
+        "imagePath": "../../images/layersTree/fangwuchazhao.png",
         "children": [
           {
             "id": 127,
@@ -181,6 +200,7 @@
       {
         "id": 19,
         "name": "市政设施普查",
+        "imagePath": "../../images/layersTree/37-shizhengsheshi.png",
         "children": [
           {
             "id": 129,
@@ -210,6 +230,7 @@
       {
         "id": 20,
         "name": "开发评价",
+        "imagePath": "../../images/layersTree/daipingjia.png",
         "children": [
           {
             "id": 302,
@@ -224,6 +245,7 @@
       {
         "id": 21,
         "name": "重要控制线",
+        "imagePath": "../../images/layersTree/bianjie-2.png",
         "children": [
           {
             "id": 134,
@@ -242,22 +264,27 @@
       {
         "id": 22,
         "name": "国土空间规划",
+        "count": 2,
+        "imagePath": "../../images/layersTree/guotukongjianguihua.png",
         "children": [
           {
             "id": 135,
             "name": "总体规划",
-            "type": "map"
+            "type": "map",
+            "count": 1
           },
           {
             "id": 136,
             "name": "详细规划",
-            "type": "map"
+            "type": "map",
+            "count": 1
           }
         ]
       },
       {
         "id": 23,
         "name": "专项规划",
+        "imagePath": "../../images/layersTree/zhuanxiangguihua.png",
         "children": [
           {
             "id": 137,
@@ -315,6 +342,7 @@
       {
         "id": 24,
         "name": "立项用地规划许可数据",
+        "imagePath": "../../images/layersTree/lixiangyongdiguihuaxuke.png",
         "children": [
           {
             "id": 148,
@@ -345,6 +373,7 @@
       {
         "id": 25,
         "name": "建设工程规划许可数据",
+        "imagePath": "../../images/layersTree/jianshegongchengguihuaxuke.png",
         "children": [
           {
             "id": 154,
@@ -367,6 +396,7 @@
       {
         "id": 26,
         "name": "施工许可数据",
+        "imagePath": "../../images/layersTree/shigongxuke.png",
         "children": [
           {
             "id": 158,
@@ -389,6 +419,7 @@
       {
         "id": 27,
         "name": "竣工验收数据",
+        "imagePath": "../../images/layersTree/jungongyanshou.png",
         "children": [
           {
             "id": 162,
@@ -414,6 +445,7 @@
       {
         "id": 28,
         "name": "社会数据",
+        "imagePath": "../../images/layersTree/icon-shehuishuju-2.png",
         "children": [
           {
             "id": 165,
@@ -428,6 +460,7 @@
       {
         "id": 29,
         "name": "法人数据",
+        "imagePath": "../../images/layersTree/shiyedanweifarenzhengshushiyongshenqing.png",
         "children": [
           {
             "id": 167,
@@ -450,6 +483,7 @@
       {
         "id": 30,
         "name": "人口数据",
+        "imagePath": "../../images/layersTree/renkou.png",
         "children": [
           {
             "id": 171,
@@ -464,6 +498,7 @@
       {
         "id": 31,
         "name": "兴趣点数据",
+        "imagePath": "../../images/layersTree/xingqudian.png",
         "children": [
           {
             "id": 173,
@@ -474,6 +509,7 @@
       {
         "id": 32,
         "name": "宏观经济数据",
+        "imagePath": "../../images/layersTree/shehuijingjishuju.png",
         "children": [
           {
             "id": 174,
@@ -484,6 +520,7 @@
       {
         "id": 33,
         "name": "地名地址数据",
+        "imagePath": "../../images/layersTree/dimingchaxun.png",
         "children": [
           {
             "id": 175,
@@ -505,6 +542,7 @@
       {
         "id": 34,
         "name": "建筑监测数据",
+        "imagePath": "../../images/layersTree/shizhengsheshi.png",
         "children": [
           {
             "id": 177,
@@ -519,6 +557,7 @@
       {
         "id": 35,
         "name": "市政设施监测数据",
+        "imagePath": "../../images/layersTree/-shizhengshebei.png",
         "children": [
           {
             "id": 179,
@@ -569,6 +608,7 @@
       {
         "id": 36,
         "name": "气象监测数据",
+        "imagePath": "../../images/layersTree/qixiangjianceyiqi.png",
         "children": [
           {
             "id": 190,
@@ -595,6 +635,7 @@
       {
         "id": 37,
         "name": "交通监测数据",
+        "imagePath": "../../images/layersTree/jiaotongjianceicon1024px.png",
         "children": [
           {
             "id": 195,
@@ -613,6 +654,7 @@
       {
         "id": 38,
         "name": "生态环境监测数据",
+        "imagePath": "../../images/layersTree/shengtaihuanjingjiancechu.png",
         "children": [
           {
             "id": 198,
@@ -631,10 +673,11 @@
       {
         "id": 39,
         "name": "城市安防数据",
+        "imagePath": "../../images/layersTree/anfang-2.png",
         "children": [
           {
             "id": 201,
-            "name": "治安视频"
+            "name": "安防视频"
           },
           {
             "id": 202,
@@ -656,6 +699,7 @@
       {
         "id": 40,
         "name": "区应急局",
+        "imagePath": "../../images/layersTree/yingjiju.png",
         "children": [
           {
             "id": 204,
@@ -694,6 +738,7 @@
       {
         "id": 41,
         "name": "区水务局",
+        "imagePath": "../../images/layersTree/zengchengqushuiwuju.png",
         "children": [
           {
             "id": 212,
@@ -724,6 +769,7 @@
       {
         "id": 42,
         "name": "区气象局",
+        "imagePath": "../../images/layersTree/qixiangju.png",
         "children": [
           {
             "id": 218,
@@ -750,6 +796,7 @@
       {
         "id": 43,
         "name": "区交通局",
+        "imagePath": "../../images/layersTree/jiaotongju.png",
         "children": [
           {
             "id": 223,
@@ -768,6 +815,7 @@
       {
         "id": 44,
         "name": "区生态环境局",
+        "imagePath": "../../images/layersTree/shengtaihuanjingju-.png",
         "children": [
           {
             "id": 226,
@@ -798,6 +846,7 @@
       {
         "id": 45,
         "name": "区农业农村委",
+        "imagePath": "../../images/layersTree/nongye.png",
         "children": [
           {
             "id": 232,
@@ -836,10 +885,15 @@
       {
         "id": 46,
         "name": "区公安局",
+        "imagePath": "../../images/layersTree/gonganju.png",
         "children": [
           {
             "id": 240,
-            "name": "治安视频"
+            "name": "治安视频",
+            "type": "poi",
+            "datasetName": [
+              "亭林镇"
+            ]
           },
           {
             "id": 241,
@@ -858,6 +912,7 @@
       {
         "id": 47,
         "name": "区发改委",
+        "imagePath": "../../images/layersTree/fagaiwei.png",
         "children": [
           {
             "id": 243,
@@ -868,6 +923,7 @@
       {
         "id": 48,
         "name": "区民政局",
+        "imagePath": "../../images/layersTree/minzhengju.png",
         "children": [
           {
             "id": 244,
@@ -878,6 +934,7 @@
       {
         "id": 49,
         "name": "区卫健委",
+        "imagePath": "../../images/layersTree/weishengjiankang.png",
         "children": [
           {
             "id": 245,
@@ -888,6 +945,7 @@
       {
         "id": 50,
         "name": "区体育局",
+        "imagePath": "../../images/layersTree/tiyuju.png",
         "children": [
           {
             "id": 246,
@@ -898,6 +956,7 @@
       {
         "id": 51,
         "name": "区统计局",
+        "imagePath": "../../images/layersTree/tongjiju.png",
         "children": [
           {
             "id": 247,
@@ -908,6 +967,7 @@
       {
         "id": 52,
         "name": "区建管局",
+        "imagePath": "../../images/layersTree/zhujianguanli.png",
         "children": [
           {
             "id": 248,
@@ -918,6 +978,7 @@
       {
         "id": 53,
         "name": "区红十字会",
+        "imagePath": "../../images/layersTree/hongshizihuijiuzhu.png",
         "children": [
           {
             "id": 249,
@@ -928,6 +989,7 @@
       {
         "id": 54,
         "name": "区残联",
+        "imagePath": "../../images/layersTree/canlian.png",
         "children": [
           {
             "id": 250,
@@ -938,6 +1000,7 @@
       {
         "id": 55,
         "name": "各街镇",
+        "imagePath": "../../images/layersTree/jiezhen-3.png",
         "children": [
           {
             "id": 251,
@@ -955,6 +1018,7 @@
       {
         "id": 56,
         "name": "专项应用",
+        "imagePath": "../../images/layersTree/zhuanyeyingyong.png",
         "children": [
           {
             "id": 252,
@@ -993,6 +1057,7 @@
       {
         "id": 57,
         "name": "联动应用",
+        "imagePath": "../../images/layersTree/ziyuan-2.png",
         "children": [
           {
             "id": 260,
@@ -1029,22 +1094,9 @@
         ]
       },
       {
-        "id": 58,
-        "name": "人口数据",
-        "children": [
-          {
-            "id": 268,
-            "name": "人口基本信息"
-          },
-          {
-            "id": 269,
-            "name": "人口统计信息"
-          }
-        ]
-      },
-      {
         "id": 59,
         "name": "其他领域",
+        "imagePath": "../../images/layersTree/qitafuwu.png",
         "children": [
           {
             "id": 270,
@@ -1090,6 +1142,7 @@
       {
         "id": 60,
         "name": "民防地下工程部件",
+        "imagePath": "../../images/layersTree/zhihui-bujian.png",
         "children": [
           {
             "id": 278,
@@ -1116,6 +1169,7 @@
       {
         "id": 61,
         "name": "电力管线",
+        "imagePath": "../../images/layersTree/guanxianleixingtongji.png",
         "children": [
           {
             "id": 283,
@@ -1150,6 +1204,7 @@
       {
         "id": 62,
         "name": "信息与通信管线",
+        "imagePath": "../../images/layersTree/zongheguangou.png",
         "children": [
           {
             "id": 290,
@@ -1176,6 +1231,7 @@
       {
         "id": 63,
         "name": "给水管线",
+        "imagePath": "../../images/layersTree/geishuiguanxian.png",
         "children": [
           {
             "id": 295,
@@ -1206,6 +1262,7 @@
       {
         "id": 64,
         "name": "排水管线",
+        "imagePath": "../../images/layersTree/paishuiguanxianshuju.png",
         "children": [
           {
             "id": 301,
@@ -1228,6 +1285,7 @@
       {
         "id": 65,
         "name": "燃气管线",
+        "imagePath": "../../images/layersTree/图层 12.png",
         "children": [
           {
             "id": 305,
@@ -1254,6 +1312,7 @@
       {
         "id": 66,
         "name": "热力管线",
+        "imagePath": "../../images/layersTree/religuanxian.png",
         "children": [
           {
             "id": 310,
@@ -1272,6 +1331,7 @@
       {
         "id": 67,
         "name": "工业管道",
+        "imagePath": "../../images/layersTree/shuyouguanxian-01.png",
         "children": [
           {
             "id": 313,
@@ -1310,6 +1370,7 @@
       {
         "id": 68,
         "name": "综合管沟",
+        "imagePath": "../../images/layersTree/图层 13.png",
         "children": [
           {
             "id": 321,
@@ -1343,6 +1404,7 @@
       {
         "id": 69,
         "name": "住宿",
+        "imagePath": "../../images/layersTree/zhusu.png",
         "children": [
           {
             "id": 326,
@@ -1373,6 +1435,7 @@
       {
         "id": 70,
         "name": "企业商务",
+        "imagePath": "../../images/layersTree/gaoxinqiye-.png",
         "children": [
           {
             "id": 330,
@@ -1411,6 +1474,7 @@
       {
         "id": 71,
         "name": "餐饮",
+        "imagePath": "../../images/layersTree/canyin-3.png",
         "children": [
           {
             "id": 334,
@@ -1441,6 +1505,7 @@
       {
         "id": 72,
         "name": "购物",
+        "imagePath": "../../images/layersTree/shopping.png",
         "children": [
           {
             "id": 339,
@@ -1475,6 +1540,7 @@
       {
         "id": 73,
         "name": "交通出行",
+        "imagePath": "../../images/layersTree/fuwuqu.png",
         "children": [
           {
             "id": 345,
@@ -1521,6 +1587,7 @@
       {
         "id": 74,
         "name": "生活服务",
+        "imagePath": "../../images/layersTree/iconfontshenghuojiaofei.png",
         "children": [
           {
             "id": 352,
@@ -1571,6 +1638,7 @@
       {
         "id": 75,
         "name": "运动休闲",
+        "imagePath": "../../images/layersTree/-yundongxiuxian.png",
         "children": [
           {
             "id": 361,
@@ -1609,6 +1677,7 @@
       {
         "id": 76,
         "name": "科教文化",
+        "imagePath": "../../images/layersTree/kejiaowenhua.png",
         "children": [
           {
             "id": 367,
@@ -1676,6 +1745,7 @@
       {
         "id": 77,
         "name": "健康医疗保健",
+        "imagePath": "../../images/layersTree/yiliaobaojian.png",
         "children": [
           {
             "id": 378,
@@ -1723,6 +1793,7 @@
       {
         "id": 78,
         "name": "国家政府",
+        "imagePath": "../../images/layersTree/gejizhengfu.png",
         "children": [
           {
             "id": 387,
@@ -1761,6 +1832,7 @@
       {
         "id": 79,
         "name": "公共设施",
+        "imagePath": "../../images/layersTree/gonggongsheshi.png",
         "children": [
           {
             "id": 393,

@@ -76,6 +76,7 @@ export default {
   },
   methods: {
     handleClick(item) {
+      // const checkedKeys = sessionStorage.getItem(this.selectedItem.name);
       this.selectedItem = item;
       const treeData = layersTreeJson.find((layer) => layer.name === item.name);
       this.$emit("show-layers-tree");

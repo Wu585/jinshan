@@ -39,4 +39,22 @@ export const dataServiceUrlHashmap = [
       "档案馆",
     ],
   },
+  {
+    serviceName: "JS_Camera",
+    dataSource: "JS_Camera",
+    dataSets: [
+      "亭林镇",
+      "吕巷镇",
+      "山阳镇",
+      "廊下镇",
+      "张堰镇",
+      "朱泾镇",
+      "枫泾镇",
+      "漕泾镇",
+      "石化街道",
+      "金山卫镇",
+      "金山工业区",
+      "区域监控",
+    ],
+  },
 ];
