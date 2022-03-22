@@ -30,10 +30,15 @@ export function queryChildren(serviceName, dataSourceName) {
 }
 
 // 根据范围面空间查询
-export function queryPoiBySpecial(pointsArray, dataSourceName, dataSetName) {
+export function queryPoiBySpecial(
+  pointsArray,
+  serviceName,
+  dataSourceName,
+  dataSetName
+) {
   const dataServiceUrl =
     iServerIP_Port +
-    `/iserver/services/data-${dataSourceName}/rest/data/featureResults.rjson?returnContent=true`; // 数据服务URL
+    `/iserver/services/data-${serviceName}/rest/data/featureResults.rjson?returnContent=true`; // 数据服务URL
   const queryObj = {
     getFeatureMode: "SPATIAL",
     spatialQueryMode: "INTERSECT",

@@ -4,42 +4,20 @@
       <span>{{ title }}</span>
       <i class="el-icon-close" @click="$emit('close-layers-tree')"></i>
     </div>
-    <div class="layer-tree-wrapper">
+    <div class="layer-tree-wrapper custom-scroll">
       <el-tree
+        @node-click="handleNodeClick"
         ref="tree"
         :data="treeData"
         show-checkbox
         node-key="id"
         :expand-on-click-node="false"
-        check-on-click-node
         :props="defaultProps"
         @check-change="handleCheckChange"
         :render-after-expand="false"
         :default-checked-keys="defaultCheckedKeys"
         :render-content="renderContent"
-      >
-        <span class="custom-tree-node" slot-scope="{ node, data }">
-          <span
-            style="display: flex; align-items: center; justify-content: center"
-          >
-            <img
-              v-if="data.imagePath"
-              class="organization-img"
-              :src="data.imagePath"
-              style="
-                transform: translate(-3px, 1px);
-                margin-right: 2px;
-                width: 14px;
-                height: 14px;
-              "
-            />
-            <span>{{ node.label }}</span>
-            <!--            <img v-if="data.imagePath" class="organization-img" src="/images/layersTree/guotutiaocha.png"
-                             style="transform: translate(-3px,1px);margin-right: 2px;width: 14px;height: 14px;">
-                        <span>{{ node.label }}</span>-->
-          </span>
-        </span>
-      </el-tree>
+      />
     </div>
   </div>
 </template>
@@ -49,9 +27,11 @@ import { s3mUrlHashmap } from "@/assets/js/s3m-url";
 import axios from "axios";
 import { queryPoi } from "@/apis/queryPoi";
 import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
-import { addPolyline } from "@/utils/entity";
 import { PointCluster } from "@/utils/pointCluster";
-import { transformGeometricPosition } from "@/utils/view";
+import { flyTo, transformGeometricPosition } from "@/utils/view";
+import bus from "@/utils/bus";
+import { nameOfImageMap } from "@/assets/js/entity-image";
+import { clickQuery } from "@/utils/tools";
 
 export default {
   name: "LayersTree",
@@ -97,7 +77,40 @@ export default {
         if (data.count) {
           return (
             <span class="custom-tree-node">
-              <span>{node.label + "（" + data.count + "）"}</span>
+              <span>
+                {node.label + "（" + data.count + "）"}
+                <el-popover
+                  popper-class="icon-popover"
+                  placement="right"
+                  width="200"
+                  trigger="hover"
+                  content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
+                >
+                  <ul>
+                    <li>
+                      <span>数据格式：</span>
+                      <span>{data.info && data.info["数据格式"]}</span>
+                    </li>
+                    <li>
+                      <span>生产日期：</span>
+                      <span>{data.info && data.info["生产日期"]}</span>
+                    </li>
+                    <li>
+                      <span>生产单位名称：</span>
+                      <span>{data.info && data.info["生产单位名称"]}</span>
+                    </li>
+                    <li>
+                      <span>维护人：</span>
+                      <span>{data.info && data.info["维护人"]}</span>
+                    </li>
+                    <li>
+                      <span>维护人联系方式：：</span>
+                      <span>{data.info && data.info["维护人联系方式"]}</span>
+                    </li>
+                  </ul>
+                  <i class="el-icon-info" slot="reference" />
+                </el-popover>
+              </span>
             </span>
           );
         } else {
@@ -109,109 +122,120 @@ export default {
         }
       }
     },
-    async handleCheckChange(data, checked) {
-      const { name, id } = data;
-      this.defaultCheckedKeys = this.$refs.tree.getCheckedKeys();
-      console.log(data, checked);
-      if (data?.type === "map") {
-        const mapLayer = viewer.imageryLayers._layers.find(
-          (item) => item._imageryProvider.name === name
-        );
-        mapLayer.show = checked;
+    handleNodeClick(data) {
+      const { x, y, z, heading, pitch, roll } = data?.camera;
+      console.log(x, y, z, heading, pitch, roll);
+      flyTo(x, y, z, heading, pitch, roll);
+    },
+    handleMapCheckChange(data, checked) {
+      const { name } = data;
+      const mapLayer = viewer.imageryLayers._layers.find(
+        (item) => item._imageryProvider.name === name
+      );
+      mapLayer.show = checked;
+      // 置顶图层
+      if (["总体规划", "详细规划"].indexOf(name) >= 0) {
         viewer.imageryLayers.raiseToTop(mapLayer);
-      } else if (data?.type === "s3m") {
-        const s3mNameArr = [];
-        const s3mItem = s3mUrlHashmap.find((item) => name === item.name);
-        for (let i = 0; i < s3mItem.urls.length; i++) {
-          const { data } = await axios.get(s3mItem.urls[i]);
-          data.forEach((obj) => {
-            s3mNameArr.push(obj.name);
-          });
-        }
-        s3mNameArr.forEach(
-          (name) => (viewer.scene.layers.find(name).visible = checked)
-        );
-      } else if (data?.type === "line") {
-        if (!checked) {
-          viewer.entities.removeById(name);
-        } else {
-          const { serviceName, dataSource, dataSets } =
-            dataServiceUrlHashmap.find((item) => item.name === name);
-          const res = await queryPoi(serviceName, dataSource, dataSets);
-          const pointsArray = res.data.features.reduce((prev, cur) => {
-            prev.push(cur.geometry.center.x, cur.geometry.center.y);
-            return prev;
-          }, []);
-          addPolyline(pointsArray, name);
-        }
-      } else if (data?.type === "poi") {
-        let traceLayer = `traceLayer${id}`;
-        if (!checked) {
+      }
+    },
+    async handleS3mCheckChange(data, checked) {
+      const { name } = data;
+      const s3mNameArr = [];
+      const s3mItem = s3mUrlHashmap.find((item) => name === item.name);
+      for (let i = 0; i < s3mItem.urls.length; i++) {
+        const { data } = await axios.get(s3mItem.urls[i]);
+        data.forEach((obj) => {
+          s3mNameArr.push(obj.name);
+        });
+      }
+      s3mNameArr.forEach(
+        (name) => (viewer.scene.layers.find(name).visible = checked)
+      );
+    },
+    handleLineChecked(data, checked) {
+      window.traceLayerLines.show = checked;
+    },
+    handlePoiCheckChange(data, checked) {
+      const { id } = data;
+      let traceLayer = `traceLayer${id}`;
+      if (!checked) {
+        window[traceLayer].entities.show = checked;
+      } else {
+        // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+        // viewer.dataSources.add(window[traceLayer]);
+        if (window[traceLayer]) {
           window[traceLayer].entities.show = checked;
-        } else {
-          // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-          // viewer.dataSources.add(window[traceLayer]);
-          const { datasetName } = data;
-          if (datasetName) {
-            const arr = [];
-            datasetName.map(async (name) => {
-              const { serviceName, dataSource } = dataServiceUrlHashmap.find(
-                (item) => item.dataSets.indexOf(name) >= 0
+          return;
+        }
+        const { datasetName } = data;
+        if (datasetName) {
+          const arr = [];
+          datasetName.map(async (name) => {
+            const { serviceName, dataSource } = dataServiceUrlHashmap.find(
+              (item) => item.dataSets.indexOf(name) >= 0
+            );
+            const res = await queryPoi(serviceName, dataSource, name);
+            res.data.features.forEach((item) => {
+              const { longitude, latitude } = transformGeometricPosition(
+                item.geometry.center.x,
+                item.geometry.center.y
               );
-              const res = await queryPoi(serviceName, dataSource, name);
-              res.data.features.forEach((item) => {
-                const { longitude, latitude } = transformGeometricPosition(
-                  item.geometry.center.x,
-                  item.geometry.center.y
-                );
-                arr.push([longitude, latitude]);
-                /*window[traceLayer].entities.add(
-                  addCameraEntity(
-                    longitude,
-                    latitude
-                  )
-                );*/
+              // 处理description信息
+              const attrObj = {};
+              item.fieldNames.forEach((key, index) => {
+                if (
+                  key.indexOf("SM") < 0 &&
+                  key.indexOf("F") < 0 &&
+                  item.fieldValues[index] !== ""
+                ) {
+                  attrObj[key] = item.fieldValues[index];
+                }
               });
-              const juhePoint = new PointCluster(viewer, arr);
-              window[traceLayer] = juhePoint.dataSource;
+              arr.push([longitude, latitude, attrObj]);
             });
-          }
+            let imagePath;
+            if (data?.type2 === "camera") {
+              imagePath = "images/" + "摄像头" + ".png";
+            } else {
+              imagePath =
+                "images/queryEntities/" + nameOfImageMap[data.name] + ".png";
+            }
+            const juhePoint = new PointCluster(viewer, arr, imagePath);
+            window[traceLayer] = juhePoint.dataSource;
+            clickQuery();
+          });
         }
       }
     },
+    async handleCheckChange(data, checked) {
+      this.defaultCheckedKeys = this.$refs.tree.getCheckedKeys();
+      sessionStorage.setItem(
+        this.title,
+        JSON.stringify(this.defaultCheckedKeys)
+      );
+      const hashMap = {
+        map: "handleMapCheckChange",
+        s3m: "handleS3mCheckChange",
+        line: "handleLineChecked",
+        poi: "handlePoiCheckChange",
+      };
+      data.type && this[hashMap[data.type]](data, checked);
+    },
   },
-  /* mounted() {
-     console.log("this.checkedKeys");
-     console.log(this.checkedKeys);
-     this.defaultCheckedKeys = sessionStorage.getItem(this.title) && JSON.parse(sessionStorage.getItem(this.title));
-   },
-   beforeDestroy() {
-     const checkedKeys = this.$refs.tree.getCheckedKeys();
-     sessionStorage.setItem(this.title, JSON.stringify(checkedKeys));
-   }*/
+  mounted() {
+    bus.$on("update:defaultCheckedKeys", () => {
+      this.$nextTick(() => {
+        this.defaultCheckedKeys = JSON.parse(
+          sessionStorage.getItem(this.title)
+        );
+      });
+    });
+    this.defaultCheckedKeys = JSON.parse(sessionStorage.getItem(this.title));
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.layer-tree-wrapper::-webkit-scrollbar {
-  /*滚动条整体样式*/
-  width: 10px; /*高宽分别对应横竖滚动条的尺寸*/
-  height: 1px;
-}
-
-.layer-tree-wrapper::-webkit-scrollbar-thumb {
-  /*滚动条里面小方块*/
-  border-radius: 10px;
-  background-color: rgba(21, 40, 64, 0.7);
-}
-
-.layer-tree-wrapper::-webkit-scrollbar-track {
-  /*滚动条里面轨道*/
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  background: #ededed;
-  border-radius: 10px;
-}
-
 ::v-deep .is-leaf {
   .custom-tree-node {
     border: 1px solid red;

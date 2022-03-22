@@ -40,7 +40,7 @@ export function createEntity({ id, x, y, imagePath, name, text }) {
   });
 }
 
-export function addEntity(imagePath, lon, lat, text = "") {
+export function addEntity(imagePath, lon, lat, description, text = "") {
   return viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(lon, lat, 20),
     billboard: {
@@ -48,6 +48,7 @@ export function addEntity(imagePath, lon, lat, text = "") {
       width: 40,
       height: 40,
     },
+    description: JSON.stringify(description),
     label: {
       text,
       horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
@@ -62,13 +63,14 @@ export function addEntity(imagePath, lon, lat, text = "") {
   });
 }
 
-export function addCameraEntity(lon, lat) {
+export function addCameraEntity(lon, lat, description) {
   return viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(lon, lat, 60),
     point: {
       color: Cesium.Color.YELLOW, //颜色
       pixelSize: 4, //点大小
     },
+    description,
   });
 }
 
@@ -77,7 +79,7 @@ export function addPolyline(pointArray, id) {
     id,
     polyline: {
       positions: Cesium.Cartesian3.fromDegreesArray(pointArray),
-      width: 10,
+      width: 8,
       material: Cesium.Color.RED,
     },
   });

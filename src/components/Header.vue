@@ -21,14 +21,14 @@
           :visible-arrow="false"
           :disabled="!item.isPopover"
         >
-          <ul class="content">
-            <li style="display: flex; align-items: center">
-              <img src="../assets/images/header/gdcl.png" alt="" />
-              <span style="padding: 12px">建筑物高度测量</span>
-            </li>
-            <li style="display: flex; align-items: center">
-              <img src="../assets/images/header/jlcl.png" alt="" />
-              <span style="padding: 12px">距离测量</span>
+          <ul class="header-popover-content" v-if="item.children">
+            <li
+              v-for="child in item.children"
+              :key="child.name"
+              @click="handleSelect(child)"
+            >
+              <img :src="child.image" alt="" />
+              <span style="padding: 12px">{{ child.name }}</span>
             </li>
           </ul>
           <div slot="reference" class="feature-wrapper">
@@ -64,6 +64,16 @@ export default {
           name: "测量",
           image: require("../assets/images/header/celiang.png"),
           isPopover: true,
+          children: [
+            {
+              name: "建筑物高度测量",
+              image: require("../assets/images/header/gdcl.png"),
+            },
+            {
+              name: "距离测量",
+              image: require("../assets/images/header/jlcl.png"),
+            },
+          ],
         },
         {
           name: "全景",

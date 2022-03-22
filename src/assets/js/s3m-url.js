@@ -1,11 +1,31 @@
 export const s3mUrlHashmap = [
   {
-    name: "建筑三维模型",
+    name: "精模三维模型",
+    urls: [
+      `${iServerIP_Port}/iserver/services/3D-JS_MAX/rest/realspace/datas.json`,
+    ],
+  },
+  {
+    name: "园区三维模型",
     urls: [
       `${iServerIP_Port}/iserver/services/3D-CBD2/rest/realspace/datas.json`,
-      `${iServerIP_Port}/iserver/services/3D-JS_MAX/rest/realspace/datas.json`,
+    ],
+  },
+  {
+    name: "夜景三维模型",
+    urls: [
       `${iServerIP_Port}/iserver/services/3D-CBD_Night/rest/realspace/datas.json`,
+    ],
+  },
+  {
+    name: "BIM三维模型",
+    urls: [
       `${iServerIP_Port}/iserver/services/3D-JS_BIM_HaiFu/rest/realspace/datas.json`,
+    ],
+  },
+  {
+    name: "地下三维模型",
+    urls: [
       `${iServerIP_Port}/iserver/services/3D-JS_BIM_LongHang/rest/realspace/datas.json`,
     ],
   },

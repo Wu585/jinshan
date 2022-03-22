@@ -1,6 +1,6 @@
 // 点聚合
 export class PointCluster {
-  constructor(viewer, data = [], option = {}) {
+  constructor(viewer, data = [], imagePath, option = {}) {
     this.viewer = viewer;
     option = Object.assign(
       {},
@@ -8,7 +8,7 @@ export class PointCluster {
         enabled: true,
         pixelRange: 100, //聚合像素
         minimumClusterSize: 2, //最低聚合数
-        billboardImg: "images/摄像头.png",
+        billboardImg: imagePath,
         defaultEntity: false, //使用默认entity
         colors: [
           {
@@ -152,12 +152,13 @@ export class PointCluster {
       this.createEntity(data);
     }
   }
+
   createEntity(data) {
     for (let i = 0; i < data.length; i++) {
       // let text = 'poi-'+i;
       let lon = data[i][0];
       let lat = data[i][1];
-      let h = data[i][2] || 0;
+      let h = data[i][3] || 20;
       this.dataSource.entities.add({
         position: Cesium.Cartesian3.fromDegrees(lon, lat, h),
         /*label: {
@@ -177,6 +178,7 @@ export class PointCluster {
                     // 偏移量
                     pixelOffset: new Cesium.Cartesian2(0, -36)
                 },*/
+        description: JSON.stringify(data[i][2]),
         billboard: {
           image: this.options["billboardImg"],
           width: 32, // 宽高必须设置，否则首次无法聚合
@@ -191,15 +193,19 @@ export class PointCluster {
       });
     }
   }
+
   addEntity(entity) {
     this.dataSource.entities.add(entity);
   }
+
   removeDataSource() {
     this.viewer.dataSources.remove(this.dataSource);
   }
+
   showDataSource(boolean) {
     this.dataSource.show = boolean;
   }
+
   combineIconAndLabel(url, label, size) {
     // 创建画布对象
     let canvas = document.createElement("canvas");
@@ -224,6 +230,7 @@ export class PointCluster {
     });
     return promise;
   }
+
   combineIconAndLabel1(color, label, size) {
     // 创建画布对象
     let canvas = document.createElement("canvas");

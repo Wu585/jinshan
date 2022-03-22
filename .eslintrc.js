@@ -26,5 +26,6 @@ module.exports = {
     Cesium: true,
     viewer: true,
     iServerIP_Port: true,
+    SuperMap: true,
   },
 };

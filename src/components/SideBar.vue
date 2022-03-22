@@ -14,6 +14,7 @@
 
 <script>
 import layersTreeJson from "../assets/json/layer.json";
+import bus from "@/utils/bus";
 
 export default {
   name: "SideBar",
@@ -23,6 +24,7 @@ export default {
         {
           name: "时空基础数据",
           image: require("../assets/images/sidebar/skjc-active.png"),
+          defaultKeys: [101, 103],
         },
         {
           name: "资源调查数据",
@@ -74,13 +76,27 @@ export default {
       });
     },
   },
+  props: {
+    title: {},
+    treeData: {},
+  },
+  mounted() {
+    this.layersArray.forEach((item) => {
+      if (item.defaultKeys) {
+        sessionStorage.setItem(item.name, JSON.stringify(item.defaultKeys));
+      } else {
+        sessionStorage.setItem(item.name, "[]");
+      }
+    });
+  },
   methods: {
     handleClick(item) {
-      // const checkedKeys = sessionStorage.getItem(this.selectedItem.name);
       this.selectedItem = item;
       const treeData = layersTreeJson.find((layer) => layer.name === item.name);
       this.$emit("show-layers-tree");
-      this.$emit("change-title", item.name, treeData);
+      this.$emit("update:title", item.name);
+      this.$emit("update:treeData", treeData.children);
+      bus.$emit("update:defaultCheckedKeys");
     },
   },
 };
@@ -96,6 +112,7 @@ export default {
   background-size: cover;
   background: rgba(19, 48, 82, 0.6);
   border: 3px solid #2175a9;
+  cursor: pointer;
 
   > li {
     padding: 16px 16px;
@@ -103,10 +120,6 @@ export default {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-
-    &:hover {
-      cursor: pointer;
-    }
 
     &.active {
       background: rgba(10, 232, 252, 0.2);
