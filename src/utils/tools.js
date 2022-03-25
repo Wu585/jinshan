@@ -1,6 +1,7 @@
 import bus from "@/utils/bus";
 import { flyTo } from "@/utils/view";
 import QueryPanel from "@/components/QueryPanel";
+import fa from "element-ui/src/locale/lang/fa";
 
 let skyline; // 天际线类
 let viewshed3D; // 可视域类
@@ -18,6 +19,7 @@ let isShowLine = true;
 let handlerDis, handlerHeight;
 let clampMode = 0; // 空间模式
 let scenePosition;
+let hasListener = false;
 
 // 初始化等高线
 function init() {
@@ -33,18 +35,17 @@ function init() {
   layers = viewer.scene.layers.layerQueue;
   viewer.scene.globe.HypsometricSetting = {
     hypsometricSetting: isoline,
-    analysisMode: Cesium.HypsometricSettingEnum.AnalysisRegionMode.ARM_ALL,
+    analysisMode: Cesium.HypsometricSettingEnum.AnalysisRegionMode.ARM_ALL
   };
 }
 
 export function calcDistance() {
-  console.log("测距");
   handlerDis = new Cesium.MeasureHandler(
     viewer,
     Cesium.MeasureMode.Distance,
     clampMode
   );
-  handlerDis.measureEvt.addEventListener(function (result) {
+  handlerDis.measureEvt.addEventListener(function(result) {
     const dis = Number(result.distance);
     // const positions = result.positions;
     const distance =
@@ -59,7 +60,7 @@ function setHypsometricSetting() {
   for (let i = 0; i < layers.length; i++) {
     layers[i].hypsometricSetting = {
       hypsometricSetting: isoline,
-      analysisMode: Cesium.HypsometricSettingEnum.AnalysisRegionMode.ARM_ALL,
+      analysisMode: Cesium.HypsometricSettingEnum.AnalysisRegionMode.ARM_ALL
     };
   }
   setHypFlag = true;
@@ -84,11 +85,10 @@ function updateContourLine(height) {
 
 export function calcHeight() {
   init();
-  console.log("测高");
   const { scene } = viewer;
   const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
   handlerHeight = new Cesium.MeasureHandler(viewer, Cesium.MeasureMode.DVH);
-  handlerHeight.measureEvt.addEventListener(function (result) {
+  handlerHeight.measureEvt.addEventListener(function(result) {
     const distance =
       result.distance > 1000
         ? (result.distance / 1000).toFixed(2) + "km"
@@ -143,6 +143,13 @@ const cb = () => {
   }
 };
 
+export const addListener = () => {
+  if (!hasListener) {
+    viewer.scene.postRender.addEventListener(cb);
+    hasListener = true;
+  }
+};
+
 export function clickQuery() {
   // isGetPosition = true;
   const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -168,7 +175,7 @@ export function clickQuery() {
       const longitude = Cesium.Math.toDegrees(cartographic.longitude);
       const latitude = Cesium.Math.toDegrees(cartographic.latitude);
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
-      viewer.scene.postRender.addEventListener(cb);
+      addListener()
     }
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
@@ -204,7 +211,7 @@ export function handleVisual() {
     verticalFov: 1.0,
     horizontalFov: 1.0,
     visibleAreaColor: "#ffffffff",
-    invisibleAreaColor: "#ffffffff",
+    invisibleAreaColor: "#ffffffff"
   };
   let viewPosition;
   // 先将此标记置为true，不激活鼠标移动事件中对可视域分析对象的操作
@@ -221,15 +228,15 @@ export function handleVisual() {
 
   const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
   // 鼠标移动时间回调
-  handler.setInputAction(function (e) {
+  handler.setInputAction(function(e) {
     // 若此标记为false，则激活对可视域分析对象的操作
     if (!scene.viewFlag) {
       //获取鼠标屏幕坐标,并将其转化成笛卡尔坐标
-      var position = e.endPosition;
-      var last = scene.pickPosition(position);
+      const position = e.endPosition;
+      const last = scene.pickPosition(position);
 
       //计算该点与视口位置点坐标的距离
-      var distance = Cesium.Cartesian3.distance(viewPosition, last);
+      const distance = Cesium.Cartesian3.distance(viewPosition, last);
 
       if (distance > 0) {
         // 将鼠标当前点坐标转化成经纬度
@@ -243,7 +250,7 @@ export function handleVisual() {
     }
   }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-  handler.setInputAction(function () {
+  handler.setInputAction(function() {
     //鼠标右键事件回调，不再执行鼠标移动事件中对可视域的操作
     scene.viewFlag = true;
     viewModel.direction = viewshed3D.direction;
@@ -253,7 +260,7 @@ export function handleVisual() {
     viewModel.verticalFov = viewshed3D.verticalFov;
   }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
 
-  pointHandler.drawEvt.addEventListener(function (result) {
+  pointHandler.drawEvt.addEventListener(function(result) {
     const point = result.object;
     const position = point.position;
     viewPosition = position;
@@ -294,9 +301,13 @@ export function viewsMange() {
   bus.$emit("setViewsPanelVisible");
 }
 
-export function clear() {
+export function clearBubble() {
   viewer.scene.postRender.removeEventListener(cb);
+  hasListener = false;
   document.getElementById("bubble").style.visibility = "hidden";
+}
+
+export function clear() {
   handlerDis && handlerDis.deactivate();
   handlerDis && handlerDis.clear();
   handlerHeight && handlerHeight.deactivate();
@@ -305,5 +316,4 @@ export function clear() {
   viewshed3D?.clear();
   pointHandler?.clear();
   QueryPanel.methods.clear();
-  viewer.scene.postRender.removeEventListener(cb);
 }

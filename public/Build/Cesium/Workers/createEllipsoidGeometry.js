@@ -20,15 +20,4 @@
  * Portions licensed separately.
  * See https://github.com/CesiumGS/cesium/blob/master/LICENSE.md for full licensing details.
  */
-define(['./when-8d13db60', './Check-70bec281', './Math-61ede240', './Cartographic-f2a06374', './Cartesian2-16a61632', './BoundingSphere-d018a565', './Cartesian4-5af5bb24', './RuntimeError-ba10bc3e', './WebGLConstants-4c11ee5f', './ComponentDatatype-5862616f', './GeometryAttribute-773da12d', './PrimitiveType-97893bc7', './FeatureDetection-7bd32c34', './Transforms-f77c92da', './buildModuleUrl-392763e2', './GeometryAttributes-aacecde6', './IndexDatatype-9435b55f', './arrayFill-9766fb2e', './GeometryOffsetAttribute-999fc023', './VertexFormat-fe4db402', './EllipsoidGeometry-820d2717'], function (when, Check, _Math, Cartographic, Cartesian2, BoundingSphere, Cartesian4, RuntimeError, WebGLConstants, ComponentDatatype, GeometryAttribute, PrimitiveType, FeatureDetection, Transforms, buildModuleUrl, GeometryAttributes, IndexDatatype, arrayFill, GeometryOffsetAttribute, VertexFormat, EllipsoidGeometry) { 'use strict';
-
-    function createEllipsoidGeometry(ellipsoidGeometry, offset) {
-        if (when.defined(offset)) {
-            ellipsoidGeometry = EllipsoidGeometry.EllipsoidGeometry.unpack(ellipsoidGeometry, offset);
-        }
-        return EllipsoidGeometry.EllipsoidGeometry.createGeometry(ellipsoidGeometry);
-    }
-
-    return createEllipsoidGeometry;
-
-});
+define(["./when-8d13db60","./Check-70bec281","./Math-61ede240","./Cartographic-f27b0939","./Cartesian2-09435a6c","./BoundingSphere-c409f092","./Cartesian4-5af5bb24","./RuntimeError-ba10bc3e","./WebGLConstants-4c11ee5f","./ComponentDatatype-5862616f","./GeometryAttribute-2243653a","./PrimitiveType-97893bc7","./FeatureDetection-7bd32c34","./Transforms-1509c877","./buildModuleUrl-392763e2","./GeometryAttributes-aacecde6","./IndexDatatype-9435b55f","./arrayFill-9766fb2e","./GeometryOffsetAttribute-999fc023","./VertexFormat-fe4db402","./EllipsoidGeometry-d710e362"],function(r,e,t,a,i,n,o,c,b,d,f,u,m,l,s,y,p,G,C,h,E){return function(e,t){return r.defined(t)&&(e=E.EllipsoidGeometry.unpack(e,t)),E.EllipsoidGeometry.createGeometry(e)}});

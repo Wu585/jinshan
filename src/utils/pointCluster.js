@@ -6,8 +6,8 @@ export class PointCluster {
       {},
       {
         enabled: true,
-        pixelRange: 100, //聚合像素
-        minimumClusterSize: 2, //最低聚合数
+        pixelRange: 60, //聚合像素
+        minimumClusterSize: 3, //最低聚合数
         billboardImg: imagePath,
         defaultEntity: false, //使用默认entity
         colors: [
@@ -158,7 +158,7 @@ export class PointCluster {
       // let text = 'poi-'+i;
       let lon = data[i][0];
       let lat = data[i][1];
-      let h = data[i][3] || 20;
+      let h = data[i][3] || 10;
       this.dataSource.entities.add({
         position: Cesium.Cartesian3.fromDegrees(lon, lat, h),
         /*label: {
@@ -186,10 +186,10 @@ export class PointCluster {
           horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
           verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
         },
-        point: {
-          color: Cesium.Color.YELLOW, //颜色
-          pixelSize: 4, //点大小
-        },
+        // point: {
+        //   color: Cesium.Color.YELLOW, //颜色
+        //   pixelSize: 4, //点大小
+        // },
       });
     }
   }

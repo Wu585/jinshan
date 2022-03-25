@@ -1,5 +1,6 @@
 export const nameOfImageMap = {
   治安视频: "zhianshipin",
+  枫泾古镇摄影头: "sxt",
   三防监测数据: "sanfangjianceshuju",
   其他: "gonganjiguan",
   酒店: "jiudian",
@@ -24,6 +25,6 @@ export const nameOfImageMap = {
   医院: "yiyuan",
   政府机关: "zhengfujiguan",
   司法机关: "sifa",
-  厕所: "",
-  消防设施: "xiaofangsheshi",
+  厕所: "cesuo",
+  消防设施: "xiaofangsheshi"
 };

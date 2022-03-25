@@ -32,6 +32,9 @@ import { flyTo, transformGeometricPosition } from "@/utils/view";
 import bus from "@/utils/bus";
 import { nameOfImageMap } from "@/assets/js/entity-image";
 import { clickQuery } from "@/utils/tools";
+import { addCameraEntity, addLabel } from "@/utils/entity";
+
+let entityArray = [];
 
 export default {
   name: "LayersTree",
@@ -39,23 +42,102 @@ export default {
     return {
       defaultProps: {
         children: "children",
-        label: "name",
+        label: "name"
       },
-      defaultCheckedKeys: [],
+      defaultCheckedKeys: []
     };
   },
   props: {
     title: {
-      type: String,
+      type: String
     },
     treeData: {
-      type: Array,
+      type: Array
     },
     checkedKeys: {
-      type: Array,
-    },
+      type: Array
+    }
   },
   methods: {
+    controlEntityWithLabel(checked) {
+      const pointsArray = [
+        {
+          name: "科创智造区",
+          point: {
+            x: -16026.35366,
+            y: -55833.45963,
+            z: 50
+          },
+          textColor: [255, 83, 174, 1]
+        },
+        {
+          name: "卫城文创区",
+          point: {
+            x: -14379.13463,
+            y: -56326.25303,
+            z: 50
+          },
+          textColor: [255, 195, 112, 1]
+        },
+        {
+          name: "地区服务中心",
+          point: {
+            x: -13023.00708,
+            y: -54593.20598,
+            z: 50
+          },
+          textColor: [255, 254, 139, 1]
+        },
+        {
+          name: "枢纽商务区",
+          point: {
+            x: -12421.18444,
+            y: -51252.36216,
+            z: 50
+          },
+          textColor: [255, 130, 115, 1]
+        },
+        {
+          name: "制造研发区",
+          point: {
+            x: -10918.62845,
+            y: -51533.47785,
+            z: 50
+          },
+          textColor: [236, 178, 145, 1]
+        },
+        {
+          name: "滨海旅游区",
+          point: {
+            x: -9306.328095,
+            y: -56261.38187,
+            z: 50
+          },
+          textColor: [119, 161, 210, 1]
+        },
+        {
+          name: "绕城森林区",
+          point: {
+            x: -14252.0626,
+            y: -51761.26586,
+            z: 50
+          },
+          textColor: [64, 234, 104, 1]
+        }
+      ];
+      if (checked) {
+        entityArray = pointsArray.map(item => {
+          const { longitude, latitude } = transformGeometricPosition(item.point.x, item.point.y);
+          const [r, g, b, a] = item.textColor;
+          return addLabel({ x: longitude, y: latitude, z: item.point.z }, item.name, [r, g, b, a]);
+        });
+      } else {
+        entityArray.forEach(entity => {
+          viewer.entities.remove(entity);
+        });
+        entityArray = [];
+      }
+    },
     renderContent(h, { node, data }) {
       if (data.children) {
         return (
@@ -123,9 +205,15 @@ export default {
       }
     },
     handleNodeClick(data) {
-      const { x, y, z, heading, pitch, roll } = data?.camera;
-      console.log(x, y, z, heading, pitch, roll);
-      flyTo(x, y, z, heading, pitch, roll);
+      if (data.name === "地下三维模型") {
+        viewer.scene.globe.globeAlpha = 0.7;
+      } else {
+        viewer.scene.globe.globeAlpha = 1;
+      }
+      if (data.camera) {
+        const { x, y, z, heading, pitch, roll } = data.camera;
+        flyTo(x, y, z, heading, pitch, roll);
+      }
     },
     handleMapCheckChange(data, checked) {
       const { name } = data;
@@ -133,9 +221,20 @@ export default {
         (item) => item._imageryProvider.name === name
       );
       mapLayer.show = checked;
+      if (name === "总体规划") {
+        this.controlEntityWithLabel(checked);
+      }
       // 置顶图层
       if (["总体规划", "详细规划"].indexOf(name) >= 0) {
         viewer.imageryLayers.raiseToTop(mapLayer);
+      } else if (["区级行政区", "数字正射影像图"].indexOf(name) >= 0) {
+        viewer.imageryLayers.raiseToTop(mapLayer);
+        ["总体规划", "详细规划"].forEach(map => {
+          const mapLayer = viewer.imageryLayers._layers.find(
+            (item) => item._imageryProvider.name === map
+          );
+          viewer.imageryLayers.raiseToTop(mapLayer);
+        });
       }
     },
     async handleS3mCheckChange(data, checked) {
@@ -158,53 +257,70 @@ export default {
     handlePoiCheckChange(data, checked) {
       const { id } = data;
       let traceLayer = `traceLayer${id}`;
-      if (!checked) {
-        window[traceLayer].entities.show = checked;
-      } else {
-        // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-        // viewer.dataSources.add(window[traceLayer]);
-        if (window[traceLayer]) {
-          window[traceLayer].entities.show = checked;
-          return;
-        }
-        const { datasetName } = data;
-        if (datasetName) {
-          const arr = [];
-          datasetName.map(async (name) => {
-            const { serviceName, dataSource } = dataServiceUrlHashmap.find(
-              (item) => item.dataSets.indexOf(name) >= 0
+      // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+      // viewer.dataSources.add(window[traceLayer]);
+      if (window[traceLayer]) {
+        console.log("hide");
+        console.log(window[traceLayer]);
+        window[traceLayer].show = checked;
+        return;
+      }
+      const { datasetName } = data;
+      if (datasetName) {
+        const arr = [];
+        datasetName.map(async (name) => {
+          console.log('name');
+          console.log(name);
+          const { serviceName, dataSource } = dataServiceUrlHashmap.find(
+            (item) => item.dataSets.indexOf(name) >= 0
+          );
+          const res = await queryPoi(serviceName, dataSource, name);
+          res.data.features.forEach((item) => {
+            const { longitude, latitude } = transformGeometricPosition(
+              item.geometry.center.x,
+              item.geometry.center.y
             );
-            const res = await queryPoi(serviceName, dataSource, name);
-            res.data.features.forEach((item) => {
-              const { longitude, latitude } = transformGeometricPosition(
-                item.geometry.center.x,
-                item.geometry.center.y
-              );
-              // 处理description信息
-              const attrObj = {};
-              item.fieldNames.forEach((key, index) => {
-                if (
-                  key.indexOf("SM") < 0 &&
-                  key.indexOf("F") < 0 &&
-                  item.fieldValues[index] !== ""
-                ) {
-                  attrObj[key] = item.fieldValues[index];
-                }
-              });
-              arr.push([longitude, latitude, attrObj]);
+            // 处理description信息
+            const attrObj = {};
+            item.fieldNames.forEach((key, index) => {
+              if (
+                key.indexOf("SM") < 0 &&
+                key.indexOf("F") < 0 &&
+                item.fieldValues[index] !== ""
+              ) {
+                attrObj[key] = item.fieldValues[index];
+              }
             });
-            let imagePath;
-            if (data?.type2 === "camera") {
-              imagePath = "images/" + "摄像头" + ".png";
-            } else {
-              imagePath =
-                "images/queryEntities/" + nameOfImageMap[data.name] + ".png";
+            arr.push([longitude, latitude, attrObj]);
+            if (data?.type3 === "point") {
+              if(!window[traceLayer]){
+                window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+                viewer.dataSources.add(window[traceLayer]);
+              }
+              window[traceLayer].entities.add({
+                position: Cesium.Cartesian3.fromDegrees(longitude, latitude, 60),
+                point: {
+                  color: Cesium.Color.YELLOW, //颜色
+                  pixelSize: 4 //点大小
+                },
+                description: JSON.stringify(attrObj)
+              });
             }
-            const juhePoint = new PointCluster(viewer, arr, imagePath);
-            window[traceLayer] = juhePoint.dataSource;
-            clickQuery();
           });
-        }
+          let imagePath;
+          if (!data.type3) {
+            if (data?.type2 === "camera") {
+              imagePath = "./images/" + "sxt" + ".png";
+            } else if (!data.type3) {
+              imagePath =
+                "./images/queryEntities/" + nameOfImageMap[data.name] + ".png";
+            }
+            console.log("here");
+            const juhe = new PointCluster(viewer, arr, imagePath);
+            window[traceLayer] = juhe.dataSource;
+          }
+          clickQuery();
+        });
       }
     },
     async handleCheckChange(data, checked) {
@@ -217,10 +333,10 @@ export default {
         map: "handleMapCheckChange",
         s3m: "handleS3mCheckChange",
         line: "handleLineChecked",
-        poi: "handlePoiCheckChange",
+        poi: "handlePoiCheckChange"
       };
       data.type && this[hashMap[data.type]](data, checked);
-    },
+    }
   },
   mounted() {
     bus.$on("update:defaultCheckedKeys", () => {
@@ -231,7 +347,7 @@ export default {
       });
     });
     this.defaultCheckedKeys = JSON.parse(sessionStorage.getItem(this.title));
-  },
+  }
 };
 </script>
 
@@ -274,10 +390,9 @@ export default {
 }
 
 ::v-deep
-  .el-tree
-  .el-tree-node__expand-icon.expanded.el-icon-caret-right:before {
-  background: url("../assets/images/layersTree/jian.png") no-repeat center
-    center;
+.el-tree
+.el-tree-node__expand-icon.expanded.el-icon-caret-right:before {
+  background: url("../assets/images/layersTree/jian.png") no-repeat center center;
   content: "";
   display: block;
   width: 18px;

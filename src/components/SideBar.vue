@@ -4,9 +4,10 @@
       v-for="item in layersArray"
       :key="item.name"
       @click="handleClick(item)"
-      :class="{ active: selectedItem && selectedItem.name === item.name }"
+      :class="{ active: selectedItem === item }"
     >
-      <div :style="backgroundStyle(item.image)"></div>
+      <div v-if="selectedItem===item" :style="backgroundStyle(item.activeImage)"></div>
+      <div v-else :style="backgroundStyle(item.image)"></div>
       <span>{{ item.name }}</span>
     </li>
   </ul>
@@ -23,47 +24,57 @@ export default {
       layersArray: [
         {
           name: "时空基础数据",
-          image: require("../assets/images/sidebar/skjc-active.png"),
-          defaultKeys: [101, 103],
+          image: require("../assets/images/sidebar/skjc.png"),
+          activeImage: require("../assets/images/sidebar/skjc-active.png"),
+          defaultKeys: [101, 103]
         },
         {
           name: "资源调查数据",
           image: require("../assets/images/sidebar/zydc.png"),
+          activeImage: require("../assets/images/sidebar/zydc-active.png")
         },
         {
           name: "规划管控数据",
           image: require("../assets/images/sidebar/ghgk.png"),
+          activeImage: require("../assets/images/sidebar/ghgk-active.png")
         },
         {
           name: "工程建设项目数据",
           image: require("../assets/images/sidebar/gcjsxm.png"),
+          activeImage: require("../assets/images/sidebar/gcjsxm-active.png")
         },
         {
           name: "公共专题数据",
           image: require("../assets/images/sidebar/ggzt.png"),
+          activeImage: require("../assets/images/sidebar/ggzt-active.png")
         },
         {
           name: "物联感知数据",
           image: require("../assets/images/sidebar/wlgz.png"),
+          activeImage: require("../assets/images/sidebar/wlgz-active.png")
         },
         {
           name: "部门专题数据",
           image: require("../assets/images/sidebar/bmzt.png"),
+          activeImage: require("../assets/images/sidebar/bmzt-active.png")
         },
         {
           name: "市级城运体征数据",
           image: require("../assets/images/sidebar/sjcy.png"),
+          activeImage: require("../assets/images/sidebar/sjcy-active.png")
         },
         {
           name: "城市地下空间数据",
           image: require("../assets/images/sidebar/csdxkj.png"),
+          activeImage: require("../assets/images/sidebar/csdikj-active.png")
         },
         {
           name: "社会POI数据",
           image: require("../assets/images/sidebar/shpoi.png"),
-        },
+          activeImage: require("../assets/images/sidebar/shpoi-active.png")
+        }
       ],
-      selectedItem: null,
+      selectedItem: null
     };
   },
   computed: {
@@ -72,13 +83,13 @@ export default {
         backgroundImage: "url(" + imgPath + ")",
         width: "30px",
         height: "30px",
-        backgroundRepeat: "no-repeat",
+        backgroundRepeat: "no-repeat"
       });
-    },
+    }
   },
   props: {
     title: {},
-    treeData: {},
+    treeData: {}
   },
   mounted() {
     this.layersArray.forEach((item) => {
@@ -97,8 +108,8 @@ export default {
       this.$emit("update:title", item.name);
       this.$emit("update:treeData", treeData.children);
       bus.$emit("update:defaultCheckedKeys");
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -4,7 +4,7 @@
       class="nav-wrapper"
       v-for="item in navArray"
       :key="item.name"
-      @click="selected = item"
+      @click="onClick(item)"
       :class="{ active: selected && item.name === selected.name }"
     >
       <div class="nav-logo">
@@ -22,29 +22,42 @@ export default {
     return {
       navArray: [
         {
-          name: "智慧消防",
+          name: "球面对比",
           img: require("../assets/images/bottomNav/zhxf.png"),
+          link: "http://10.233.250.25:8190/distback/dist/index.html#/"
         },
         {
           name: "智慧园区",
           img: require("../assets/images/bottomNav/zhyq.png"),
+          link: ""
         },
         {
           name: "智慧交通",
           img: require("../assets/images/bottomNav/zhjt.png"),
+          link: ""
         },
         {
           name: "智慧旅游",
           img: require("../assets/images/bottomNav/zhly.png"),
+          link: ""
         },
         {
           name: "智慧社区",
           img: require("../assets/images/bottomNav/zhsq.png"),
-        },
+          link: ""
+        }
       ],
-      selected: null,
+      selected: null
     };
   },
+  methods: {
+    onClick(item) {
+      this.selected = item;
+      if (item.name === "球面对比") {
+        window.open("http://10.233.250.25:8090/iserver/services/3D-CBD/rest/realspace/scenes/CBD.openrealspace", "_blank");
+      }
+    }
+  }
 };
 </script>
 
@@ -67,21 +80,21 @@ export default {
     cursor: pointer;
 
     &.active {
-      > .nav-logo {
+      .nav-logo {
         background-image: url("../assets/images/bottomNav/bg-active.png");
       }
 
-      > span {
+      span {
         color: #1cfbff;
       }
     }
 
     &:hover {
-      > .nav-logo {
+      .nav-logo {
         background-image: url("../assets/images/bottomNav/bg-active.png");
       }
 
-      > span {
+      span {
         color: #1cfbff;
       }
     }
@@ -90,7 +103,7 @@ export default {
       margin-right: 83px;
     }
 
-    > .nav-logo {
+    .nav-logo {
       background-image: url("../assets/images/bottomNav/bg.png");
       width: 95px;
       height: 103px;
@@ -99,7 +112,7 @@ export default {
       justify-content: center;
     }
 
-    > span {
+    span {
       color: white;
       font-weight: 400;
       font-size: 18px;

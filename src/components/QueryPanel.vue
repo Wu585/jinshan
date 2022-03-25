@@ -39,6 +39,7 @@ import { queryPoiBySpecial } from "@/apis/queryPoi";
 import { addEntity } from "@/utils/entity";
 import { transformGeometricPosition } from "@/utils/view";
 import { nameOfImageMap } from "@/assets/js/entity-image";
+import { clickQuery } from "@/utils/tools";
 
 let handlerPolygon;
 let entitiesArray = [];
@@ -133,6 +134,7 @@ export default {
               );
             });
           });
+          clickQuery()
         });
       });
     },

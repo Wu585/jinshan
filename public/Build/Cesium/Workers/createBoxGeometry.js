@@ -20,15 +20,4 @@
  * Portions licensed separately.
  * See https://github.com/CesiumGS/cesium/blob/master/LICENSE.md for full licensing details.
  */
-define(['./when-8d13db60', './Check-70bec281', './Math-61ede240', './Cartographic-f2a06374', './Cartesian2-16a61632', './BoundingSphere-d018a565', './Cartesian4-5af5bb24', './RuntimeError-ba10bc3e', './WebGLConstants-4c11ee5f', './ComponentDatatype-5862616f', './GeometryAttribute-773da12d', './PrimitiveType-97893bc7', './FeatureDetection-7bd32c34', './Transforms-f77c92da', './buildModuleUrl-392763e2', './GeometryAttributes-aacecde6', './arrayFill-9766fb2e', './GeometryOffsetAttribute-999fc023', './VertexFormat-fe4db402', './BoxGeometry-7a5fc8d8'], function (when, Check, _Math, Cartographic, Cartesian2, BoundingSphere, Cartesian4, RuntimeError, WebGLConstants, ComponentDatatype, GeometryAttribute, PrimitiveType, FeatureDetection, Transforms, buildModuleUrl, GeometryAttributes, arrayFill, GeometryOffsetAttribute, VertexFormat, BoxGeometry) { 'use strict';
-
-    function createBoxGeometry(boxGeometry, offset) {
-        if (when.defined(offset)) {
-            boxGeometry = BoxGeometry.BoxGeometry.unpack(boxGeometry, offset);
-        }
-        return BoxGeometry.BoxGeometry.createGeometry(boxGeometry);
-    }
-
-    return createBoxGeometry;
-
-});
+define(["./when-8d13db60","./Check-70bec281","./Math-61ede240","./Cartographic-f27b0939","./Cartesian2-09435a6c","./BoundingSphere-c409f092","./Cartesian4-5af5bb24","./RuntimeError-ba10bc3e","./WebGLConstants-4c11ee5f","./ComponentDatatype-5862616f","./GeometryAttribute-2243653a","./PrimitiveType-97893bc7","./FeatureDetection-7bd32c34","./Transforms-1509c877","./buildModuleUrl-392763e2","./GeometryAttributes-aacecde6","./arrayFill-9766fb2e","./GeometryOffsetAttribute-999fc023","./VertexFormat-fe4db402","./BoxGeometry-92274cfb"],function(r,e,t,a,o,n,c,i,b,f,u,d,m,y,s,G,p,C,h,l){return function(e,t){return r.defined(t)&&(e=l.BoxGeometry.unpack(e,t)),l.BoxGeometry.createGeometry(e)}});

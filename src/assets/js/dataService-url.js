@@ -33,7 +33,7 @@ export const dataServiceUrlHashmap = [
       "火车站",
       "医院",
       "小区",
-      "公测",
+      "公厕",
       "通讯营业厅",
       "风景名胜",
       "档案馆",

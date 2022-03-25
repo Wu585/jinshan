@@ -23,7 +23,7 @@
       @hideViewsPanel="viewsPanelVisible = false"
     />
     <BottomNav />
-    <Map />
+<!--    <Map />-->
     <div id="bubble" class="bubble-wrapper-1">
       <EntityBubble :description="poiDescription" />
     </div>
@@ -47,6 +47,7 @@ import { addPolyline } from "@/utils/entity";
 import QueryPanel from "@/components/QueryPanel";
 import BottomNav from "@/components/BottomNav";
 import ViewsPanel from "@/components/ViewsPanel";
+import { addListener } from "@/utils/tools";
 
 export default {
   name: "Home",
@@ -58,7 +59,7 @@ export default {
     Map,
     LayersTree,
     SideBar,
-    Header,
+    Header
   },
   data() {
     return {
@@ -68,7 +69,7 @@ export default {
       checkedKeys: [],
       poiDescription: null,
       queryPanelVisible: false,
-      viewsPanelVisible: false,
+      viewsPanelVisible: false
     };
   },
   async mounted() {
@@ -77,42 +78,33 @@ export default {
       infoBox: false,
       contextOptions: {
         webgl: {
-          alpha: true,
+          //alpha: true,
           depth: true,
           stencil: true,
           antialias: true,
           premultipliedAlpha: true,
           preserveDrawingBuffer: true,
-          failIfMajorPerformanceCaveat: true,
-        },
-      },
+          failIfMajorPerformanceCaveat: true
+        }
+      }
     });
     const { scene } = viewer;
     scene.mode = Cesium.SceneMode.COLUMBUS_VIEW; // 平面场景
     scene.globe.depthTestAgainstTerrain = false; // 图标不埋地下
 
-    /*scene.sun.show = false;
-    scene.lightSource.ambientLightColor = new Cesium.Color(0, 0, 0, 1);
-    var position1 = new Cesium.Cartesian3.fromDegrees(-0.415034617512684,-0.3550666355014696, 480);
-    var targetPosition1 = new Cesium.Cartesian3.fromDegrees(-0.42094800196895676,-0.3476541457117489,430);
-    var dirLightOptions = {
-      targetPosition: targetPosition1,
-      color: new Cesium.Color(0.01, 0.01, 0.3, 1.0),
-      intensity: 0.1
-    };
-// 新增点光源-整个环境
-    var pointLightOptions3 = {
-      cutoffDistance: 2000,
-      color: new Cesium.Color(0.04, 0.18, 0.43, 1.0),
-      intensity: 0.001
-    }*/
+    viewer.scene.undergroundMode = true; //设置开启地下场景
+    viewer.scene.screenSpaceCameraController.minimumZoomDistance = -1000; //设置相机最小缩放距离,距离地表-1000米
+    viewer.scene.terrainProvider.isCreateSkirt = false; // 关闭裙边
+    viewer.scene.moon.show = false;
+    // viewer.scene.globe.globeAlpha=0.5;
+    // Cesium.MemoryManager.setCacheSize(4096);
 
     setViewport(
-      -23961.547803674825,
-      -46502.581011517905,
-      67365.37159326114,
-      0.01614302261320244,
-      -1.5446777533264031,
+      -27759.734718155116,
+      -48104.06818978442,
+      67365.37159326952,
+      0.016143022611845304,
+      -1.5446777533263947,
       0
     );
 
@@ -143,18 +135,14 @@ export default {
       const pointsArray = [];
       const centerArray = [];
       res.data.features.forEach((polygon) => {
-        console.log("polygon");
-        console.log(polygon);
         const { center } = polygon.geometry;
-        console.log("center");
-        console.log(center);
         const { longitude, latitude } = transformGeometricPosition(
           center.x,
           center.y
         );
-        console.log(longitude, latitude);
+        // console.log(longitude, latitude);
         centerArray.push({
-          center: { longitude, latitude },
+          center: { longitude, latitude }
         });
         const arr = [];
         polygon.geometry.points.forEach((point) => {
@@ -175,7 +163,7 @@ export default {
       MapUrlHashmap.forEach((map) => {
         const layer = new Cesium.SuperMapImageryProvider({
           url: map.url, //影像服务的地址
-          name: map.name,
+          name: map.name
         });
         viewer.imageryLayers.addImageryProvider(layer);
       });
@@ -199,6 +187,19 @@ export default {
             const promise = viewer.scene.addS3MTilesLayerByScp(url, { name });
             promise.then((item) => {
               item.visible = false;
+              // viewer.scene.layers.find(item.name).clearMemoryImmediately=false;
+              if (item.name === "WS_NetWork" || item.name === "YS_NetWork" ||
+                item.name === "YSPOINTZ_P" || item.name === "WSPOINTZ_P"
+                || item.name === "WS_NetWork_Node" || item.name === "YS_NetWork_Node") {
+                viewer.scene.layers.find(item.name).lodRangeScale = 200;
+              }
+              if(item.name==="Dimian"||item.name==="A01"||item.name==="A02"||item.name==="A03"||item.name==="A04"||item.name==="A05"){
+                viewer.scene.layers.find(item.name).brightness=4;
+              }
+              // if(item.name==="Baimo_SH@JS"){
+              //   viewer.scene.layers.find(item.name).style3D.fillStyle = Cesium.FillStyle.Fill_And_WireFrame;
+              //   viewer.scene.layers.find(item.name).wireFrameMode = Cesium.WireFrameType.EffectOutline;
+              // }
             });
           });
         }
@@ -207,14 +208,14 @@ export default {
     async addAllLayers() {
       this.addMapLayers();
       await this.addS3mLayers();
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .bubble-wrapper-1 {
-  z-index: 99999;
+  z-index: 998;
   position: fixed;
   visibility: hidden;
   transform: translate(-220px);

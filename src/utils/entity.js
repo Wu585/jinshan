@@ -5,10 +5,9 @@ export function createEntity({ id, x, y, imagePath, name, text }) {
     billboard: {
       image: imagePath,
       width: 40,
-      height: 40,
+      height: 40
     },
     name,
-    description: "des",
     label: {
       text,
       horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
@@ -18,7 +17,7 @@ export function createEntity({ id, x, y, imagePath, name, text }) {
       style: Cesium.LabelStyle.FILL_AND_OUTLINE,
       outlineColor: Cesium.Color.WHITE,
       outlineWidth: 3,
-      pixelOffset: new Cesium.Cartesian2(0.0, -20),
+      pixelOffset: new Cesium.Cartesian2(0.0, -20)
     },
     polyline: {
       show: true,
@@ -28,15 +27,15 @@ export function createEntity({ id, x, y, imagePath, name, text }) {
         55,
         x,
         y,
-        120,
+        120
       ]),
       width: 5,
       material: new Cesium.PolylineOutlineMaterialProperty({
         color: Cesium.Color.WHITE,
         outlineWidth: 3,
-        outlineColor: Cesium.Color.fromCssColorString("#1570c0"),
-      }),
-    },
+        outlineColor: Cesium.Color.fromCssColorString("#1570c0")
+      })
+    }
   });
 }
 
@@ -46,7 +45,7 @@ export function addEntity(imagePath, lon, lat, description, text = "") {
     billboard: {
       image: imagePath,
       width: 40,
-      height: 40,
+      height: 40
     },
     description: JSON.stringify(description),
     label: {
@@ -58,8 +57,8 @@ export function addEntity(imagePath, lon, lat, description, text = "") {
       style: Cesium.LabelStyle.FILL_AND_OUTLINE,
       outlineColor: Cesium.Color.WHITE,
       outlineWidth: 3,
-      pixelOffset: new Cesium.Cartesian2(0.0, -20),
-    },
+      pixelOffset: new Cesium.Cartesian2(0.0, -20)
+    }
   });
 }
 
@@ -68,9 +67,9 @@ export function addCameraEntity(lon, lat, description) {
     position: Cesium.Cartesian3.fromDegrees(lon, lat, 60),
     point: {
       color: Cesium.Color.YELLOW, //颜色
-      pixelSize: 4, //点大小
+      pixelSize: 4 //点大小
     },
-    description,
+    description
   });
 }
 
@@ -80,7 +79,24 @@ export function addPolyline(pointArray, id) {
     polyline: {
       positions: Cesium.Cartesian3.fromDegreesArray(pointArray),
       width: 8,
-      material: Cesium.Color.RED,
-    },
+      material: Cesium.Color.RED
+    }
+  });
+}
+
+export function addLabel({ x, y, z }, label, [r, g, b, a] = [1, 1, 1, 1]) {
+  return viewer.entities.add({
+    position: Cesium.Cartesian3.fromDegrees(x, y, z),
+    label: {
+      text: label,
+      font: "14pt Source Han Sans CN",    //字体样式
+      fillColor: Cesium.Color.fromCssColorString(`rgba(${r},${g},${b},${a})`),        //字体颜色
+      style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+      outlineColor: Cesium.Color.BLACK,
+      outlineWidth: 20,
+      verticalOrigin: Cesium.VerticalOrigin.CENTER,//垂直位置
+      horizontalOrigin: Cesium.HorizontalOrigin.LEFT,//水平位置
+      pixelOffset: new Cesium.Cartesian2(10, 0)            //偏移
+    }
   });
 }

@@ -20,19 +20,4 @@
  * Portions licensed separately.
  * See https://github.com/CesiumGS/cesium/blob/master/LICENSE.md for full licensing details.
  */
-define(['exports'], function (exports) { 'use strict';
-
-    /**
-         * Represents which vertices should have a value of `true` for the `applyOffset` attribute
-         * @private
-         */
-        var GeometryOffsetAttribute = {
-            NONE : 0,
-            TOP : 1,
-            ALL : 2
-        };
-    var GeometryOffsetAttribute$1 = Object.freeze(GeometryOffsetAttribute);
-
-    exports.GeometryOffsetAttribute = GeometryOffsetAttribute$1;
-
-});
+define(["exports"],function(e){var t=Object.freeze({NONE:0,TOP:1,ALL:2});e.GeometryOffsetAttribute=t});

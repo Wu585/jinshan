@@ -50,11 +50,11 @@ export default {
   data() {
     return {
       featuresArray: [
-        {
-          name: "点查询",
-          image: require("../assets/images/header/dcx.png"),
-          isPopover: false,
-        },
+        // {
+        //   name: "点查询",
+        //   image: require("../assets/images/header/dcx.png"),
+        //   isPopover: false,
+        // },
         {
           name: "框选",
           image: require("../assets/images/header/kuangxuan.png"),

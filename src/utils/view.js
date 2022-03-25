@@ -16,8 +16,8 @@ export function setViewport(x, y, z, heading, pitch, roll) {
     orientation: {
       heading,
       pitch,
-      roll,
-    },
+      roll
+    }
   });
 }
 
@@ -31,8 +31,8 @@ export function flyTo(x, y, z, heading, pitch, roll) {
     orientation: {
       heading,
       pitch,
-      roll,
-    },
+      roll
+    }, duration: 1
   });
 }
 
@@ -42,7 +42,8 @@ export function setViewportByLonAndLat(lon, lat) {
     orientation: {
       heading: 6.119334705779381,
       pitch: -0.7930082176213968,
-      roll: 6.283185307179558,
-    },
+      roll: 6.283185307179558
+    }
+
   });
 }

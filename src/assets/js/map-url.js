@@ -9,14 +9,14 @@ export const MapUrlHashmap = [
   },
   {
     name: "数字正射影像图",
-    url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapair/rest/maps/basemap_air`,
+    url: `${arcgisIP_Port}/iserver/services/map-arcgis-basemapair/rest/maps/basemap_air`,
   },
   {
     name: "村居行政区",
-    url: `${iServerIP_Port}/iserver/services/map-arcgis-basemapdark/rest/maps/basemap_dark`,
+    url: `${arcgisIP_Port}/iserver/services/map-arcgis-basemapdark/rest/maps/basemap_dark`,
   },
   {
     name: "区级行政区",
-    url: `${iServerIP_Port}/iserver/services/map-arcgis-jsmaskboundary/rest/maps/jsmaskboundary`,
+    url: `${arcgisIP_Port}/iserver/services/map-arcgis-jsmaskboundary/rest/maps/jsmaskboundary`,
   },
 ];
