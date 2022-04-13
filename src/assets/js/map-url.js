@@ -19,4 +19,20 @@ export const MapUrlHashmap = [
     name: "区级行政区",
     url: `${arcgisIP_Port}/iserver/services/map-arcgis-jsmaskboundary/rest/maps/jsmaskboundary`,
   },
+  {
+    name: "小区图层",
+    url: `${arcgisIP_Port}/iserver/services/map-arcgis-jinshanblock/rest/maps/jinshan_block`,
+  },
+  {
+    name: "门牌图层",
+    url: `${arcgisIP_Port}/iserver/services/map-arcgis-jinshanhouse/rest/maps/jinshan_house`,
+  },
+  {
+    name: "网格",
+    url: `${arcgisIP_Port}/iserver/services/map-arcgis-shwg/rest/maps/sh_wg`,
+  },
+  {
+    name: "金山大网格",
+    url: `${arcgisIP_Port}/iserver/services/map-arcgis-zerenwangge3857/rest/maps/ze_ren_wang_ge_3857`,
+  }
 ];

@@ -1,7 +1,6 @@
 import bus from "@/utils/bus";
-import { flyTo } from "@/utils/view";
+import { flyTo, transformGeometricPosition } from "@/utils/view";
 import QueryPanel from "@/components/QueryPanel";
-import fa from "element-ui/src/locale/lang/fa";
 
 let skyline; // 天际线类
 let viewshed3D; // 可视域类
@@ -157,6 +156,7 @@ export function clickQuery() {
     const infoboxContainer = document.getElementById("bubble");
     infoboxContainer.style.visibility = "hidden";
     const pick = viewer.scene.pick(movement.position);
+    console.log(pick);
     /*console.log('pick');
     console.log(pick);
     const cartesian = viewer.scene.pickPosition2D(movement.position)
@@ -167,15 +167,23 @@ export function clickQuery() {
     console.log(longitude,latitude);*/
     if (pick && pick.id && pick.id._description) {
       const description = pick.id._description._value;
-      console.log("description");
-      console.log(description);
-      bus.$emit("update:description", JSON.parse(description));
-      const position = viewer.scene.pickPosition(movement.position);
+      /*const des = JSON.parse(description);
+      const _description = {};
+      _description["点位名"] = des["点位名"];
+      _description["街镇"] = des["街镇"];*/
+      bus.$emit("update:description", JSON.parse(description),pick.id.id,pick.id._name);
+      /*const position = viewer.scene.pickPosition(movement.position);
       const cartographic = Cesium.Cartographic.fromCartesian(position);
       const longitude = Cesium.Math.toDegrees(cartographic.longitude);
-      const latitude = Cesium.Math.toDegrees(cartographic.latitude);
+      const latitude = Cesium.Math.toDegrees(cartographic.latitude);*/
+
+      const cartesian = viewer.scene.pickPosition2D(movement.position);
+      console.log("cartesian");
+      console.log(cartesian);
+      const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
+
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
-      addListener()
+      addListener();
     }
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }

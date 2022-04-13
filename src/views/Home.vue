@@ -1,10 +1,12 @@
 <template>
   <div class="home" id="cesiumContainer">
     <Header />
+    <Search/>
     <SideBar
       @show-layers-tree="layersTreeVisible = true"
       :title.sync="layersTreeTitle"
       :treeData.sync="layersTreeData"
+      :treeDataProps.sync="treeDataProps"
     />
     <!--    <Layers />-->
     <LayersTree
@@ -13,6 +15,7 @@
       :title="layersTreeTitle"
       :tree-data="layersTreeData"
       :checked-keys="checkedKeys"
+      :tree-default-props="treeDataProps"
     />
     <QueryPanel
       v-if="queryPanelVisible"
@@ -23,9 +26,9 @@
       @hideViewsPanel="viewsPanelVisible = false"
     />
     <BottomNav />
-<!--    <Map />-->
+    <!--    <Map />-->
     <div id="bubble" class="bubble-wrapper-1">
-      <EntityBubble :description="poiDescription" />
+      <EntityBubble :is-camera="isCamera" :description="poiDescription" />
     </div>
   </div>
 </template>
@@ -43,15 +46,16 @@ import EntityBubble from "@/components/EntityBubble";
 import bus from "@/utils/bus";
 import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
 import { queryPoi } from "@/apis/queryPoi";
-import { addPolyline } from "@/utils/entity";
+import { addCameraEntity, addPolyline } from "@/utils/entity";
 import QueryPanel from "@/components/QueryPanel";
 import BottomNav from "@/components/BottomNav";
 import ViewsPanel from "@/components/ViewsPanel";
-import { addListener } from "@/utils/tools";
+import Search from "@/components/Search";
 
 export default {
   name: "Home",
   components: {
+    Search,
     ViewsPanel,
     BottomNav,
     QueryPanel,
@@ -69,7 +73,12 @@ export default {
       checkedKeys: [],
       poiDescription: null,
       queryPanelVisible: false,
-      viewsPanelVisible: false
+      viewsPanelVisible: false,
+      isCamera: false,
+      treeDataProps: {
+        children: "children",
+        label: "name"
+      }
     };
   },
   async mounted() {
@@ -121,7 +130,11 @@ export default {
     });
 
     await this.addAllLayers();
-    await this.addBoundLines(); // 加载乡镇行政区，都是线
+    // await this.addBoundLines(); // 加载乡镇行政区，都是线
+
+    // await test();
+    const {longitude,latitude} = transformGeometricPosition(-396.392507553101,443.220664978027)
+    addCameraEntity(longitude,latitude)
   },
   methods: {
     async addBoundLines() {
@@ -193,8 +206,8 @@ export default {
                 || item.name === "WS_NetWork_Node" || item.name === "YS_NetWork_Node") {
                 viewer.scene.layers.find(item.name).lodRangeScale = 200;
               }
-              if(item.name==="Dimian"||item.name==="A01"||item.name==="A02"||item.name==="A03"||item.name==="A04"||item.name==="A05"){
-                viewer.scene.layers.find(item.name).brightness=4;
+              if (item.name === "Dimian" || item.name === "A01" || item.name === "A02" || item.name === "A03" || item.name === "A04" || item.name === "A05") {
+                viewer.scene.layers.find(item.name).brightness = 4;
               }
               // if(item.name==="Baimo_SH@JS"){
               //   viewer.scene.layers.find(item.name).style3D.fillStyle = Cesium.FillStyle.Fill_And_WireFrame;
@@ -218,7 +231,7 @@ export default {
   z-index: 998;
   position: fixed;
   visibility: hidden;
-  transform: translate(-220px);
+  transform: translate(-280px, 80px);
 }
 
 #cesiumContainer {

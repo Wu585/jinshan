@@ -1,22 +1,22 @@
 import axios from "axios";
 
 // 查询所有poi坐标
-export function queryPoi(serviceName, dataSourceName, dataSetName) {
+export function queryPoi(serviceName, dataSourceName, dataSetName, idType = "SMID", serviceIp = iServerIP_Port) {
   const dataServiceUrl =
-    iServerIP_Port +
+    serviceIp +
     `/iserver/services/data-${serviceName}/rest/data/featureResults.rjson?returnContent=true`; // 数据服务URL
   const queryObj = {
     getFeatureMode: "SQL",
     datasetNames: [dataSourceName + ":" + dataSetName],
     maxFeatures: 1000000,
     queryParameter: {
-      attributeFilter: "SMID>0",
-    },
+      attributeFilter: `${idType}>0`
+    }
   };
   return axios({
     method: "post",
     url: dataServiceUrl,
-    data: queryObj,
+    data: queryObj
   });
 }
 
@@ -25,7 +25,7 @@ export function queryChildren(serviceName, dataSourceName) {
   const url = `${iServerIP_Port}/iserver/services/data-${serviceName}/rest/data/datasources/${dataSourceName}/datasets.json`;
   return axios({
     method: "get",
-    url,
+    url
   });
 }
 
@@ -48,13 +48,13 @@ export function queryPoiBySpecial(
       parts: [4],
       points: pointsArray,
       type: "REGION",
-      style: null,
+      style: null
       // polygon
-    },
+    }
   };
   return axios({
     url: dataServiceUrl,
     method: "post",
-    data: queryObj,
+    data: queryObj
   });
 }

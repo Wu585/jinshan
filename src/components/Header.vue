@@ -2,7 +2,7 @@
   <div class="header">
     <div class="title">
       <div class="logo"></div>
-      <span>金山区地图中台展示系统</span>
+      <span>金山区地图中台</span>
     </div>
     <div class="features">
       <div

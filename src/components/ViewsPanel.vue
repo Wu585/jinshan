@@ -88,8 +88,6 @@ export default {
   },
   methods: {
     handleSetView(index, row) {
-      console.log("row");
-      console.log(row);
       const { x, y, z, heading, pitch, roll } = row;
       flyTo(x, y, z, heading, pitch, roll);
     },
@@ -108,8 +106,6 @@ export default {
           };
         });
         this.total = this.tableData.length;
-        console.log("this.tableData");
-        console.log(this.tableData);
       });
     },
     async handlePatch(index, row) {

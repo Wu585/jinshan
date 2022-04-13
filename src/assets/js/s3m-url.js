@@ -18,7 +18,7 @@ export const s3mUrlHashmap = [
     ],
   },
   {
-    name: "BIM三维模型",
+    name: "区块",
     urls: [
       `${iServerIP_Port}/iserver/services/3D-JS_BIM_HaiFu/rest/realspace/datas.json`,
     ],

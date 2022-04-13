@@ -39,26 +39,17 @@ export function createEntity({ id, x, y, imagePath, name, text }) {
   });
 }
 
-export function addEntity(imagePath, lon, lat, description, text = "") {
+export function addEntity(imagePath, lon, lat, description = "", name = "", id) {
   return viewer.entities.add({
+    id,
+    name,
     position: Cesium.Cartesian3.fromDegrees(lon, lat, 20),
     billboard: {
       image: imagePath,
-      width: 40,
-      height: 40
+      width: 20,
+      height: 20
     },
-    description: JSON.stringify(description),
-    label: {
-      text,
-      horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-      verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-      font: "bold 14px Source Han Sans CN",
-      fillColor: Cesium.Color.fromCssColorString("#0090a5"),
-      style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-      outlineColor: Cesium.Color.WHITE,
-      outlineWidth: 3,
-      pixelOffset: new Cesium.Cartesian2(0.0, -20)
-    }
+    description
   });
 }
 
@@ -67,7 +58,7 @@ export function addCameraEntity(lon, lat, description) {
     position: Cesium.Cartesian3.fromDegrees(lon, lat, 60),
     point: {
       color: Cesium.Color.YELLOW, //颜色
-      pixelSize: 4 //点大小
+      pixelSize: 40 //点大小
     },
     description
   });

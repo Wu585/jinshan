@@ -32,7 +32,8 @@ import { flyTo, transformGeometricPosition } from "@/utils/view";
 import bus from "@/utils/bus";
 import { nameOfImageMap } from "@/assets/js/entity-image";
 import { clickQuery } from "@/utils/tools";
-import { addCameraEntity, addLabel } from "@/utils/entity";
+import { addEntity, addLabel, addPolyline } from "@/utils/entity";
+import { getIndexCodeByCollectionCode } from "@/apis/information";
 
 let entityArray = [];
 
@@ -56,6 +57,13 @@ export default {
     },
     checkedKeys: {
       type: Array
+    },
+    treeDefaultProps: {
+      type: Object,
+      default: () => ({
+        children: "children",
+        label: "name"
+      })
     }
   },
   methods: {
@@ -139,7 +147,7 @@ export default {
       }
     },
     renderContent(h, { node, data }) {
-      if (data.children) {
+      if (data.children && data.imagePath) {
         return (
           <span class="custom-tree-node">
             <img
@@ -251,8 +259,24 @@ export default {
         (name) => (viewer.scene.layers.find(name).visible = checked)
       );
     },
-    handleLineChecked(data, checked) {
-      window.traceLayerLines.show = checked;
+    async handleLineChecked(data, checked) {
+      // window.traceLayerLines.show = checked;
+      const tracyName = `traceLayerLines${data.name}`;
+      if (window[tracyName]) {
+        window[tracyName].show = checked;
+        return;
+      }
+      window[tracyName] = new Cesium.CustomDataSource(tracyName);
+      viewer.dataSources.add(window[tracyName]);
+      const { data: result } = await queryPoi("arcgis-sh_jd_boundary", "ArcGISFeatureServer",
+        "sh_jd_boundary", "OBJECTID", arcgisIP_Port);
+      const selectedItem = result.features.find(item => item.fieldValues[5] === data.name);
+      const arr = [];
+      selectedItem.geometry.points.forEach(item => {
+        const { longitude, latitude } = transformGeometricPosition(item.x, item.y);
+        arr.push(longitude, latitude);
+      });
+      window[tracyName].entities.add(addPolyline(arr));
     },
     handlePoiCheckChange(data, checked) {
       const { id } = data;
@@ -260,8 +284,6 @@ export default {
       // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
       // viewer.dataSources.add(window[traceLayer]);
       if (window[traceLayer]) {
-        console.log("hide");
-        console.log(window[traceLayer]);
         window[traceLayer].show = checked;
         return;
       }
@@ -269,8 +291,6 @@ export default {
       if (datasetName) {
         const arr = [];
         datasetName.map(async (name) => {
-          console.log('name');
-          console.log(name);
           const { serviceName, dataSource } = dataServiceUrlHashmap.find(
             (item) => item.dataSets.indexOf(name) >= 0
           );
@@ -293,18 +313,19 @@ export default {
             });
             arr.push([longitude, latitude, attrObj]);
             if (data?.type3 === "point") {
-              if(!window[traceLayer]){
+              if (!window[traceLayer]) {
                 window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
                 viewer.dataSources.add(window[traceLayer]);
               }
-              window[traceLayer].entities.add({
+              /*window[traceLayer].entities.add({
                 position: Cesium.Cartesian3.fromDegrees(longitude, latitude, 60),
                 point: {
                   color: Cesium.Color.YELLOW, //颜色
                   pixelSize: 4 //点大小
                 },
                 description: JSON.stringify(attrObj)
-              });
+              });*/
+              addEntity("./images/camera.png", longitude, latitude, JSON.stringify(attrObj));
             }
           });
           let imagePath;
@@ -315,13 +336,88 @@ export default {
               imagePath =
                 "./images/queryEntities/" + nameOfImageMap[data.name] + ".png";
             }
-            console.log("here");
             const juhe = new PointCluster(viewer, arr, imagePath);
             window[traceLayer] = juhe.dataSource;
           }
           clickQuery();
         });
       }
+    },
+    async handleMonitorCheckChange(data, checked) {
+      clickQuery();
+      const { collectionCode } = data;
+      const res = await getIndexCodeByCollectionCode(collectionCode);
+      const list = res.data.data.list;
+      console.log("list");
+      console.log(list);
+      list.forEach(item => {
+        const { x, y, streetTown, name, indexCode } = item;
+        if (x) {
+          const { longitude, latitude } = transformGeometricPosition(+x, +y);
+          const attr = {};
+          if (streetTown) {
+            attr["点位名"] = name;
+            attr["街镇"] = streetTown;
+          } else {
+            attr["点位名"] = name;
+          }
+          addEntity("./images/camera.png", longitude, latitude, JSON.stringify(attr), "monitor", indexCode);
+        } else {
+          console.log("x is null");
+        }
+      });
+      /*for (let i = 0; i < res.data.data.list.length; i++) {
+        const { indexCode } = list[i];
+        const { data: res1 } = await findCameraInfoByIndexCode(indexCode);
+        if (res1.success) {
+          const { name: cameraName } = res1.data.data[0];
+          const { longitude, latitude, treeNodeIndexcode } = res1.data.data[0];
+          const res2 = await gps84_to_cd(longitude, latitude);
+          const {
+            longitude: lng,
+            latitude: lat
+          } = transformGeometricPosition(+res2.data.data.lng, +res2.data.data.lat);
+          const res3 = await findAllParentTreeNode(treeNodeIndexcode);
+          const pointArray = res3.data.data.data;
+          const streetName = pointArray.find(point => point.parentIndexCode === pointArray.find(point => point.name === "街镇")?.indexCode)?.name;
+          const attr = {};
+          if (streetName) {
+            attr["点位名"] = cameraName;
+            attr["街镇"] = streetName;
+          } else {
+            attr["点位名"] = cameraName;
+          }
+          addEntity("./images/camera.png", lng, lat, JSON.stringify(attr), "monitor", indexCode);
+        }
+      }*/
+      /*res.data.data.list.map(async item => {
+        const { indexCode } = item;
+        const { data: res1 } = await findCameraInfoByIndexCode(indexCode);
+        if (res1.success) {
+          const { cameraName } = res1.data.data[0];
+          const { longitude, latitude, treeNodeIndexcode } = res1.data.data[0];
+          const res2 = await gps84_to_cd(longitude, latitude);
+          const {
+            longitude: lng,
+            latitude: lat
+          } = transformGeometricPosition(+res2.data.data.lng, +res2.data.data.lat);
+          const res3 = await findAllParentTreeNode(treeNodeIndexcode);
+          const pointArray = res3.data.data.data;
+          console.log("pointArray");
+          console.log(pointArray);
+          const streetName = pointArray.find(point => point.parentIndexCode === pointArray.find(point => point.name === "街镇")?.indexCode)?.name;
+          console.log("streetName");
+          console.log(streetName);
+          const attr = {};
+          if (streetName) {
+            attr["点位名"] = cameraName;
+            attr["街镇"] = cameraName;
+          } else {
+            attr["点位名"] = cameraName;
+          }
+          addEntity("./images/camera.png", lng, lat, JSON.stringify(attr));
+        }
+      });*/
     },
     async handleCheckChange(data, checked) {
       this.defaultCheckedKeys = this.$refs.tree.getCheckedKeys();
@@ -333,7 +429,8 @@ export default {
         map: "handleMapCheckChange",
         s3m: "handleS3mCheckChange",
         line: "handleLineChecked",
-        poi: "handlePoiCheckChange"
+        poi: "handlePoiCheckChange",
+        monitor: "handleMonitorCheckChange"  //视频监控设备
       };
       data.type && this[hashMap[data.type]](data, checked);
     }
@@ -389,9 +486,7 @@ export default {
   background-size: 18px;
 }
 
-::v-deep
-.el-tree
-.el-tree-node__expand-icon.expanded.el-icon-caret-right:before {
+::v-deep .el-tree .el-tree-node__expand-icon.expanded.el-icon-caret-right:before {
   background: url("../assets/images/layersTree/jian.png") no-repeat center center;
   content: "";
   display: block;

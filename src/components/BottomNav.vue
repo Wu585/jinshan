@@ -22,12 +22,12 @@ export default {
     return {
       navArray: [
         {
-          name: "球面对比",
+          name: "防汛防台",
           img: require("../assets/images/bottomNav/zhxf.png"),
           link: "http://10.233.250.25:8190/distback/dist/index.html#/"
         },
         {
-          name: "智慧园区",
+          name: "人房信息",
           img: require("../assets/images/bottomNav/zhyq.png"),
           link: ""
         },

@@ -27,6 +27,7 @@ module.exports = {
     viewer: true,
     iServerIP_Port: true,
     SuperMap: true,
-    arcgisIP_Port: true
+    arcgisIP_Port: true,
+    cyberplayer: true
   }
 };
