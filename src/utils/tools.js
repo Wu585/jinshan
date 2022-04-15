@@ -136,8 +136,9 @@ const cb = () => {
       windowPosition
     );
     const infoboxContainer = document.getElementById("bubble");
-    infoboxContainer.style.bottom = canvasHeight - windowPosition.y + 5 + "px";
-    infoboxContainer.style.left = windowPosition.x + 5 + "px";
+    infoboxContainer.style.bottom = canvasHeight - windowPosition.y + "px";
+    infoboxContainer.style.left = windowPosition.x - 280 + "px";
+    console.log("infoboxContainer.offsetWidth", infoboxContainer.offsetWidth);
     infoboxContainer.style.visibility = "visible";
   }
 };
@@ -149,41 +150,31 @@ export const addListener = () => {
   }
 };
 
-export function clickQuery() {
+export function clickQuery(cb = null) {
   // isGetPosition = true;
   const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
   handler.setInputAction((movement) => {
+    console.log("movement");
+    console.log(movement);
     const infoboxContainer = document.getElementById("bubble");
     infoboxContainer.style.visibility = "hidden";
     const pick = viewer.scene.pick(movement.position);
     console.log(pick);
-    /*console.log('pick');
-    console.log(pick);
-    const cartesian = viewer.scene.pickPosition2D(movement.position)
-    console.log('cartesian');
-    console.log(cartesian);
-    const {longitude,latitude} = transformGeometricPosition(cartesian.x,cartesian.y)
-    console.log('lon lat');
-    console.log(longitude,latitude);*/
     if (pick && pick.id && pick.id._description) {
       const description = pick.id._description._value;
-      /*const des = JSON.parse(description);
-      const _description = {};
-      _description["点位名"] = des["点位名"];
-      _description["街镇"] = des["街镇"];*/
-      bus.$emit("update:description", JSON.parse(description),pick.id.id,pick.id._name);
-      /*const position = viewer.scene.pickPosition(movement.position);
-      const cartographic = Cesium.Cartographic.fromCartesian(position);
-      const longitude = Cesium.Math.toDegrees(cartographic.longitude);
-      const latitude = Cesium.Math.toDegrees(cartographic.latitude);*/
-
+      bus.$emit("update:description", JSON.parse(description), pick.id.id, pick.id._name);
       const cartesian = viewer.scene.pickPosition2D(movement.position);
       console.log("cartesian");
       console.log(cartesian);
       const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
-
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
       addListener();
+    } else if (pick && pick.id) {
+      const cartesian = viewer.scene.pickPosition2D(movement.position);
+      const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
+      scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
+      addListener();
+      cb && cb();
     }
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }

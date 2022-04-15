@@ -34,5 +34,9 @@ export const MapUrlHashmap = [
   {
     name: "金山大网格",
     url: `${arcgisIP_Port}/iserver/services/map-arcgis-zerenwangge3857/rest/maps/ze_ren_wang_ge_3857`,
+  },
+  {
+    name: "疫情防控",
+    url: `${arcgisIP_Port}/iserver/services/3D-FXFK/rest/realspace/datas/FXFK`,
   }
 ];

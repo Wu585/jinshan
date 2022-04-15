@@ -3,7 +3,7 @@
     <div class="title">属性面板</div>
     <i class="el-icon-close" @click="close"></i>
     <ul class="content custom-scroll">
-      <li v-for="(val, key) in description" :key="val">
+      <li v-for="(val, key) in description" :key="key">
         <span class="key">{{ key }}: </span>
         <span>{{ val }}</span>
       </li>
@@ -111,7 +111,6 @@ export default {
 
   .content {
     padding: 6px 6px;
-    overflow: auto;
     height: 50px;
 
     > li {

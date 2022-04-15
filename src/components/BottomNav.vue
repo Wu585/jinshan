@@ -16,6 +16,14 @@
 </template>
 
 <script>
+import { flyTo, transformGeometricPosition } from "@/utils/view";
+import { queryPoi } from "@/apis/queryPoi";
+import { addBillboard, addDynamicWall, addLabel, resetEntitiesArray } from "@/utils/entity";
+import { findAllLayerOfOneDataset, findLayer, findMapLayer } from "@/utils/layer";
+import { clearBubble, clickQuery, initView } from "@/utils/tools";
+
+let entitiesArray = [];
+
 export default {
   name: "BottomNav",
   data() {
@@ -23,7 +31,7 @@ export default {
       navArray: [
         {
           name: "防汛防台",
-          img: require("../assets/images/bottomNav/zhxf.png"),
+          img: require("../assets/images/bottomNav/fxft.png"),
           link: "http://10.233.250.25:8190/distback/dist/index.html#/"
         },
         {
@@ -32,8 +40,8 @@ export default {
           link: ""
         },
         {
-          name: "智慧交通",
-          img: require("../assets/images/bottomNav/zhjt.png"),
+          name: "疫情防控",
+          img: require("../assets/images/bottomNav/yqfk.png"),
           link: ""
         },
         {
@@ -47,15 +55,103 @@ export default {
           link: ""
         }
       ],
-      selected: null
+      selected: null,
+      description: {
+        "居住人数": 0,
+        "户籍人员": 0,
+        "来沪人员": 0
+      }
     };
   },
   methods: {
-    onClick(item) {
-      this.selected = item;
-      if (item.name === "球面对比") {
-        window.open("http://10.233.250.25:8090/iserver/services/3D-CBD/rest/realspace/scenes/CBD.openrealspace", "_blank");
+    addA02ClickListener() {
+      clickQuery(() => {
+        this.$emit("update:description", this.description);
+      });
+      findLayer("A02").setQueryParameter({
+        name: "A02",
+        url: `${arcgisIP_Port}/iserver/services/data-rfsd/rest/data`,
+        dataSourceName: "DemonArea",
+        dataSetName: "A02_2"
+      });
+      viewer.pickEvent.addEventListener((info) => {
+        console.log("info");
+        console.log(info);
+        this.description["居住人数"] = ~~(+info["居住人数"]);
+        this.description["户籍人员"] = ~~(+info["户籍人员"]);
+        this.description["来沪人员"] = ~~(+info["来沪人员"]);
+      });
+    },
+    async addBuildingLabel() {
+      const { data } = await queryPoi("rfsd", "DemonArea", "A02_2", "SMID", arcgisIP_Port);
+      const pointsArray = data.features.map(item => {
+        return {
+          x: item.fieldValues[5],
+          y: item.fieldValues[6],
+          buildNum: item.fieldValues[3]
+        };
+      });
+      pointsArray.forEach(item => {
+        const { longitude, latitude } = transformGeometricPosition(item.x, item.y);
+        entitiesArray.push(addLabel({ x: longitude, y: latitude, z: 70 }, item.buildNum));
+      });
+    },
+    async onClick(item) {
+      if (this.selected === item) {
+        this.selected = null;
+        await this.clearAllEffects();
+        return;
       }
+      this.selected = item;
+      await this.clearAllEffects();
+      if (item.name === "防汛防台") {
+        window.open("http://10.233.250.25:8090/iserver/services/3D-CBD/rest/realspace/scenes/CBD.openrealspace", "_blank");
+      } else if (item.name === "人房信息") {
+        this.$emit('show-house')
+        this.addA02ClickListener();
+        flyTo(-12474.4018649403, -54268.983091464266, 483.90533797442913, 5.939856468821999, -0.45023693649058627, 6.283185307179586);
+        await findAllLayerOfOneDataset("精模三维模型", true);
+        const res = await queryPoi("rfsd", "DemonArea", "区域", "SMID", arcgisIP_Port);
+        res.data.features.forEach(item => {
+          console.log("item---");
+          console.log(item);
+          const map = {
+            "万盛金邸西区": "./images/west.png",
+            "万盛金邸东区": "./images/east.png"
+          };
+          const { center } = item.geometry;
+          const { longitude, latitude } = transformGeometricPosition(center.x, center.y);
+          const name = item.fieldValues[10];
+          entitiesArray.push(addBillboard(longitude, latitude, map[name]));
+          const pointsArray = [];
+          const min = [];
+          const max = [];
+          const dayMaxmumHeights = [];
+          const fenceHeight = 50;
+          const wallSteep = 0.005;
+          item.geometry.points.forEach(point => {
+            const { longitude, latitude } = transformGeometricPosition(+point.x, +point.y);
+            pointsArray.push(longitude, latitude);
+            dayMaxmumHeights.push(0.1);
+            min.push(0.1);
+            max.push(fenceHeight);
+          });
+
+          console.log(pointsArray);
+          entitiesArray.push(addDynamicWall(pointsArray, min, max, dayMaxmumHeights, fenceHeight, wallSteep));
+        });
+        await this.addBuildingLabel();
+      } else if (item.name === "疫情防控") {
+        initView();
+        findMapLayer(item.name).show = true;
+      }
+    },
+    async clearAllEffects() {
+      this.$emit('hide-house')
+      await findAllLayerOfOneDataset("精模三维模型", false);
+      resetEntitiesArray(entitiesArray);
+      clearBubble();
+      findMapLayer("疫情防控").show = false;
     }
   }
 };

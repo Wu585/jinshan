@@ -32,10 +32,11 @@ import { flyTo, transformGeometricPosition } from "@/utils/view";
 import bus from "@/utils/bus";
 import { nameOfImageMap } from "@/assets/js/entity-image";
 import { clickQuery } from "@/utils/tools";
-import { addEntity, addLabel, addPolyline } from "@/utils/entity";
+import { addEntity, addLabel, addPolygon, addPolyline } from "@/utils/entity";
 import { getIndexCodeByCollectionCode } from "@/apis/information";
 
 let entityArray = [];
+let polygonEntityArray = [];
 
 export default {
   name: "LayersTree",
@@ -246,6 +247,7 @@ export default {
       }
     },
     async handleS3mCheckChange(data, checked) {
+      console.log("here");
       const { name } = data;
       const s3mNameArr = [];
       const s3mItem = s3mUrlHashmap.find((item) => name === item.name);
@@ -261,22 +263,49 @@ export default {
     },
     async handleLineChecked(data, checked) {
       // window.traceLayerLines.show = checked;
+      /*console.log("---data---");
+      console.log(data);
       const tracyName = `traceLayerLines${data.name}`;
       if (window[tracyName]) {
         window[tracyName].show = checked;
         return;
       }
       window[tracyName] = new Cesium.CustomDataSource(tracyName);
-      viewer.dataSources.add(window[tracyName]);
-      const { data: result } = await queryPoi("arcgis-sh_jd_boundary", "ArcGISFeatureServer",
-        "sh_jd_boundary", "OBJECTID", arcgisIP_Port);
-      const selectedItem = result.features.find(item => item.fieldValues[5] === data.name);
+      viewer.dataSources.add(window[tracyName]);*/
+      if (!checked) {
+        polygonEntityArray.forEach(item => {
+          viewer.entities.remove(item);
+        });
+        polygonEntityArray = [];
+        return;
+      }
+      if (!data.children) {
+        const { data: result } = await queryPoi("arcgis-sh_jd_boundary", "ArcGISFeatureServer",
+          "sh_jd_boundary", "OBJECTID", arcgisIP_Port);
+        console.log("result");
+        console.log(result);
+        result.features.forEach(item => {
+          const arr = [];
+          item.geometry.points.forEach(point => {
+            const { longitude, latitude } = transformGeometricPosition(point.x, point.y);
+            arr.push(longitude, latitude);
+          });
+          const name = item.fieldValues[5];
+          if (name === data.name) {
+            polygonEntityArray.push(addPolyline(arr, name));
+          } else {
+            polygonEntityArray.push(addPolygon(arr, name));
+          }
+        });
+      }
+
+      /*const selectedItem = result.features.find(item => item.fieldValues[5] === data.name);
       const arr = [];
       selectedItem.geometry.points.forEach(item => {
         const { longitude, latitude } = transformGeometricPosition(item.x, item.y);
         arr.push(longitude, latitude);
       });
-      window[tracyName].entities.add(addPolyline(arr));
+      window[tracyName].entities.add(addPolygon(arr, data.name));*/
     },
     handlePoiCheckChange(data, checked) {
       const { id } = data;
@@ -366,58 +395,6 @@ export default {
           console.log("x is null");
         }
       });
-      /*for (let i = 0; i < res.data.data.list.length; i++) {
-        const { indexCode } = list[i];
-        const { data: res1 } = await findCameraInfoByIndexCode(indexCode);
-        if (res1.success) {
-          const { name: cameraName } = res1.data.data[0];
-          const { longitude, latitude, treeNodeIndexcode } = res1.data.data[0];
-          const res2 = await gps84_to_cd(longitude, latitude);
-          const {
-            longitude: lng,
-            latitude: lat
-          } = transformGeometricPosition(+res2.data.data.lng, +res2.data.data.lat);
-          const res3 = await findAllParentTreeNode(treeNodeIndexcode);
-          const pointArray = res3.data.data.data;
-          const streetName = pointArray.find(point => point.parentIndexCode === pointArray.find(point => point.name === "街镇")?.indexCode)?.name;
-          const attr = {};
-          if (streetName) {
-            attr["点位名"] = cameraName;
-            attr["街镇"] = streetName;
-          } else {
-            attr["点位名"] = cameraName;
-          }
-          addEntity("./images/camera.png", lng, lat, JSON.stringify(attr), "monitor", indexCode);
-        }
-      }*/
-      /*res.data.data.list.map(async item => {
-        const { indexCode } = item;
-        const { data: res1 } = await findCameraInfoByIndexCode(indexCode);
-        if (res1.success) {
-          const { cameraName } = res1.data.data[0];
-          const { longitude, latitude, treeNodeIndexcode } = res1.data.data[0];
-          const res2 = await gps84_to_cd(longitude, latitude);
-          const {
-            longitude: lng,
-            latitude: lat
-          } = transformGeometricPosition(+res2.data.data.lng, +res2.data.data.lat);
-          const res3 = await findAllParentTreeNode(treeNodeIndexcode);
-          const pointArray = res3.data.data.data;
-          console.log("pointArray");
-          console.log(pointArray);
-          const streetName = pointArray.find(point => point.parentIndexCode === pointArray.find(point => point.name === "街镇")?.indexCode)?.name;
-          console.log("streetName");
-          console.log(streetName);
-          const attr = {};
-          if (streetName) {
-            attr["点位名"] = cameraName;
-            attr["街镇"] = cameraName;
-          } else {
-            attr["点位名"] = cameraName;
-          }
-          addEntity("./images/camera.png", lng, lat, JSON.stringify(attr));
-        }
-      });*/
     },
     async handleCheckChange(data, checked) {
       this.defaultCheckedKeys = this.$refs.tree.getCheckedKeys();

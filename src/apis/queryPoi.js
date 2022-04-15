@@ -1,4 +1,5 @@
 import axios from "axios";
+import request from "@/utils/request";
 
 // 查询所有poi坐标
 export function queryPoi(serviceName, dataSourceName, dataSetName, idType = "SMID", serviceIp = iServerIP_Port) {
@@ -13,7 +14,7 @@ export function queryPoi(serviceName, dataSourceName, dataSetName, idType = "SMI
       attributeFilter: `${idType}>0`
     }
   };
-  return axios({
+  return request({
     method: "post",
     url: dataServiceUrl,
     data: queryObj

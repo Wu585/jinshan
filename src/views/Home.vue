@@ -1,7 +1,7 @@
 <template>
   <div class="home" id="cesiumContainer">
     <Header />
-    <Search/>
+    <Search />
     <SideBar
       @show-layers-tree="layersTreeVisible = true"
       :title.sync="layersTreeTitle"
@@ -17,6 +17,7 @@
       :checked-keys="checkedKeys"
       :tree-default-props="treeDataProps"
     />
+    <Houses v-if="housesVisible" @hide-house="housesVisible=false" />
     <QueryPanel
       v-if="queryPanelVisible"
       @hideQueryPanel="queryPanelVisible = false"
@@ -25,7 +26,10 @@
       v-else-if="viewsPanelVisible"
       @hideViewsPanel="viewsPanelVisible = false"
     />
-    <BottomNav />
+    <BottomNav @update:description="poiDescription=$event"
+               @show-house="housesVisible=true"
+               @hide-house="housesVisible=false"
+    />
     <!--    <Map />-->
     <div id="bubble" class="bubble-wrapper-1">
       <EntityBubble :is-camera="isCamera" :description="poiDescription" />
@@ -39,18 +43,18 @@ import Header from "@/components/Header";
 import { setViewport, transformGeometricPosition } from "@/utils/view";
 import SideBar from "@/components/SideBar";
 import LayersTree from "@/components/LayersTree";
-import Map from "@/components/Map";
 import { MapUrlHashmap } from "@/assets/js/map-url";
 import { s3mUrlHashmap } from "@/assets/js/s3m-url";
 import EntityBubble from "@/components/EntityBubble";
 import bus from "@/utils/bus";
 import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
 import { queryPoi } from "@/apis/queryPoi";
-import { addCameraEntity, addPolyline } from "@/utils/entity";
+import { addPolyline } from "@/utils/entity";
 import QueryPanel from "@/components/QueryPanel";
 import BottomNav from "@/components/BottomNav";
 import ViewsPanel from "@/components/ViewsPanel";
 import Search from "@/components/Search";
+import Houses from "@/components/Houses";
 
 export default {
   name: "Home",
@@ -60,10 +64,10 @@ export default {
     BottomNav,
     QueryPanel,
     EntityBubble,
-    Map,
     LayersTree,
     SideBar,
-    Header
+    Header,
+    Houses
   },
   data() {
     return {
@@ -78,7 +82,8 @@ export default {
       treeDataProps: {
         children: "children",
         label: "name"
-      }
+      },
+      housesVisible: false
     };
   },
   async mounted() {
@@ -130,11 +135,6 @@ export default {
     });
 
     await this.addAllLayers();
-    // await this.addBoundLines(); // 加载乡镇行政区，都是线
-
-    // await test();
-    const {longitude,latitude} = transformGeometricPosition(-396.392507553101,443.220664978027)
-    addCameraEntity(longitude,latitude)
   },
   methods: {
     async addBoundLines() {
@@ -231,7 +231,7 @@ export default {
   z-index: 998;
   position: fixed;
   visibility: hidden;
-  transform: translate(-280px, 80px);
+  //transform: translate(-280px, 80px);
 }
 
 #cesiumContainer {
