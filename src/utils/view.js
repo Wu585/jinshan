@@ -44,6 +44,5 @@ export function setViewportByLonAndLat(lon, lat) {
       pitch: -0.7930082176213968,
       roll: 6.283185307179558
     }
-
   });
 }

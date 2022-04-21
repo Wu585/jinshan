@@ -8,4 +8,17 @@ const request = axios.create({
   }
 });
 
+/*request.interceptors.request.use(
+  config => {
+    if (getToken()) {
+      config.headers["x-access-token"] = getToken();
+    }
+    return config;
+  },
+  error => {
+    console.log(error);
+    Promise.reject(error);
+  }
+);*/
+
 export default request;

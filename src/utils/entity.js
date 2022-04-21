@@ -47,7 +47,7 @@ export function addEntity(imagePath, lon, lat, description = "", name = "", id) 
     billboard: {
       image: imagePath,
       width: 20,
-      height: 20
+      height: 25
     },
     description
   });
@@ -95,6 +95,21 @@ export function addLabel({ x, y, z }, label, [r, g, b, a] = [1, 1, 1, 1]) {
   });
 }
 
+export function addMapLabel({ x, y, z }, label, [r, g, b, a] = [1, 1, 1, 1]) {
+  return viewer.entities.add({
+    position: Cesium.Cartesian3.fromDegrees(x, y, z),
+    label: {
+      text: label,
+      font: "14pt Source Han Sans CN", //字体样式
+      fillColor: Cesium.Color.fromCssColorString(`rgba(255, 255, 255, 1)`), //字体颜色
+      // backgroundColor: Cesium.Color.fromCssColorString(`rgba(51,52,140,1)`),
+      verticalOrigin: Cesium.VerticalOrigin.CENTER, //垂直位置
+      horizontalOrigin: Cesium.HorizontalOrigin.CENTER, //水平位置
+      pixelOffset: new Cesium.Cartesian2(10, 0) //偏移
+    }
+  });
+}
+
 export function addPolygon(pointArray, id, fill = true, outline = false) {
   return viewer.entities.add({
     id,
@@ -103,8 +118,8 @@ export function addPolygon(pointArray, id, fill = true, outline = false) {
     outlineColor: Cesium.Color.RED,
     polygon: {
       hierarchy: Cesium.Cartesian3.fromDegreesArray(pointArray),
-      material: Cesium.Color.fromCssColorString(`rgba(0, 0, 0, 0.5)`),
-      height: 5
+      material: Cesium.Color.fromCssColorString(`rgba(0, 0, 0, 1)`),
+      height: 0
     }
   });
 }

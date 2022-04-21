@@ -54,10 +54,17 @@ export function getAllPointInfo() {
   });
 }
 
-export function updatePointInfo(data){
+export function updatePointInfo(data) {
   return request({
-    method:'post',
-    url:`${api}/point-information/updatePointInfo`,
+    method: "post",
+    url: `${api}/point-information/updatePointInfo`,
     data
-  })
+  });
+}
+
+export function getToken() {
+  return request({
+    method: "get",
+    url: `${gps}/com/getToken4Corp?corpid=12298qz6&secret=Mf9kC3AIW8atE3v04V8atP7Hh07q1p6l`
+  });
 }

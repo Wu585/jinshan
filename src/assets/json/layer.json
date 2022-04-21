@@ -43,57 +43,140 @@
               {
                 "id": 515,
                 "name": "亭林镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -16912.57224065531,
+                  "y": -37214.30095944647,
+                  "z": 43257.7114179451,
+                  "heading": 6.283185307179586,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 516,
                 "name": "吕巷镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -25200.83720472036,
+                  "y": -44169.21726863179,
+                  "z": 47297.37380234245,
+                  "heading": 6.283185307179586,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 517,
                 "name": "山阳镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -11767.171997413505,
+                  "y": -53325.3940630313,
+                  "z": 32472.00805637613,
+                  "heading": 6.283185307179525,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 518,
                 "name": "廊下镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -27087.252223925665,
+                  "y": -49076.46182005014,
+                  "z": 34765.17609679699,
+                  "heading": 6.283185307179586,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 519,
                 "name": "张堰镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -17640.123059162404,
+                  "y": -48989.17656579055,
+                  "z": 25326.409144081175,
+                  "heading": 6.283185307179586,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 520,
                 "name": "朱泾镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -28471.019246827345,
+                  "y": -38113.17791463807,
+                  "z": 36647.70638529584,
+                  "heading": 6.283185307179586,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 521,
                 "name": "枫泾镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -40340.699735420756,
+                  "y": -39056.97213667026,
+                  "z": 51456.53660800215,
+                  "heading": 6.283185307179575,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 522,
                 "name": "漕泾镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -8427.835452897474,
+                  "y": -48833.64842155762,
+                  "z": 39215.55991246272,
+                  "heading": 6.283185307179586,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 523,
                 "name": "石化街道",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x":-15508.695668314584,"y":-57655.061019287445,"z":15438.707194804214,"heading":6.283185307179586,"pitch":-1.5707963267948966,"roll":0
+                }
               },
               {
                 "id": 524,
                 "name": "金山卫镇",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -18488.03868641425,
+                  "y": -52731.576386010274,
+                  "z": 35290.49607318267,
+                  "heading": 6.283185307179586,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               },
               {
                 "id": 525,
                 "name": "金山工业区",
-                "type": "line"
+                "type": "line",
+                "camera": {
+                  "x": -12128.29237807542,
+                  "y": -43646.00319055468,
+                  "z": 31143.534439806826,
+                  "heading": 6.283185307179586,
+                  "pitch": -1.5707963267948966,
+                  "roll": 0
+                }
               }
             ]
           },
@@ -825,7 +908,7 @@
       {
         "id": 516,
         "name": "视频监控数据",
-        "imagePath": "./images/layersTree/shizhengsheshi.png",
+        "imagePath": "./images/layersTree/shexiangtou.png",
         "children": []
       },
       {
@@ -1174,252 +1257,8 @@
       {
         "id": 46,
         "name": "区公安局",
-        "count": 3,
         "imagePath": "./images/layersTree/gonganju.png",
-        "children": [
-          {
-            "id": 240,
-            "name": "治安视频",
-            "type": "poi",
-            "type2": "camera",
-            "count": 1,
-            "datasetName": [
-              "亭林镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 420,
-            "name": "亭林镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "亭林镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 421,
-            "name": "吕巷镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "吕巷镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 422,
-            "name": "山阳镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "山阳镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 423,
-            "name": "廊下镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "廊下镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 424,
-            "name": "张堰镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "张堰镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 425,
-            "name": "朱泾镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "朱泾镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 426,
-            "name": "枫泾镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "枫泾镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 427,
-            "name": "漕泾镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "漕泾镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 428,
-            "name": "石化街道",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "石化街道"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 429,
-            "name": "金山卫镇",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "金山卫镇"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 430,
-            "name": "金山工业区",
-            "type": "poi",
-            "type3": "point",
-            "count": 1,
-            "datasetName": [
-              "金山工业区"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 400,
-            "name": "枫泾古镇摄影头",
-            "type": "poi",
-            "typ2": "camera",
-            "count": 1,
-            "datasetName": [
-              "区域监控"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          },
-          {
-            "id": 241,
-            "name": "三防监测数据"
-          },
-          {
-            "id": 242,
-            "name": "其他",
-            "type": "poi",
-            "typ2": "camera",
-            "count": 1,
-            "datasetName": [
-              "公安机关"
-            ],
-            "info": {
-              "数据格式": "矢量数据",
-              "生产日期": "2021-2-3",
-              "生产单位名称": "区公安局",
-              "维护人": "张三",
-              "维护人联系方式": "131156156156"
-            }
-          }
-        ]
+        "children": []
       },
       {
         "id": 47,
@@ -1916,13 +1755,13 @@
       {
         "id": 69,
         "name": "住宿",
-        "count": 2,
+        "count": 212,
         "imagePath": "./images/layersTree/zhusu.png",
         "children": [
           {
             "id": 326,
             "name": "酒店",
-            "count": 1,
+            "count": 6,
             "type": "poi",
             "datasetName": [
               "酒店"
@@ -1943,7 +1782,7 @@
             "id": 328,
             "name": "小区",
             "type": "poi",
-            "count": 1,
+            "count": 206,
             "datasetName": [
               "小区"
             ],
@@ -1964,14 +1803,14 @@
       {
         "id": 70,
         "name": "企业商务",
-        "count": 4,
+        "count": 129,
         "imagePath": "./images/layersTree/gaoxinqiye-.png",
         "children": [
           {
             "id": 330,
             "name": "大厦",
             "type": "poi",
-            "count": 1,
+            "count": 14,
             "datasetName": [
               "大厦"
             ],
@@ -2003,7 +1842,7 @@
             "id": 332,
             "name": "农林牧渔场",
             "type": "poi",
-            "count": 1,
+            "count": 70,
             "datasetName": [
               "农林牧渔场"
             ],
@@ -2019,7 +1858,7 @@
             "id": 333,
             "name": "厂区",
             "type": "poi",
-            "count": 1,
+            "count": 44,
             "datasetName": [
               "厂区"
             ],
@@ -2036,14 +1875,14 @@
       {
         "id": 71,
         "name": "餐饮",
-        "count": 1,
+        "count": 2413,
         "imagePath": "./images/layersTree/canyin-3.png",
         "children": [
           {
             "id": 334,
-            "name": "中餐",
+            "name": "餐饮",
             "type": "poi",
-            "count": 1,
+            "count": 2413,
             "datasetName": [
               "餐饮"
             ],
@@ -2076,14 +1915,14 @@
       {
         "id": 72,
         "name": "购物",
-        "count": 1,
+        "count": 2,
         "imagePath": "./images/layersTree/shopping.png",
         "children": [
           {
             "id": 339,
             "name": "商场",
             "type": "poi",
-            "count": 1,
+            "count": 2,
             "datasetName": [
               "商场"
             ],
@@ -2120,14 +1959,14 @@
       {
         "id": 73,
         "name": "交通出行",
-        "count": 3,
+        "count": 21,
         "imagePath": "./images/layersTree/fuwuqu.png",
         "children": [
           {
             "id": 345,
-            "name": "车站",
+            "name": "火车站",
             "type": "poi",
-            "count": 1,
+            "count": 4,
             "datasetName": [
               "火车站"
             ],
@@ -2147,7 +1986,7 @@
             "id": 347,
             "name": "服务区",
             "type": "poi",
-            "count": 1,
+            "count": 2,
             "datasetName": [
               "服务区"
             ],
@@ -2163,7 +2002,7 @@
             "id": 348,
             "name": "收费站",
             "type": "poi",
-            "count": 1,
+            "count": 15,
             "datasetName": [
               "收费站"
             ],
@@ -2192,14 +2031,14 @@
       {
         "id": 74,
         "name": "生活服务",
-        "count": 2,
+        "count": 410,
         "imagePath": "./images/layersTree/iconfontshenghuojiaofei.png",
         "children": [
           {
             "id": 352,
-            "name": "金融",
+            "name": "金融保险",
             "type": "poi",
-            "count": 1,
+            "count": 346,
             "datasetName": [
               "金融保险"
             ],
@@ -2215,7 +2054,7 @@
             "id": 353,
             "name": "通讯营业厅",
             "type": "poi",
-            "count": 1,
+            "count": 64,
             "datasetName": [
               "通讯营业厅"
             ],
@@ -2260,7 +2099,7 @@
       {
         "id": 75,
         "name": "运动休闲",
-        "count": 2,
+        "count": 741,
         "imagePath": "./images/layersTree/-yundongxiuxian.png",
         "children": [
           {
@@ -2279,7 +2118,7 @@
             "id": 364,
             "name": "风景名胜",
             "type": "poi",
-            "count": 1,
+            "count": 3,
             "datasetName": [
               "风景名胜"
             ],
@@ -2299,7 +2138,7 @@
             "id": 366,
             "name": "休闲活动",
             "type": "poi",
-            "count": 1,
+            "count": 738,
             "datasetName": [
               "休闲活动"
             ],
@@ -2316,14 +2155,14 @@
       {
         "id": 76,
         "name": "科教文化",
-        "count": 4,
+        "count": 819,
         "imagePath": "./images/layersTree/kejiaowenhua.png",
         "children": [
           {
             "id": 367,
-            "name": "学校",
+            "name": "中小学",
             "type": "poi",
-            "count": 1,
+            "count": 47,
             "datasetName": [
               "中小学"
             ],
@@ -2339,7 +2178,7 @@
             "id": 368,
             "name": "科研机构",
             "type": "poi",
-            "count": 1,
+            "count": 29,
             "datasetName": [
               "科研机构"
             ],
@@ -2353,9 +2192,9 @@
           },
           {
             "id": 369,
-            "name": "培训机构",
+            "name": "教育文化",
             "type": "poi",
-            "count": 1,
+            "count": 742,
             "datasetName": [
               "教育文化"
             ],
@@ -2409,14 +2248,14 @@
       {
         "id": 77,
         "name": "健康医疗保健",
-        "count": 1,
+        "count": 14,
         "imagePath": "./images/layersTree/yiliaobaojian.png",
         "children": [
           {
             "id": 378,
             "name": "医院",
             "type": "poi",
-            "count": 1,
+            "count": 14,
             "datasetName": [
               "医院"
             ],
@@ -2465,14 +2304,14 @@
       {
         "id": 78,
         "name": "国家政府",
-        "count": 2,
+        "count": 23,
         "imagePath": "./images/layersTree/gejizhengfu.png",
         "children": [
           {
             "id": 387,
             "name": "政府机关",
             "type": "poi",
-            "count": 1,
+            "count": 22,
             "datasetName": [
               "政府机关"
             ],
@@ -2521,14 +2360,14 @@
       {
         "id": 79,
         "name": "公共设施",
-        "count": 2,
+        "count": 994,
         "imagePath": "./images/layersTree/gonggongsheshi.png",
         "children": [
           {
             "id": 393,
-            "name": "厕所",
+            "name": "公厕",
             "type": "poi",
-            "count": 1,
+            "count": 219,
             "datasetName": [
               "公厕"
             ],
@@ -2554,9 +2393,9 @@
           },
           {
             "id": 397,
-            "name": "消防设施",
+            "name": "公用设施",
             "type": "poi",
-            "count": 1,
+            "count": 775,
             "datasetName": [
               "公用设施"
             ],

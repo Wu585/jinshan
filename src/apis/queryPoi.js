@@ -35,10 +35,11 @@ export function queryPoiBySpecial(
   pointsArray,
   serviceName,
   dataSourceName,
-  dataSetName
+  dataSetName,
+  severIp = iServerIP_Port
 ) {
   const dataServiceUrl =
-    iServerIP_Port +
+    severIp +
     `/iserver/services/data-${serviceName}/rest/data/featureResults.rjson?returnContent=true`; // 数据服务URL
   const queryObj = {
     getFeatureMode: "SPATIAL",
@@ -51,7 +52,8 @@ export function queryPoiBySpecial(
       type: "REGION",
       style: null
       // polygon
-    }
+    },
+    maxFeatures: -1
   };
   return axios({
     url: dataServiceUrl,

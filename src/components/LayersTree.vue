@@ -14,6 +14,7 @@
         :expand-on-click-node="false"
         :props="defaultProps"
         @check-change="handleCheckChange"
+        @check="handleLineChecked"
         :render-after-expand="false"
         :default-checked-keys="defaultCheckedKeys"
         :render-content="renderContent"
@@ -27,13 +28,13 @@ import { s3mUrlHashmap } from "@/assets/js/s3m-url";
 import axios from "axios";
 import { queryPoi } from "@/apis/queryPoi";
 import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
-import { PointCluster } from "@/utils/pointCluster";
 import { flyTo, transformGeometricPosition } from "@/utils/view";
 import bus from "@/utils/bus";
 import { nameOfImageMap } from "@/assets/js/entity-image";
-import { clickQuery } from "@/utils/tools";
-import { addEntity, addLabel, addPolygon, addPolyline } from "@/utils/entity";
-import { getIndexCodeByCollectionCode } from "@/apis/information";
+import { clickQuery, debounce } from "@/utils/tools";
+import { addEntity, addLabel, addMapLabel, addPolygon, addPolyline } from "@/utils/entity";
+import { findCameraInfoByIndexCode, getIndexCodeByCollectionCode } from "@/apis/information";
+import layersJson from "../assets/json/layer.json";
 
 let entityArray = [];
 let polygonEntityArray = [];
@@ -261,29 +262,22 @@ export default {
         (name) => (viewer.scene.layers.find(name).visible = checked)
       );
     },
-    async handleLineChecked(data, checked) {
-      // window.traceLayerLines.show = checked;
-      /*console.log("---data---");
-      console.log(data);
-      const tracyName = `traceLayerLines${data.name}`;
-      if (window[tracyName]) {
-        window[tracyName].show = checked;
+    async handleLineChecked(data) {
+      const namesArray = layersJson[0].children[0].children[2].children.map(item => item.name);
+      if (!namesArray.includes(data.name)) {
         return;
       }
-      window[tracyName] = new Cesium.CustomDataSource(tracyName);
-      viewer.dataSources.add(window[tracyName]);*/
-      if (!checked) {
+      if (window.hasLine) {
         polygonEntityArray.forEach(item => {
           viewer.entities.remove(item);
         });
         polygonEntityArray = [];
+        window.hasLine = false;
         return;
       }
       if (!data.children) {
         const { data: result } = await queryPoi("arcgis-sh_jd_boundary", "ArcGISFeatureServer",
           "sh_jd_boundary", "OBJECTID", arcgisIP_Port);
-        console.log("result");
-        console.log(result);
         result.features.forEach(item => {
           const arr = [];
           item.geometry.points.forEach(point => {
@@ -292,13 +286,19 @@ export default {
           });
           const name = item.fieldValues[5];
           if (name === data.name) {
-            polygonEntityArray.push(addPolyline(arr, name));
+            const { center } = item.geometry;
+            const { longitude, latitude } = transformGeometricPosition(center.x, center.y);
+            const polyline = addPolyline(arr, name);
+            viewer.flyTo(polyline, {
+              duration: 1
+            });
+            window.hasLine = true;
+            polygonEntityArray.push(polyline, addMapLabel({ x: longitude, y: latitude, z: 20 }, name));
           } else {
             polygonEntityArray.push(addPolygon(arr, name));
           }
         });
       }
-
       /*const selectedItem = result.features.find(item => item.fieldValues[5] === data.name);
       const arr = [];
       selectedItem.geometry.points.forEach(item => {
@@ -318,6 +318,10 @@ export default {
       }
       const { datasetName } = data;
       if (datasetName) {
+        if (!window[traceLayer]) {
+          window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+          viewer.dataSources.add(window[traceLayer]);
+        }
         const arr = [];
         datasetName.map(async (name) => {
           const { serviceName, dataSource } = dataServiceUrlHashmap.find(
@@ -342,45 +346,51 @@ export default {
             });
             arr.push([longitude, latitude, attrObj]);
             if (data?.type3 === "point") {
+              console.log("111");
               if (!window[traceLayer]) {
                 window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
                 viewer.dataSources.add(window[traceLayer]);
               }
-              /*window[traceLayer].entities.add({
-                position: Cesium.Cartesian3.fromDegrees(longitude, latitude, 60),
-                point: {
-                  color: Cesium.Color.YELLOW, //颜色
-                  pixelSize: 4 //点大小
-                },
-                description: JSON.stringify(attrObj)
-              });*/
               addEntity("./images/camera.png", longitude, latitude, JSON.stringify(attrObj));
             }
+            window[traceLayer].entities.add(addEntity("./images/queryEntities/" + nameOfImageMap[data.name] + ".png",
+              longitude, latitude, JSON.stringify(attrObj)));
           });
-          let imagePath;
-          if (!data.type3) {
-            if (data?.type2 === "camera") {
-              imagePath = "./images/" + "sxt" + ".png";
-            } else if (!data.type3) {
-              imagePath =
-                "./images/queryEntities/" + nameOfImageMap[data.name] + ".png";
-            }
-            const juhe = new PointCluster(viewer, arr, imagePath);
-            window[traceLayer] = juhe.dataSource;
-          }
           clickQuery();
         });
       }
     },
     async handleMonitorCheckChange(data, checked) {
+      const { id } = data;
+      let traceLayer = `traceLayer${id}`;
+      /*if (window[traceLayer]) {
+        window[traceLayer].show = checked;
+        return;
+      }*/
+      if (!checked) {
+        window[traceLayer].forEach(item => viewer.entities.remove(item));
+        window[traceLayer] = [];
+        return;
+      }
       clickQuery();
       const { collectionCode } = data;
       const res = await getIndexCodeByCollectionCode(collectionCode);
       const list = res.data.data.list;
       console.log("list");
       console.log(list);
-      list.forEach(item => {
+      if (!window[traceLayer]) {
+        /* window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+         viewer.dataSources.add(window[traceLayer]);*/
+        window[traceLayer] = [];
+      }
+      list.map(async item => {
         const { x, y, streetTown, name, indexCode } = item;
+        /*findCameraInfoByIndexCode(indexCode).then(res=>{
+          if(+res.data.data.data[0].isOnline===0){
+            console.log('res');
+            console.log(res);
+          }
+        })*/
         if (x) {
           const { longitude, latitude } = transformGeometricPosition(+x, +y);
           const attr = {};
@@ -390,12 +400,29 @@ export default {
           } else {
             attr["点位名"] = name;
           }
-          addEntity("./images/camera.png", longitude, latitude, JSON.stringify(attr), "monitor", indexCode);
+          /*monitorEntityArray.push(addEntity("./images/camera.png",
+            longitude, latitude, JSON.stringify(attr), "monitor", indexCode));*/
+          const res = await findCameraInfoByIndexCode(indexCode);
+          if (+res.data.data.data[0].isOnline === 1) {
+            const entity = addEntity("./images/camera.png",
+              longitude, latitude, JSON.stringify(attr), "monitor", indexCode);
+            window[traceLayer].push(entity);
+          } else {
+            const entity = addEntity("./images/camera_1.png",
+              longitude, latitude, JSON.stringify(attr), "monitor", indexCode);
+            window[traceLayer].push(entity);
+          }
         } else {
           console.log("x is null");
         }
       });
+      this.flyTo(window[traceLayer]);
     },
+    flyTo: debounce((traceLayer) => {
+      viewer.flyTo(traceLayer, {
+        duration: 1
+      });
+    }),
     async handleCheckChange(data, checked) {
       this.defaultCheckedKeys = this.$refs.tree.getCheckedKeys();
       sessionStorage.setItem(
@@ -405,11 +432,11 @@ export default {
       const hashMap = {
         map: "handleMapCheckChange",
         s3m: "handleS3mCheckChange",
-        line: "handleLineChecked",
+        // line: "handleLineChecked",
         poi: "handlePoiCheckChange",
         monitor: "handleMonitorCheckChange"  //视频监控设备
       };
-      data.type && this[hashMap[data.type]](data, checked);
+      data.type && this[hashMap[data.type]]?.(data, checked);
     }
   },
   mounted() {
@@ -420,7 +447,10 @@ export default {
         );
       });
     });
-    this.defaultCheckedKeys = JSON.parse(sessionStorage.getItem(this.title));
+
+    this.$nextTick(() => {
+      this.defaultCheckedKeys = JSON.parse(sessionStorage.getItem(this.title));
+    });
   }
 };
 </script>

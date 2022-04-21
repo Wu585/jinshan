@@ -19,8 +19,10 @@
 import { flyTo, transformGeometricPosition } from "@/utils/view";
 import { queryPoi } from "@/apis/queryPoi";
 import { addBillboard, addDynamicWall, addLabel, resetEntitiesArray } from "@/utils/entity";
-import { findAllLayerOfOneDataset, findLayer, findMapLayer } from "@/utils/layer";
+import { setAllLayersVisibleOfOneDataset, findLayer, findMapLayer, findAllLayersOfOneDataset } from "@/utils/layer";
 import { clearBubble, clickQuery, initView } from "@/utils/tools";
+import bus from "@/utils/bus";
+import { getToken } from "@/apis/information";
 
 let entitiesArray = [];
 
@@ -32,7 +34,6 @@ export default {
         {
           name: "防汛防台",
           img: require("../assets/images/bottomNav/fxft.png"),
-          link: "http://10.233.250.25:8190/distback/dist/index.html#/"
         },
         {
           name: "人房信息",
@@ -64,9 +65,16 @@ export default {
     };
   },
   methods: {
-    addA02ClickListener() {
+    async addA02ClickListener() {
+      const layersNameArray = await findAllLayersOfOneDataset("精模三维模型");
+      layersNameArray.forEach(name => {
+        if (name !== "A02") {
+          findLayer(name).selectEnabled = false;
+        }
+      });
       clickQuery(() => {
-        this.$emit("update:description", this.description);
+        // this.$emit("update:description", this.description,'','');
+        bus.$emit("update:description", this.description);
       });
       findLayer("A02").setQueryParameter({
         name: "A02",
@@ -84,11 +92,11 @@ export default {
     },
     async addBuildingLabel() {
       const { data } = await queryPoi("rfsd", "DemonArea", "A02_2", "SMID", arcgisIP_Port);
-      const pointsArray = data.features.map(item => {
+      const pointsArray = data.features.filter(item => +item.fieldValues[13] !== 0).map(item => {
         return {
-          x: item.fieldValues[5],
-          y: item.fieldValues[6],
-          buildNum: item.fieldValues[3]
+          x: item.fieldValues[15],
+          y: item.fieldValues[16],
+          buildNum: item.fieldValues[13]
         };
       });
       pointsArray.forEach(item => {
@@ -105,12 +113,15 @@ export default {
       this.selected = item;
       await this.clearAllEffects();
       if (item.name === "防汛防台") {
-        window.open("http://10.233.250.25:8090/iserver/services/3D-CBD/rest/realspace/scenes/CBD.openrealspace", "_blank");
+        const res = await getToken()
+        const token = res.data.data["x-access-token"]
+        console.log('token');
+        console.log(token);
       } else if (item.name === "人房信息") {
-        this.$emit('show-house')
-        this.addA02ClickListener();
+        this.$emit("show-house");
+        await this.addA02ClickListener();
         flyTo(-12474.4018649403, -54268.983091464266, 483.90533797442913, 5.939856468821999, -0.45023693649058627, 6.283185307179586);
-        await findAllLayerOfOneDataset("精模三维模型", true);
+        await setAllLayersVisibleOfOneDataset("精模三维模型", true);
         const res = await queryPoi("rfsd", "DemonArea", "区域", "SMID", arcgisIP_Port);
         res.data.features.forEach(item => {
           console.log("item---");
@@ -147,8 +158,8 @@ export default {
       }
     },
     async clearAllEffects() {
-      this.$emit('hide-house')
-      await findAllLayerOfOneDataset("精模三维模型", false);
+      this.$emit("hide-house");
+      await setAllLayersVisibleOfOneDataset("精模三维模型", false);
       resetEntitiesArray(entitiesArray);
       clearBubble();
       findMapLayer("疫情防控").show = false;

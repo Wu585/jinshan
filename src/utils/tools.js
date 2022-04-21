@@ -161,6 +161,7 @@ export function clickQuery(cb = null) {
     const pick = viewer.scene.pick(movement.position);
     console.log(pick);
     if (pick && pick.id && pick.id._description) {
+      // 针对poi点击
       const description = pick.id._description._value;
       bus.$emit("update:description", JSON.parse(description), pick.id.id, pick.id._name);
       const cartesian = viewer.scene.pickPosition2D(movement.position);
@@ -169,7 +170,8 @@ export function clickQuery(cb = null) {
       const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
       addListener();
-    } else if (pick && pick.id) {
+    } else if (pick && typeof pick.id === "string") {
+      // 针对人房信息点击
       const cartesian = viewer.scene.pickPosition2D(movement.position);
       const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
@@ -315,4 +317,17 @@ export function clear() {
   viewshed3D?.clear();
   pointHandler?.clear();
   QueryPanel.methods.clear();
+}
+
+export function debounce(fn,delay){
+  let timerId = null
+  return function(){
+    let context = this
+    if(timerId){
+      clearTimeout(timerId)
+    }
+    timerId = setTimeout(()=>{
+      fn.apply(context,arguments)
+    },delay || 500)
+  }
 }

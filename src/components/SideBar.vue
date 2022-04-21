@@ -75,7 +75,9 @@ export default {
           activeImage: require("../assets/images/sidebar/shpoi-active.png")
         }
       ],
-      selectedItem: null
+      selectedItem: null,
+      treeDataChildren: null,
+      wlwTreeDataChildren: null,
     };
   },
   computed: {
@@ -92,7 +94,7 @@ export default {
     title: {},
     treeData: {}
   },
-  mounted() {
+  async mounted() {
     this.layersArray.forEach((item) => {
       if (item.defaultKeys) {
         sessionStorage.setItem(item.name, JSON.stringify(item.defaultKeys));
@@ -100,25 +102,32 @@ export default {
         sessionStorage.setItem(item.name, "[]");
       }
     });
+    this.treeDataChildren = await this.handleClickWLGZ();
   },
   methods: {
     async handleClickWLGZ() {
       const { data } = await getTree();
       console.log(data);
       const newTreeData = [];
-      data.data.list.forEach(item => {
+      data.data.list.forEach((item) => {
         newTreeData.push({
           name: item.collectionName,
           collectionCode: item.collectionCode,
           type: "monitor",
-          children: item.children.map(point => ({
+          id: item.id,
+          count: item.count,
+          children: item.children.map((point) => ({
             name: point.collectionName,
             type: "monitor",
             collectionCode: point.collectionCode,
-            children: point.children.map(x => ({
+            id: point.id,
+            count: point.count,
+            children: point.children.map((x) => ({
               name: x.collectionName,
               type: "monitor",
-              collectionCode: x.collectionCode
+              collectionCode: x.collectionCode,
+              id: x.id,
+              count: x.count
             }))
           }))
         });
@@ -128,13 +137,13 @@ export default {
     async handleClick(item) {
       this.selectedItem = item;
       const treeData = layersTreeJson.find((layer) => layer.name === item.name);
+      if (item.name === "物联感知数据") {
+        treeData.children.find(item => item.name === "视频监控数据").children = this.treeDataChildren;
+      }
       this.$emit("show-layers-tree");
       this.$emit("update:title", item.name);
       this.$emit("update:treeData", treeData.children);
       bus.$emit("update:defaultCheckedKeys");
-      if (item.name === "物联感知数据") {
-        treeData.children.find(item => item.name === "视频监控数据").children = await this.handleClickWLGZ();
-      }
     }
   }
 };
