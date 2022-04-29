@@ -1,14 +1,19 @@
 <template>
   <div class="bubble-wrapper">
-    <div class="title">属性面板</div>
+    <div style="height: 22px;">
+      <div class="title" v-show="!currentIndexCode">属性面板</div>
+    </div>
     <i class="el-icon-close" @click="close"></i>
-    <ul class="content custom-scroll">
+    <ul class="content custom-scroll" v-if="description&&JSON.stringify(description)!=='{}'"
+        :class="{fullHeight:!currentIndexCode}">
       <li v-for="(val, key) in description" :key="key">
         <span class="key">{{ key }}: </span>
         <span>{{ val }}</span>
       </li>
     </ul>
-    <div v-show="currentIndexCode" style="height: 60%;width: 95%">
+    <div v-show="currentIndexCode"
+         :class="{fullHeight:currentIndexCode}"
+         style="height: 60%;width: 95%;">
       <div class="video" ref="video"></div>
     </div>
   </div>
@@ -65,8 +70,10 @@ export default {
   },
   mounted() {
     bus.$on("update:description", (des, id, name) => {
-      console.log('name');
+      console.log("name");
       console.log(name);
+      console.log("id");
+      console.log(id);
       this.currentIndexCode = id;
       if (name !== "monitor") {
         console.log("here");
@@ -95,6 +102,12 @@ export default {
   position: absolute;
   top: -250px;
   left: 0;
+
+  .fullHeight {
+    height: 180px !important;
+    overflow: auto;
+    margin-top: 12px;
+  }
 
   .el-icon-close {
     position: absolute;

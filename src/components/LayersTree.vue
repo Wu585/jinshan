@@ -33,7 +33,7 @@ import bus from "@/utils/bus";
 import { nameOfImageMap } from "@/assets/js/entity-image";
 import { clickQuery, debounce } from "@/utils/tools";
 import { addEntity, addLabel, addMapLabel, addPolygon, addPolyline } from "@/utils/entity";
-import { findCameraInfoByIndexCode, getIndexCodeByCollectionCode } from "@/apis/information";
+import { findCameraInfoByIndexCode, getBlockIdByName, getIndexCodeByCollectionCode } from "@/apis/information";
 import layersJson from "../assets/json/layer.json";
 
 let entityArray = [];
@@ -248,7 +248,7 @@ export default {
       }
     },
     async handleS3mCheckChange(data, checked) {
-      console.log("here");
+      clickQuery();
       const { name } = data;
       const s3mNameArr = [];
       const s3mItem = s3mUrlHashmap.find((item) => name === item.name);
@@ -308,6 +308,8 @@ export default {
       window[tracyName].entities.add(addPolygon(arr, data.name));*/
     },
     handlePoiCheckChange(data, checked) {
+      console.log('data---');
+      console.log(data);
       const { id } = data;
       let traceLayer = `traceLayer${id}`;
       // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
@@ -328,11 +330,18 @@ export default {
             (item) => item.dataSets.indexOf(name) >= 0
           );
           const res = await queryPoi(serviceName, dataSource, name);
-          res.data.features.forEach((item) => {
+          res.data.features.map(async (item) => {
             const { longitude, latitude } = transformGeometricPosition(
               item.geometry.center.x,
               item.geometry.center.y
             );
+            /*if(data.name==='小区'){
+              const itemName = item.fieldValues[7]
+              const res1 =await getBlockIdByName(itemName)
+              if(res1.data.data.blockId===null){
+                console.log(itemName);
+              }
+            }*/
             // 处理description信息
             const attrObj = {};
             item.fieldNames.forEach((key, index) => {
@@ -354,7 +363,7 @@ export default {
               addEntity("./images/camera.png", longitude, latitude, JSON.stringify(attrObj));
             }
             window[traceLayer].entities.add(addEntity("./images/queryEntities/" + nameOfImageMap[data.name] + ".png",
-              longitude, latitude, JSON.stringify(attrObj)));
+              longitude, latitude, JSON.stringify(attrObj),data.name));
           });
           clickQuery();
         });
@@ -402,15 +411,19 @@ export default {
           }
           /*monitorEntityArray.push(addEntity("./images/camera.png",
             longitude, latitude, JSON.stringify(attr), "monitor", indexCode));*/
-          const res = await findCameraInfoByIndexCode(indexCode);
-          if (+res.data.data.data[0].isOnline === 1) {
-            const entity = addEntity("./images/camera.png",
-              longitude, latitude, JSON.stringify(attr), "monitor", indexCode);
-            window[traceLayer].push(entity);
-          } else {
-            const entity = addEntity("./images/camera_1.png",
-              longitude, latitude, JSON.stringify(attr), "monitor", indexCode);
-            window[traceLayer].push(entity);
+          try {
+            const res = await findCameraInfoByIndexCode(indexCode);
+            if (+res.data === 1) {
+              const entity = addEntity("./images/camera.png",
+                longitude, latitude, JSON.stringify({}), "monitor", indexCode);
+              window[traceLayer].push(entity);
+            } else {
+              const entity = addEntity("./images/camera_1.png",
+                longitude, latitude, JSON.stringify({}), "monitor", indexCode);
+              window[traceLayer].push(entity);
+            }
+          } catch (e) {
+            console.log(e);
           }
         } else {
           console.log("x is null");

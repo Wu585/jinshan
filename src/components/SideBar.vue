@@ -77,7 +77,7 @@ export default {
       ],
       selectedItem: null,
       treeDataChildren: null,
-      wlwTreeDataChildren: null,
+      wlwTreeDataChildren: null
     };
   },
   computed: {
@@ -105,6 +105,13 @@ export default {
     this.treeDataChildren = await this.handleClickWLGZ();
   },
   methods: {
+    deepPush(dataSource, newData) {
+      dataSource.map(item => {
+        newData.push({
+          children:''
+        });
+      });
+    },
     async handleClickWLGZ() {
       const { data } = await getTree();
       console.log(data);
@@ -127,7 +134,14 @@ export default {
               type: "monitor",
               collectionCode: x.collectionCode,
               id: x.id,
-              count: x.count
+              count: x.count,
+              children:x.children.map(y=>({
+                name: y.collectionName,
+                type: "monitor",
+                collectionCode: y.collectionCode,
+                id: y.id,
+                count: y.count,
+              }))
             }))
           }))
         });

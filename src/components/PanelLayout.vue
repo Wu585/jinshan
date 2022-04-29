@@ -21,6 +21,7 @@ export default {
   width: 331px;
   height: 535px;
   background-image: url("../assets/images/layersTree/layer-tree-bg.png");
+  background-size: 100% 100%;
   padding: 8px 20px;
 
   .panel-title {

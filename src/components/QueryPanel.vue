@@ -99,6 +99,9 @@ export default {
           console.log("typesArray");
           console.log(typesArray);
           this.dropDownData = [...typesArray].filter(poi => poi !== "公司企业" && poi !== "商业设施及服务" && poi !== "卫生社保");
+          console.log("this.dropDownData");
+          console.log(this.dropDownData);
+          clickQuery();
         });
       });
     },
@@ -117,12 +120,24 @@ export default {
       console.log("this.contentListArray");
       console.log(this.contentListArray);
       currentPois.forEach(poi => {
+        const attrObj = {};
+        console.log(poi);
+        const nameIndex = poi.fieldNames.indexOf("NAME");
+        const addressIndex = poi.fieldNames.indexOf("ADDRESS");
+        console.log("addressIndex");
+        console.log(addressIndex);
+        attrObj["名称"] = poi.fieldValues[nameIndex];
+        if (addressIndex && poi.fieldValues[addressIndex]) {
+          attrObj["地址"] = poi.fieldValues[addressIndex];
+        }
+        console.log("attrObj");
+        console.log(attrObj);
         const { longitude, latitude } = transformGeometricPosition(poi.geometry.center.x, poi.geometry.center.y);
         let imagePath =
           "./images/queryEntities/" +
           nameOfImageMap[this.state] +
           ".png";
-        entitiesArray.push(addEntity(imagePath, longitude, latitude, "", "", poi.ID));
+        entitiesArray.push(addEntity(imagePath, longitude, latitude, JSON.stringify(attrObj), "", poi.ID));
       });
     },
     onClickDraw() {

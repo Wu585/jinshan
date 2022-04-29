@@ -3,6 +3,8 @@ import request from "@/utils/request";
 const api = process.env.VUE_APP_BASE_API;
 const supermap = process.env.VUE_APP_SUPERMAP;
 const gps = process.env.VUE_APP_GPS;
+const fxft = process.env.VUE_APP_FXFT;
+const fxft2 = "http://10.233.250.26:8001";
 
 export function getTree() {
   return request({
@@ -62,9 +64,149 @@ export function updatePointInfo(data) {
   });
 }
 
-export function getToken() {
+export function getGpsToken() {
   return request({
     method: "get",
     url: `${gps}/com/getToken4Corp?corpid=12298qz6&secret=Mf9kC3AIW8atE3v04V8atP7Hh07q1p6l`
+  });
+}
+
+// 下立交
+export function getXiaLiJiao() {
+  return request({
+    method: "get",
+    url: `${gps}/exchange/getData?appid=q71T98MD&pno=1&psize=100`
+  });
+}
+
+// 防汛队伍
+export function getFxDw() {
+  return request({
+    method: "get",
+    url: `${gps}/exchange/getData?appid=5Qihu9en&pno=1&psize=100`
+  });
+}
+
+// 防患点
+export function getFhD() {
+  return request({
+    method: "get",
+    url: `${gps}/exchange/getData?appid=Bn0i39l9&pno=1&psize=100`
+  });
+}
+
+// 实时水位
+export function getAllSW() {
+  return request({
+    method: "get",
+    url: `${fxft}/fxftZhxqSw/getAllSw/`
+  });
+}
+
+// 除涝泵闸
+export function getAllRecord() {
+  return request({
+    method: "get",
+    url: `${fxft}/fxftZhxqBz/getAllRecord/`
+  });
+}
+
+export function getFxft(appid) {
+  return request({
+    method: "get",
+    url: `${gps}/exchange/getData?appid=${appid}&pno=1&psize=100`
+  });
+}
+
+export function getXiaLiJiao2() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getXiaLiJiao`
+  });
+}
+
+// 防汛队伍
+export function getFxdw() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getFangXun`
+  });
+}
+
+// 防汛物资
+export function getFxwz() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getYingJiWZ`
+  });
+}
+
+// 安置点
+export function getAzd() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getAnZhiDian`
+  });
+}
+
+// 医疗点
+export function getYld() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getYiLiaoDian`
+  });
+}
+
+// 隐患点
+export function getYhd() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getFangXunYH`
+  });
+}
+
+// 危化企业
+export function getWhqy() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getWeiHuaQY`
+  });
+}
+
+// 地下空间
+export function getDxkj() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getDiXiaKJ`
+  });
+}
+
+// 在建工地
+export function getZjgd() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getZaiJianGD`
+  });
+}
+
+// 玻璃幕墙
+export function getBlmq() {
+  return request({
+    method: "get",
+    url: `${fxft2}/getBoLiMQ`
+  });
+}
+
+export function getBlockIdByName(name) {
+  return request({
+    method: "get",
+    url: `${api}/xqxx/getBlockIdByName/${name}`
+  });
+}
+
+export function getAllInfoByBlockId(blockId) {
+  return request({
+    method: "post",
+    url: `${api}/getAllInfoByBlockId?blockId=${blockId}`,
   });
 }

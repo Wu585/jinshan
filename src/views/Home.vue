@@ -26,9 +26,12 @@
       v-else-if="viewsPanelVisible"
       @hideViewsPanel="viewsPanelVisible = false"
     />
+    <Fxft v-if="fxftVisible" @hide-fxft="fxftVisible=false" />
     <BottomNav @update:description="poiDescription=$event"
                @show-house="housesVisible=true"
                @hide-house="housesVisible=false"
+               @hide-fxft="fxftVisible=false"
+               @show-fxft="fxftVisible=true"
     />
     <!--    <Map />-->
     <div id="bubble" class="bubble-wrapper-1">
@@ -55,10 +58,12 @@ import BottomNav from "@/components/BottomNav";
 import ViewsPanel from "@/components/ViewsPanel";
 import Search from "@/components/Search";
 import Houses from "@/components/Houses";
+import Fxft from "@/components/Fxft";
 
 export default {
   name: "Home",
   components: {
+    Fxft,
     Search,
     ViewsPanel,
     BottomNav,
@@ -83,7 +88,8 @@ export default {
         children: "children",
         label: "name"
       },
-      housesVisible: false
+      housesVisible: false,
+      fxftVisible: false
     };
   },
   async mounted() {
@@ -135,6 +141,7 @@ export default {
     });
 
     await this.addAllLayers();
+    // await setToken();
   },
   methods: {
     async addBoundLines() {

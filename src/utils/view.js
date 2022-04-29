@@ -24,6 +24,8 @@ export function setViewport(x, y, z, heading, pitch, roll) {
 export function flyTo(x, y, z, heading, pitch, roll) {
   const point = new Cesium.Cartesian3(x, y, z); //平面坐标
   const positionTr = viewer.scene.camera._projection.unproject(point); //平面坐标值转弧度
+  console.log('positionTr------');
+  console.log(positionTr);
   const longitude = Cesium.Math.toDegrees(positionTr.longitude); //弧度转经纬度
   const latitude = Cesium.Math.toDegrees(positionTr.latitude);
   viewer.camera.flyTo({

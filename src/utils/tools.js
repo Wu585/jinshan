@@ -1,6 +1,8 @@
 import bus from "@/utils/bus";
 import { flyTo, transformGeometricPosition } from "@/utils/view";
 import QueryPanel from "@/components/QueryPanel";
+import { getAllInfoByBlockId, getBlockIdByName } from "@/apis/information";
+import { xiaoquMap } from "@/assets/js/xiaoqu";
 
 let skyline; // 天际线类
 let viewshed3D; // 可视域类
@@ -153,24 +155,57 @@ export const addListener = () => {
 export function clickQuery(cb = null) {
   // isGetPosition = true;
   const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-  handler.setInputAction((movement) => {
+  handler.setInputAction(async (movement) => {
     console.log("movement");
     console.log(movement);
     const infoboxContainer = document.getElementById("bubble");
     infoboxContainer.style.visibility = "hidden";
     const pick = viewer.scene.pick(movement.position);
     console.log(pick);
-    if (pick && pick.id && pick.id._description) {
-      // 针对poi点击
-      const description = pick.id._description._value;
-      bus.$emit("update:description", JSON.parse(description), pick.id.id, pick.id._name);
+    /*const cartesian = viewer.scene.pickPosition2D(movement.position);
+    console.log("cartesian");
+    console.log(cartesian);
+    const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
+    console.log("lon lat");
+    console.log(longitude, latitude);*/
+    if (pick?.primitive?._baseUri?.path.indexOf("Camera_Model") >= 0) {
+      bus.$emit("update:description", null, "31011619001180026011", "monitor");
       const cartesian = viewer.scene.pickPosition2D(movement.position);
-      console.log("cartesian");
-      console.log(cartesian);
       const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
       addListener();
-    } else if (pick && typeof pick.id === "string") {
+    } else if (pick && pick.id && pick.id._description) {
+      // 针对poi点击
+      const description = pick.id._description._value;
+      bus.$emit("update:description", JSON.parse(description) || {}, pick.id.id, pick.id._name);
+      const cartesian = viewer.scene.pickPosition2D(movement.position);
+      console.log("cartesian");
+      console.log(cartesian);
+      const entityId = pick.id._id;
+      if (pick.id.name === "小区") {
+        // 小区面板信息处理
+        const res1 = await getBlockIdByName(JSON.parse(description)["名称"]);
+        const blockId = res1.data.data.blockId;
+        if (blockId) {
+          const res2 = await getAllInfoByBlockId(blockId.blockId);
+          const xiaoquAttr = {};
+          for (let key in xiaoquMap) {
+            xiaoquAttr[xiaoquMap[key]] = res2.data.data[0][key];
+          }
+          bus.$emit("update:description", xiaoquAttr, pick.id.id, pick.id._name);
+        }
+      }
+      viewer.flyTo(
+        viewer.entities.getById(entityId), {
+          offset: new Cesium.HeadingPitchRange(viewer.camera.heading, viewer.camera.pitch, 45000)
+        }
+      );
+      /*const {heading,pitch,roll} = viewer.camera
+      flyTo(cartesian.x,cartesian.y,viewer.camera.position.z,heading,pitch,roll)*/
+      const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
+      scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
+      addListener();
+    } else if (pick && pick?.primitive.queryParameter) {
       // 针对人房信息点击
       const cartesian = viewer.scene.pickPosition2D(movement.position);
       const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
@@ -319,15 +354,29 @@ export function clear() {
   QueryPanel.methods.clear();
 }
 
-export function debounce(fn,delay){
-  let timerId = null
-  return function(){
-    let context = this
-    if(timerId){
-      clearTimeout(timerId)
+export function debounce(fn, delay) {
+  let timerId = null;
+  return function() {
+    let context = this;
+    if (timerId) {
+      clearTimeout(timerId);
     }
-    timerId = setTimeout(()=>{
-      fn.apply(context,arguments)
-    },delay || 500)
-  }
+    timerId = setTimeout(() => {
+      fn.apply(context, arguments);
+    }, delay || 500);
+  };
+}
+
+export function addS3mModel(url, position) {
+  const { scene } = viewer;
+  const s3mInstanceColc = new Cesium.S3MInstanceCollection(scene._context);
+  console.log(scene._context);
+  scene.primitives.add(s3mInstanceColc);
+  console.log(url);
+  s3mInstanceColc.add(url, {
+    position,
+    hpr: new Cesium.HeadingPitchRoll(0, 0, 0),
+    scale: new Cesium.Cartesian3(1, 1, 1),
+    color: Cesium.Color.WHITE
+  });
 }

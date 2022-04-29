@@ -3,6 +3,7 @@ export const s3mUrlHashmap = [
     name: "精模三维模型",
     urls: [
       `${iServerIP_Port}/iserver/services/3D-JS_MAX/rest/realspace/datas.json`,
+      `${arcgisIP_Port}/iserver/services/3D-JS_Camera_Model/rest/realspace/datas.json`,
     ],
   },
   {

@@ -47,7 +47,7 @@ export function addEntity(imagePath, lon, lat, description = "", name = "", id) 
     billboard: {
       image: imagePath,
       width: 20,
-      height: 25
+      height: 22
     },
     description
   });

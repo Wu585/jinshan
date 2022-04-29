@@ -22,7 +22,6 @@ import { addBillboard, addDynamicWall, addLabel, resetEntitiesArray } from "@/ut
 import { setAllLayersVisibleOfOneDataset, findLayer, findMapLayer, findAllLayersOfOneDataset } from "@/utils/layer";
 import { clearBubble, clickQuery, initView } from "@/utils/tools";
 import bus from "@/utils/bus";
-import { getToken } from "@/apis/information";
 
 let entitiesArray = [];
 
@@ -33,7 +32,7 @@ export default {
       navArray: [
         {
           name: "防汛防台",
-          img: require("../assets/images/bottomNav/fxft.png"),
+          img: require("../assets/images/bottomNav/fxft.png")
         },
         {
           name: "人房信息",
@@ -64,6 +63,11 @@ export default {
       }
     };
   },
+  mounted() {
+    bus.$on("reset-bottom-nav", () => {
+      this.selected = null;
+    });
+  },
   methods: {
     async addA02ClickListener() {
       const layersNameArray = await findAllLayersOfOneDataset("精模三维模型");
@@ -83,8 +87,6 @@ export default {
         dataSetName: "A02_2"
       });
       viewer.pickEvent.addEventListener((info) => {
-        console.log("info");
-        console.log(info);
         this.description["居住人数"] = ~~(+info["居住人数"]);
         this.description["户籍人员"] = ~~(+info["户籍人员"]);
         this.description["来沪人员"] = ~~(+info["来沪人员"]);
@@ -113,10 +115,7 @@ export default {
       this.selected = item;
       await this.clearAllEffects();
       if (item.name === "防汛防台") {
-        const res = await getToken()
-        const token = res.data.data["x-access-token"]
-        console.log('token');
-        console.log(token);
+        this.$emit("show-fxft");
       } else if (item.name === "人房信息") {
         this.$emit("show-house");
         await this.addA02ClickListener();
@@ -124,8 +123,6 @@ export default {
         await setAllLayersVisibleOfOneDataset("精模三维模型", true);
         const res = await queryPoi("rfsd", "DemonArea", "区域", "SMID", arcgisIP_Port);
         res.data.features.forEach(item => {
-          console.log("item---");
-          console.log(item);
           const map = {
             "万盛金邸西区": "./images/west.png",
             "万盛金邸东区": "./images/east.png"
@@ -159,6 +156,7 @@ export default {
     },
     async clearAllEffects() {
       this.$emit("hide-house");
+      this.$emit('hide-fxft')
       await setAllLayersVisibleOfOneDataset("精模三维模型", false);
       resetEntitiesArray(entitiesArray);
       clearBubble();

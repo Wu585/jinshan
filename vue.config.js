@@ -21,12 +21,28 @@ module.exports = {
           "^/api": ""
         }
       },
-      '/gps':{
+      "/gps": {
         target: "http://31.8.10.221",
         changeOrigin: true,
         ws: true,
         pathRewrite: {
           "^/gps": ""
+        }
+      },
+      "/fxft": {
+        target: "http://10.233.250.26:8008",
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          "^/fxft": ""
+        }
+      },
+      "/fxftc": {
+        target: "http://10.233.250.26:8001",
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          "^/fxftc": ""
         }
       }
     }
