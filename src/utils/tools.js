@@ -181,7 +181,7 @@ export function clickQuery(cb = null) {
       const cartesian = viewer.scene.pickPosition2D(movement.position);
       console.log("cartesian");
       console.log(cartesian);
-      const entityId = pick.id._id;
+      // const entityId = pick.id._id;
       if (pick.id.name === "小区") {
         // 小区面板信息处理
         const res1 = await getBlockIdByName(JSON.parse(description)["名称"]);
@@ -195,13 +195,13 @@ export function clickQuery(cb = null) {
           bus.$emit("update:description", xiaoquAttr, pick.id.id, pick.id._name);
         }
       }
-      viewer.flyTo(
+      /*viewer.flyTo(
         viewer.entities.getById(entityId), {
           offset: new Cesium.HeadingPitchRange(viewer.camera.heading, viewer.camera.pitch, 45000)
         }
-      );
-      /*const {heading,pitch,roll} = viewer.camera
-      flyTo(cartesian.x,cartesian.y,viewer.camera.position.z,heading,pitch,roll)*/
+      );*/
+      const {heading,pitch,roll} = viewer.camera
+      flyTo(cartesian.x,cartesian.y,viewer.camera.position.z,heading,pitch,roll)
       const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
       addListener();
@@ -212,6 +212,7 @@ export function clickQuery(cb = null) {
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
       addListener();
       cb && cb();
+      // await router.push('dialog/description')
     }
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }

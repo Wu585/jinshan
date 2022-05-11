@@ -33,11 +33,9 @@
 <!--suppress JSSuspiciousNameCombination -->
 <script>
 import PanelLayout from "@/components/PanelLayout";
-import layersTreeJson from "../assets/json/layer.json";
-import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
 import { queryPoiBySpecial } from "@/apis/queryPoi";
 import { addEntity } from "@/utils/entity";
-import { flyTo, transformGeometricPosition } from "@/utils/view";
+import { transformGeometricPosition } from "@/utils/view";
 import { nameOfImageMap } from "@/assets/js/entity-image";
 import { clickQuery } from "@/utils/tools";
 
@@ -59,13 +57,6 @@ export default {
   },
   mounted() {
     this.addDrawHandler();
-    /*layersTreeJson.filter((item) => {
-      item.children.filter((child) => {
-        child.children.forEach((x) => {
-          x?.type === "poi" && this.dropDownData.push(x);
-        });
-      });
-    });*/
   },
   methods: {
     handleClickItem(item) {
@@ -92,15 +83,9 @@ export default {
           });
           this.pointArray.push({ x: positions[0].y, y: positions[0].z });
           const res = await queryPoiBySpecial(this.pointArray, "POI_all", "JS_POI_type", "POI_type", arcgisIP_Port);
-          console.log("res");
-          console.log(res);
           this.allPoiData = res.data.features;
           const typesArray = [...new Set(res.data.features.map(item => item.fieldValues[30]))];
-          console.log("typesArray");
-          console.log(typesArray);
           this.dropDownData = [...typesArray].filter(poi => poi !== "公司企业" && poi !== "商业设施及服务" && poi !== "卫生社保");
-          console.log("this.dropDownData");
-          console.log(this.dropDownData);
           clickQuery();
         });
       });
@@ -114,24 +99,15 @@ export default {
       this.item = item;
       this.state = item;
       const currentPois = this.allPoiData.filter(poi => poi.fieldValues[30] === item);
-      console.log("currentPois");
-      console.log(currentPois);
       this.contentListArray = currentPois;
-      console.log("this.contentListArray");
-      console.log(this.contentListArray);
       currentPois.forEach(poi => {
         const attrObj = {};
-        console.log(poi);
         const nameIndex = poi.fieldNames.indexOf("NAME");
         const addressIndex = poi.fieldNames.indexOf("ADDRESS");
-        console.log("addressIndex");
-        console.log(addressIndex);
         attrObj["名称"] = poi.fieldValues[nameIndex];
         if (addressIndex && poi.fieldValues[addressIndex]) {
           attrObj["地址"] = poi.fieldValues[addressIndex];
         }
-        console.log("attrObj");
-        console.log(attrObj);
         const { longitude, latitude } = transformGeometricPosition(poi.geometry.center.x, poi.geometry.center.y);
         let imagePath =
           "./images/queryEntities/" +

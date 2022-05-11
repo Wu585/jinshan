@@ -3,6 +3,7 @@
     <div class="title">
       <div class="logo"></div>
       <span>金山区地图中台</span>
+      <Weather />
     </div>
     <div class="features">
       <div
@@ -44,9 +45,11 @@
 <script>
 import { featureMap } from "@/utils/featureMap";
 import * as tools from "@/utils/tools";
+import Weather from "@/components/Weather";
 
 export default {
   name: "Header",
+  components: { Weather },
   data() {
     return {
       featuresArray: [
@@ -58,7 +61,7 @@ export default {
         {
           name: "框选",
           image: require("../assets/images/header/kuangxuan.png"),
-          isPopover: false,
+          isPopover: false
         },
         {
           name: "测量",
@@ -67,46 +70,46 @@ export default {
           children: [
             {
               name: "建筑物高度测量",
-              image: require("../assets/images/header/gdcl.png"),
+              image: require("../assets/images/header/gdcl.png")
             },
             {
               name: "距离测量",
-              image: require("../assets/images/header/jlcl.png"),
-            },
-          ],
+              image: require("../assets/images/header/jlcl.png")
+            }
+          ]
         },
         {
           name: "全景",
           image: require("../assets/images/header/quanjing.png"),
-          isPopover: false,
+          isPopover: false
         },
         {
           name: "视点管理",
           image: require("../assets/images/header/shidian.png"),
-          isPopover: false,
+          isPopover: false
         },
         {
           name: "场景漫游",
           image: require("../assets/images/header/manyou.png"),
-          isPopover: false,
+          isPopover: false
         },
         {
           name: "天际线分析",
           image: require("../assets/images/header/tjxfx.png"),
-          isPopover: false,
+          isPopover: false
         },
         {
           name: "可视域分析",
           image: require("../assets/images/header/ksyfx.png"),
-          isPopover: false,
+          isPopover: false
         },
         {
           name: "清除",
           image: require("../assets/images/header/clear.png"),
-          isPopover: false,
-        },
+          isPopover: false
+        }
       ],
-      selectedFeature: null,
+      selectedFeature: null
     };
   },
   computed: {
@@ -115,16 +118,16 @@ export default {
         backgroundImage: "url(" + imgPath + ")",
         width: "22px",
         height: "22px",
-        backgroundRepeat: "no-repeat",
+        backgroundRepeat: "no-repeat"
       });
-    },
+    }
   },
   methods: {
     handleSelect(item) {
       this.selectedFeature = item;
       tools[featureMap[item.name]]?.();
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -136,9 +139,9 @@ export default {
   height: 78px;
   background: rgb(19, 42, 74);
   background: linear-gradient(
-    90deg,
-    rgba(19, 42, 74, 1) 0%,
-    rgba(28, 36, 32, 1) 100%
+      90deg,
+      rgba(19, 42, 74, 1) 0%,
+      rgba(28, 36, 32, 1) 100%
   );
   display: flex;
   align-items: center;

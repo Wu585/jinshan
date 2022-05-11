@@ -163,14 +163,6 @@ export default {
         cameraHeading,
         cameraRoll,
       } = this.getCameraParam();
-      console.log(
-        cameraX,
-        cameraY,
-        cameraZ,
-        cameraPitch,
-        cameraHeading,
-        cameraRoll
-      );
       addView(
         this.input,
         cameraX,

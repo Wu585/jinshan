@@ -207,6 +207,28 @@ export function getBlockIdByName(name) {
 export function getAllInfoByBlockId(blockId) {
   return request({
     method: "post",
-    url: `${api}/getAllInfoByBlockId?blockId=${blockId}`,
+    url: `${api}/getAllInfoByBlockId?blockId=${blockId}`
+  });
+}
+
+export function getSummaryInfoByHouseNumber(houseUrl) {
+  return request({
+    method: "post",
+    url: `${api}/getSummaryInfoByHouseNumber?houseUrl=${houseUrl}`
+  });
+}
+
+export function getHouseInfoByHouseNumber(houseNumber) {
+  return request({
+    method: "post",
+    url: `${api}/getHouseInfoByHouseNumber?houseNumber=${houseNumber}`
+  });
+}
+
+// 根据房屋编码获取房屋信息
+export function getJZRBYFWBH(FWBM) {
+  return request({
+    method: "post",
+    url: `${api}/getJZRBYFWBH?houseId=${FWBM}`
   });
 }

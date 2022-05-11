@@ -33,7 +33,7 @@ import bus from "@/utils/bus";
 import { nameOfImageMap } from "@/assets/js/entity-image";
 import { clickQuery, debounce } from "@/utils/tools";
 import { addEntity, addLabel, addMapLabel, addPolygon, addPolyline } from "@/utils/entity";
-import { findCameraInfoByIndexCode, getBlockIdByName, getIndexCodeByCollectionCode } from "@/apis/information";
+import { findCameraInfoByIndexCode, getIndexCodeByCollectionCode } from "@/apis/information";
 import layersJson from "../assets/json/layer.json";
 
 let entityArray = [];
@@ -264,6 +264,8 @@ export default {
     },
     async handleLineChecked(data) {
       const namesArray = layersJson[0].children[0].children[2].children.map(item => item.name);
+      console.log('namesArray');
+      console.log(namesArray);
       if (!namesArray.includes(data.name)) {
         return;
       }
@@ -278,6 +280,8 @@ export default {
       if (!data.children) {
         const { data: result } = await queryPoi("arcgis-sh_jd_boundary", "ArcGISFeatureServer",
           "sh_jd_boundary", "OBJECTID", arcgisIP_Port);
+        console.log('result');
+        console.log(result);
         result.features.forEach(item => {
           const arr = [];
           item.geometry.points.forEach(point => {
@@ -285,7 +289,10 @@ export default {
             arr.push(longitude, latitude);
           });
           const name = item.fieldValues[5];
+          console.log(name);
           if (name === data.name) {
+            console.log("name");
+            console.log(name);
             const { center } = item.geometry;
             const { longitude, latitude } = transformGeometricPosition(center.x, center.y);
             const polyline = addPolyline(arr, name);
@@ -330,6 +337,8 @@ export default {
             (item) => item.dataSets.indexOf(name) >= 0
           );
           const res = await queryPoi(serviceName, dataSource, name);
+          console.log('res');
+          console.log(res);
           res.data.features.map(async (item) => {
             const { longitude, latitude } = transformGeometricPosition(
               item.geometry.center.x,

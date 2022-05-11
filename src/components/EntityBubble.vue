@@ -70,13 +70,8 @@ export default {
   },
   mounted() {
     bus.$on("update:description", (des, id, name) => {
-      console.log("name");
-      console.log(name);
-      console.log("id");
-      console.log(id);
       this.currentIndexCode = id;
       if (name !== "monitor") {
-        console.log("here");
         this.currentIndexCode = false;
       }
     });

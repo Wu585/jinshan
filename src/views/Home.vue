@@ -8,7 +8,9 @@
       :treeData.sync="layersTreeData"
       :treeDataProps.sync="treeDataProps"
     />
+<!--    <BuildingDialog/>-->
     <!--    <Layers />-->
+    <router-view></router-view>
     <LayersTree
       v-if="layersTreeVisible"
       @close-layers-tree="layersTreeVisible = false"

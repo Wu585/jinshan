@@ -22,6 +22,7 @@ import { addBillboard, addDynamicWall, addLabel, resetEntitiesArray } from "@/ut
 import { setAllLayersVisibleOfOneDataset, findLayer, findMapLayer, findAllLayersOfOneDataset } from "@/utils/layer";
 import { clearBubble, clickQuery, initView } from "@/utils/tools";
 import bus from "@/utils/bus";
+import { getHouseInfoByHouseNumber, getSummaryInfoByHouseNumber } from "@/apis/information";
 
 let entitiesArray = [];
 
@@ -67,8 +68,43 @@ export default {
     bus.$on("reset-bottom-nav", () => {
       this.selected = null;
     });
+    setTimeout(() => {
+      findLayer("A02").setQueryParameter({
+        name: "A02",
+        url: `${arcgisIP_Port}/iserver/services/data-rfsd/rest/data`,
+        dataSourceName: "DemonArea",
+        dataSetName: "A02_2"
+      });
+      viewer.pickEvent.addEventListener(this.cb);
+    }, 1000);
   },
   methods: {
+    async cb(info) {
+      console.log("info");
+      console.log(info);
+      this.description["居住人数"] = ~~(+info["居住人数"]);
+      this.description["户籍人员"] = ~~(+info["户籍人员"]);
+      this.description["来沪人员"] = ~~(+info["来沪人员"]);
+      const houseUrl = "上海市金山区山阳镇" + info["父对象"] + info["图层名称"];
+      await this.$router.push({
+        name: "Description"
+      });
+      this.$store.commit("SET_houseUrlEnd", info["父对象"] + info["图层名称"]);
+      const res = await getSummaryInfoByHouseNumber(houseUrl);
+      console.log("res---------");
+      console.log(res);
+      this.$store.commit("SET_peopleInfo", res.data.data[0]);
+      console.log("this.$store.getters.peopleInfo");
+      console.log(this.$store.getters.peopleInfo);
+      const houseNumber = res.data.data[0].NO;
+      console.log("houseNumber");
+      console.log(houseNumber);
+      const res1 = await getHouseInfoByHouseNumber(houseNumber);
+      console.log("res1---------");
+      console.log(res1);
+      this.$store.commit("SET_houseArray", res1.data.data);
+      bus.$emit("finish-loading");
+    },
     async addA02ClickListener() {
       const layersNameArray = await findAllLayersOfOneDataset("精模三维模型");
       layersNameArray.forEach(name => {
@@ -79,17 +115,6 @@ export default {
       clickQuery(() => {
         // this.$emit("update:description", this.description,'','');
         bus.$emit("update:description", this.description);
-      });
-      findLayer("A02").setQueryParameter({
-        name: "A02",
-        url: `${arcgisIP_Port}/iserver/services/data-rfsd/rest/data`,
-        dataSourceName: "DemonArea",
-        dataSetName: "A02_2"
-      });
-      viewer.pickEvent.addEventListener((info) => {
-        this.description["居住人数"] = ~~(+info["居住人数"]);
-        this.description["户籍人员"] = ~~(+info["户籍人员"]);
-        this.description["来沪人员"] = ~~(+info["来沪人员"]);
       });
     },
     async addBuildingLabel() {
@@ -122,6 +147,8 @@ export default {
         flyTo(-12474.4018649403, -54268.983091464266, 483.90533797442913, 5.939856468821999, -0.45023693649058627, 6.283185307179586);
         await setAllLayersVisibleOfOneDataset("精模三维模型", true);
         const res = await queryPoi("rfsd", "DemonArea", "区域", "SMID", arcgisIP_Port);
+        console.log("res-----renfang");
+        console.log(res);
         res.data.features.forEach(item => {
           const map = {
             "万盛金邸西区": "./images/west.png",
@@ -156,7 +183,7 @@ export default {
     },
     async clearAllEffects() {
       this.$emit("hide-house");
-      this.$emit('hide-fxft')
+      this.$emit("hide-fxft");
       await setAllLayersVisibleOfOneDataset("精模三维模型", false);
       resetEntitiesArray(entitiesArray);
       clearBubble();

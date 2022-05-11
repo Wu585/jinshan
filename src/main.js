@@ -20,6 +20,9 @@ window.hasFly = false
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 
+console.log('store');
+console.log(store);
+
 new Vue({
   router,
   store,
