@@ -71,18 +71,11 @@ export default {
         roomNum: item.SH.slice(0, -1)
       }));
       this.roomInfoArray.sort((a, b) => b.roomNum - a.roomNum);
-      console.log("this.roomInfoArray");
-      console.log(this.roomInfoArray);
-      const all = this.roomInfoArray.map(item => item.roomNum);
-      console.log("all");
-      console.log(all);
     });
   },
   methods: {
     async handleClickRoom(item) {
       this.selectedRoom = item;
-      console.log("this.selectedRoom");
-      console.log(this.selectedRoom);
       await this.$router.push({
         name: "Tabs",
         params: {
@@ -92,12 +85,8 @@ export default {
         console.log(error);
       });
       const res = await getFWXQBYFWBH(item.FWBM);
-      console.log("res room ----");
-      console.log(res);
       this.$store.commit("SET_roomInfo", res.data.data[0]);
       const res1 = await getJZRBYFWBH(item.FWBM);
-      console.log("res1 room -----");
-      console.log(res1);
       this.$store.commit("SET_roomPeopleInfo", res1.data.data.filter(item => item.XM !== "null"));
     }
   }

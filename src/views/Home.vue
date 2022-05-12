@@ -17,7 +17,7 @@
       :checked-keys="checkedKeys"
       :tree-default-props="treeDataProps"
     />
-    <component :is="$store.getters.componentName" v-if="$store.getters.componentName"/>
+    <component :is="$store.getters.componentName" v-if="$store.getters.componentName" />
     <BottomNav @update:description="poiDescription=$event" />
     <!--    <Map />-->
     <div id="bubble" class="bubble-wrapper-1">
@@ -29,16 +29,13 @@
 <script>
 import axios from "axios";
 import Header from "@/components/Header";
-import { setViewport, transformGeometricPosition } from "@/utils/view";
+import { setViewport } from "@/utils/view";
 import SideBar from "@/components/SideBar";
 import LayersTree from "@/components/LayersTree";
 import { MapUrlHashmap } from "@/assets/js/map-url";
 import { s3mUrlHashmap } from "@/assets/js/s3m-url";
 import EntityBubble from "@/components/EntityBubble";
 import bus from "@/utils/bus";
-import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
-import { queryPoi } from "@/apis/queryPoi";
-import { addPolyline } from "@/utils/entity";
 import BottomNav from "@/components/BottomNav";
 import Search from "@/components/Search";
 
@@ -50,7 +47,7 @@ export default {
     EntityBubble,
     LayersTree,
     SideBar,
-    Header,
+    Header
   },
   data() {
     return {
@@ -63,7 +60,7 @@ export default {
       treeDataProps: {
         children: "children",
         label: "name"
-      },
+      }
     };
   },
   async mounted() {
@@ -107,7 +104,6 @@ export default {
     });
 
     await this.addAllLayers();
-    // await setToken();
   },
   methods: {
     addMapLayers() {

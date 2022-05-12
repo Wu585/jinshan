@@ -37,6 +37,6 @@ export const MapUrlHashmap = [
   },
   {
     name: "疫情防控",
-    url: `${arcgisIP_Port}/iserver/services/3D-FXFK/rest/realspace/datas/FXFK`,
+    url: `${arcgisIP_Port}/iserver/services/3D-local3DCache-FXFK/rest/realspace/datas/FXFK`,
   }
 ];
