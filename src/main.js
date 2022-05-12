@@ -19,6 +19,7 @@ window.getPosition = function () {
   return `"x":${x},"y":${y},"z":${z},"heading":${heading},"pitch":${pitch},"roll":${roll}`;
 };
 
+window.isClickQuery = false;
 window.hasLine = false
 window.hasFly = false
 

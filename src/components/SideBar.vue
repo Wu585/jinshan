@@ -72,7 +72,8 @@ export default {
         {
           name: "社会POI数据",
           image: require("../assets/images/sidebar/shpoi.png"),
-          activeImage: require("../assets/images/sidebar/shpoi-active.png")
+          activeImage: require("../assets/images/sidebar/shpoi-active.png"),
+          defaultKeys: [328, 339, 345, 364, 378, 387]
         }
       ],
       selectedItem: null,
@@ -128,12 +129,12 @@ export default {
               collectionCode: x.collectionCode,
               id: x.id,
               count: x.count,
-              children:x.children.map(y=>({
+              children: x.children.map(y => ({
                 name: y.collectionName,
                 type: "monitor",
                 collectionCode: y.collectionCode,
                 id: y.id,
-                count: y.count,
+                count: y.count
               }))
             }))
           }))

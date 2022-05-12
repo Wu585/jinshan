@@ -53,6 +53,21 @@ export function addEntity(imagePath, lon, lat, description = "", name = "", id) 
   });
 }
 
+export function addEntityWithDistance(imagePath, lon, lat, description = "", name = "", id) {
+  return viewer.entities.add({
+    id,
+    name,
+    position: Cesium.Cartesian3.fromDegrees(lon, lat, 20),
+    billboard: {
+      image: imagePath,
+      width: 20,
+      height: 25,
+      distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 30000)
+    },
+    description
+  });
+}
+
 export function addCameraEntity(lon, lat, description) {
   return viewer.entities.add({
     position: Cesium.Cartesian3.fromDegrees(lon, lat, 60),

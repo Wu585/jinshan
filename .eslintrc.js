@@ -28,6 +28,7 @@ module.exports = {
     iServerIP_Port: true,
     SuperMap: true,
     arcgisIP_Port: true,
-    cyberplayer: true
+    cyberplayer: true,
+    isClickQuery: true
   }
 };

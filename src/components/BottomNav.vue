@@ -20,7 +20,7 @@ import { flyTo, transformGeometricPosition } from "@/utils/view";
 import { queryPoi } from "@/apis/queryPoi";
 import { addBillboard, addDynamicWall, addLabel, resetEntitiesArray } from "@/utils/entity";
 import { setAllLayersVisibleOfOneDataset, findLayer, findMapLayer, findAllLayersOfOneDataset } from "@/utils/layer";
-import { clearBubble, clickQuery, initView } from "@/utils/tools";
+import { clearBubble, initView } from "@/utils/tools";
 import bus from "@/utils/bus";
 import { getHouseInfoByHouseNumber, getSummaryInfoByHouseNumber } from "@/apis/information";
 

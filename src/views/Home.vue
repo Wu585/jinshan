@@ -3,20 +3,23 @@
     <Header />
     <Search />
     <SideBar
+      ref="sidebar"
       @show-layers-tree="layersTreeVisible = true"
       :title.sync="layersTreeTitle"
       :treeData.sync="layersTreeData"
       :treeDataProps.sync="treeDataProps"
     />
     <router-view></router-view>
-    <LayersTree
-      v-if="layersTreeVisible"
-      @close-layers-tree="layersTreeVisible = false"
-      :title="layersTreeTitle"
-      :tree-data="layersTreeData"
-      :checked-keys="checkedKeys"
-      :tree-default-props="treeDataProps"
-    />
+    <div v-show="hasFlashed">
+      <LayersTree
+        v-if="layersTreeVisible"
+        @close-layers-tree="layersTreeVisible = false"
+        :title="layersTreeTitle"
+        :tree-data="layersTreeData"
+        :checked-keys="checkedKeys"
+        :tree-default-props="treeDataProps"
+      />
+    </div>
     <component :is="$store.getters.componentName" v-if="$store.getters.componentName" />
     <BottomNav @update:description="poiDescription=$event" />
     <!--    <Map />-->
@@ -60,7 +63,8 @@ export default {
       treeDataProps: {
         children: "children",
         label: "name"
-      }
+      },
+      hasFlashed: false
     };
   },
   async mounted() {
@@ -104,8 +108,19 @@ export default {
     });
 
     await this.addAllLayers();
+    await this.initPoi();
   },
   methods: {
+    async initPoi() {
+      await this.$refs.sidebar.handleClick({
+        name: "社会POI数据",
+        defaultKeys: [328,339, 345, 364, 378, 387]
+      });
+      setTimeout(() => {
+        this.layersTreeVisible = false;
+        this.hasFlashed = true;
+      });
+    },
     addMapLayers() {
       MapUrlHashmap.forEach((map) => {
         const layer = new Cesium.SuperMapImageryProvider({

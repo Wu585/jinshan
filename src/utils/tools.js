@@ -22,7 +22,6 @@ let handlerDis, handlerHeight;
 let clampMode = 0; // 空间模式
 let scenePosition;
 let hasListener = false;
-let isClickQuery = false;
 
 // 初始化等高线
 function init() {
@@ -217,13 +216,12 @@ async function leftClickListenFunc(movement) {
     const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
     scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
     addListener();
-    clearBubble()
+    clearBubble();
     // await router.push('dialog/description')
   }
 }
 
 export function clickQuery() {
-  // isGetPosition = true;
   if (isClickQuery) {
     return;
   }

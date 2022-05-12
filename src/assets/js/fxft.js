@@ -90,6 +90,13 @@ export const fxftMap = [
     }
   },
   {
+    name: "广播站",
+    engZhMap: {
+      "zdmc": "站点名称",
+      "yl": "雨量(mm)"
+    }
+  },
+  {
     name: "医疗点",
     engZhMap: {
       "dz": "安装地址",

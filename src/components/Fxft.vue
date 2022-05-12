@@ -24,6 +24,7 @@ import { clickQuery } from "@/utils/tools";
 import { fxftMap } from "@/assets/js/fxft";
 import bus from "@/utils/bus";
 import MyTree from "@/components/MyTree";
+import { queryPoi } from "@/apis/queryPoi";
 
 export default {
   name: "Fxft",
@@ -149,6 +150,11 @@ export default {
           label: "雨量监测",
           imagePath: "./images/fxft/clbz.png",
           apiName_: "getYuLiangJC"
+        },
+        {
+          label: "广播站",
+          imagePath: "./images/fxft/clbz.png",
+          apiName_: "getYuLiangJC"
         }
       ],
       defaultProps: {
@@ -162,7 +168,7 @@ export default {
       clickQuery();
       console.log("data");
       console.log(data);
-      const { appid, imagePath, label, apiName, apiName_ } = data;
+      const { imagePath, label, apiName, apiName_ } = data;
       const traceLayer = `traceLayer${label}`;
       if (window[traceLayer]) {
         window[traceLayer].show = checked;
@@ -219,6 +225,27 @@ export default {
               } else {
                 window[traceLayer].entities.add(addEntity("./images/fxft/shuidiover200.png", longitude, latitude, JSON.stringify(attr)));
               }
+            });
+          } else if (label === "广播站") {
+            const res = await queryPoi("GBZ", "GBZ", "应急广播数据_shcity", "SMID", arcgisIP_Port);
+            res.data.features.forEach(item => {
+              const attr = {
+                "小区村名": "",
+                "所属乡镇": "",
+                "业务类型": "",
+                "设备名称": "",
+                "设备品牌型号": "",
+                "安装地址": ""
+              };
+              for (let key in attr) {
+                const index = item.fieldNames.indexOf(key);
+                attr[key] = item.fieldValues[index];
+              }
+              const {
+                longitude,
+                latitude
+              } = transformGeometricPosition(item.geometry.center.x, item.geometry.center.y);
+              window[traceLayer].entities.add(addEntity("./images/fxft/guangbozhan.png", longitude, latitude, JSON.stringify(attr)));
             });
           } else {
             res.data.data.list.forEach(item => {
