@@ -76,7 +76,7 @@ export default {
         dataSetName: "A02_2"
       });
       viewer.pickEvent.addEventListener(this.cb);
-    }, 1000);
+    }, 2000);
   },
   methods: {
     async cb(info) {
@@ -140,9 +140,9 @@ export default {
       this.selected = item;
       await this.clearAllEffects();
       if (item.name === "防汛防台") {
-        this.$emit("show-fxft");
+        this.$store.commit("SET_componentName", "fxft");
       } else if (item.name === "人房信息") {
-        this.$emit("show-house");
+        this.$store.commit("SET_componentName", "house");
         await this.addA02ClickListener();
         flyTo(-12474.4018649403, -54268.983091464266, 483.90533797442913, 5.939856468821999, -0.45023693649058627, 6.283185307179586);
         await setAllLayersVisibleOfOneDataset("精模三维模型", true);
@@ -171,7 +171,6 @@ export default {
             min.push(0.1);
             max.push(fenceHeight);
           });
-
           console.log(pointsArray);
           entitiesArray.push(addDynamicWall(pointsArray, min, max, dayMaxmumHeights, fenceHeight, wallSteep));
         });
@@ -182,8 +181,6 @@ export default {
       }
     },
     async clearAllEffects() {
-      this.$emit("hide-house");
-      this.$emit("hide-fxft");
       await setAllLayersVisibleOfOneDataset("精模三维模型", false);
       resetEntitiesArray(entitiesArray);
       clearBubble();

@@ -52,7 +52,7 @@
 
 <script>
 import bus from "@/utils/bus";
-import { getJZRBYFWBH } from "@/apis/information";
+import { getFWXQBYFWBH, getJZRBYFWBH } from "@/apis/information";
 
 export default {
   name: "BuildingDialog",
@@ -91,10 +91,14 @@ export default {
       }).catch((error) => {
         console.log(error);
       });
-      const res = await getJZRBYFWBH(item.FWBM);
+      const res = await getFWXQBYFWBH(item.FWBM);
       console.log("res room ----");
       console.log(res);
       this.$store.commit("SET_roomInfo", res.data.data[0]);
+      const res1 = await getJZRBYFWBH(item.FWBM);
+      console.log("res1 room -----");
+      console.log(res1);
+      this.$store.commit("SET_roomPeopleInfo", res1.data.data.filter(item => item.XM !== "null"));
     }
   }
 };

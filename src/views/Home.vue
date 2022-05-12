@@ -8,8 +8,6 @@
       :treeData.sync="layersTreeData"
       :treeDataProps.sync="treeDataProps"
     />
-<!--    <BuildingDialog/>-->
-    <!--    <Layers />-->
     <router-view></router-view>
     <LayersTree
       v-if="layersTreeVisible"
@@ -19,22 +17,8 @@
       :checked-keys="checkedKeys"
       :tree-default-props="treeDataProps"
     />
-    <Houses v-if="housesVisible" @hide-house="housesVisible=false" />
-    <QueryPanel
-      v-if="queryPanelVisible"
-      @hideQueryPanel="queryPanelVisible = false"
-    />
-    <ViewsPanel
-      v-else-if="viewsPanelVisible"
-      @hideViewsPanel="viewsPanelVisible = false"
-    />
-    <Fxft v-if="fxftVisible" @hide-fxft="fxftVisible=false" />
-    <BottomNav @update:description="poiDescription=$event"
-               @show-house="housesVisible=true"
-               @hide-house="housesVisible=false"
-               @hide-fxft="fxftVisible=false"
-               @show-fxft="fxftVisible=true"
-    />
+    <component :is="$store.getters.componentName" v-if="$store.getters.componentName"/>
+    <BottomNav @update:description="poiDescription=$event" />
     <!--    <Map />-->
     <div id="bubble" class="bubble-wrapper-1">
       <EntityBubble :is-camera="isCamera" :description="poiDescription" />
@@ -55,26 +39,18 @@ import bus from "@/utils/bus";
 import { dataServiceUrlHashmap } from "@/assets/js/dataService-url";
 import { queryPoi } from "@/apis/queryPoi";
 import { addPolyline } from "@/utils/entity";
-import QueryPanel from "@/components/QueryPanel";
 import BottomNav from "@/components/BottomNav";
-import ViewsPanel from "@/components/ViewsPanel";
 import Search from "@/components/Search";
-import Houses from "@/components/Houses";
-import Fxft from "@/components/Fxft";
 
 export default {
   name: "Home",
   components: {
-    Fxft,
     Search,
-    ViewsPanel,
     BottomNav,
-    QueryPanel,
     EntityBubble,
     LayersTree,
     SideBar,
     Header,
-    Houses
   },
   data() {
     return {
@@ -83,15 +59,11 @@ export default {
       layersTreeData: null,
       checkedKeys: [],
       poiDescription: null,
-      queryPanelVisible: false,
-      viewsPanelVisible: false,
       isCamera: false,
       treeDataProps: {
         children: "children",
         label: "name"
       },
-      housesVisible: false,
-      fxftVisible: false
     };
   },
   async mounted() {
@@ -133,54 +105,11 @@ export default {
     bus.$on("update:description", (description) => {
       this.poiDescription = description;
     });
-    bus.$on("setQueryPanelVisible", () => {
-      this.queryPanelVisible = true;
-      this.viewsPanelVisible = false;
-    });
-    bus.$on("setViewsPanelVisible", () => {
-      this.viewsPanelVisible = true;
-      this.queryPanelVisible = false;
-    });
 
     await this.addAllLayers();
     // await setToken();
   },
   methods: {
-    async addBoundLines() {
-      window.traceLayerLines = new Cesium.CustomDataSource("traceLayerLines");
-      viewer.dataSources.add(window.traceLayerLines);
-      const { serviceName, dataSource, dataSets } = dataServiceUrlHashmap.find(
-        (item) => item.name === "乡镇行政区"
-      );
-      const res = await queryPoi(serviceName, dataSource, dataSets);
-      // 二维数组
-      const pointsArray = [];
-      const centerArray = [];
-      res.data.features.forEach((polygon) => {
-        const { center } = polygon.geometry;
-        const { longitude, latitude } = transformGeometricPosition(
-          center.x,
-          center.y
-        );
-        // console.log(longitude, latitude);
-        centerArray.push({
-          center: { longitude, latitude }
-        });
-        const arr = [];
-        polygon.geometry.points.forEach((point) => {
-          const { longitude, latitude } = transformGeometricPosition(
-            point.x,
-            point.y
-          );
-          arr.push(longitude, latitude);
-        });
-        pointsArray.push(arr);
-      });
-      pointsArray.forEach((item) => {
-        window.traceLayerLines.entities.add(addPolyline(item));
-      });
-      window.traceLayerLines.entities.show = false;
-    },
     addMapLayers() {
       MapUrlHashmap.forEach((map) => {
         const layer = new Cesium.SuperMapImageryProvider({

@@ -1,7 +1,7 @@
 <template>
   <div class="views-panel">
-    <PanelLayout @close-panel="$emit('hideViewsPanel')">
-      <template v-slot:title> 视点管理 </template>
+    <PanelLayout @close-panel="$store.commit('SET_componentName','')">
+      <template v-slot:title> 视点管理</template>
       <template v-slot:content>
         <div class="views-panel-content">
           <div class="views-panel-input">
@@ -10,8 +10,8 @@
               size="mini"
               icon="el-icon-circle-plus-outline"
               @click="addViewport"
-              >添加</el-button
-            >
+            >添加
+            </el-button>
           </div>
           <div class="views-panel-list">
             <el-table :data="filterTableData" style="width: 100%">
@@ -72,7 +72,7 @@ export default {
       input: "",
       currentPage: 1,
       tableData: [],
-      total: 0,
+      total: 0
     };
   },
   created() {
@@ -84,7 +84,7 @@ export default {
         5 * (this.currentPage - 1),
         5 * this.currentPage
       );
-    },
+    }
   },
   methods: {
     handleSetView(index, row) {
@@ -102,7 +102,7 @@ export default {
             z: +item.fieldValues[5],
             heading: +item.fieldValues[6],
             pitch: +item.fieldValues[7],
-            roll: +item.fieldValues[8],
+            roll: +item.fieldValues[8]
           };
         });
         this.total = this.tableData.length;
@@ -116,7 +116,7 @@ export default {
         cameraZ,
         cameraPitch,
         cameraHeading,
-        cameraRoll,
+        cameraRoll
       } = this.getCameraParam();
       await patchView(
         smId,
@@ -150,7 +150,7 @@ export default {
         cameraZ,
         cameraPitch,
         cameraHeading,
-        cameraRoll,
+        cameraRoll
       };
     },
     addViewport() {
@@ -161,7 +161,7 @@ export default {
         cameraZ,
         cameraPitch,
         cameraHeading,
-        cameraRoll,
+        cameraRoll
       } = this.getCameraParam();
       addView(
         this.input,
@@ -174,8 +174,8 @@ export default {
         this.updateList
       );
       this.input = "";
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -276,6 +276,7 @@ $background-blue: rgba(21, 54, 91, 0.65);
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+
     .el-pagination {
     }
 

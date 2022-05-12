@@ -105,13 +105,6 @@ export default {
     this.treeDataChildren = await this.handleClickWLGZ();
   },
   methods: {
-    deepPush(dataSource, newData) {
-      dataSource.map(item => {
-        newData.push({
-          children:''
-        });
-      });
-    },
     async handleClickWLGZ() {
       const { data } = await getTree();
       console.log(data);

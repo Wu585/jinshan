@@ -83,6 +83,13 @@ export const fxftMap = [
     }
   },
   {
+    name: "雨量监测",
+    engZhMap: {
+      "zdmc": "站点名称",
+      "yl": "雨量(mm)"
+    }
+  },
+  {
     name: "医疗点",
     engZhMap: {
       "dz": "安装地址",

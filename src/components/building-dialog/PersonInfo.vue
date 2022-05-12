@@ -10,52 +10,22 @@
       <th>人员类别</th>
       <th>与户主关系</th>
     </tr>
-    <tr>
-      <td height="48">1</td>
-      <td>西西域</td>
-      <td>西西域</td>
-      <td>西西域</td>
-      <td colspan="2">3209222000005010000</td>
-      <td>西西域</td>
-      <td>西西域</td>
-      <td>西西域</td>
-    </tr>
-    <tr>
-      <td height="48">2</td>
-      <td>南国</td>
-      <td>南国</td>
-      <td>南国</td>
-      <td colspan="2">320922200005010000</td>
-      <td>南国</td>
-      <td>南国</td>
-      <td>南国</td>
+    <tr v-for="(item,index) in $store.getters.roomPeopleInfo" :key="item.ID">
+      <td height="48">{{ index + 1 }}</td>
+      <td>{{ item.XM }}</td>
+      <td>{{ item.XBHZ }}</td>
+      <td>{{ item.AGE }}</td>
+      <td colspan="2">{{ item.ZJHM }}</td>
+      <td>{{ item.SYRKLBHZ }}</td>
+      <td>{{ item.SYRKLBHZ }}</td>
+      <td>{{ item.YHZGXHZ === 'null' ? "暂无信息" : item.YHZGXHZ }}</td>
     </tr>
   </table>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      tableData: [{
-        date: "2016-05-02",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1518 弄"
-      }, {
-        date: "2016-05-04",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1517 弄"
-      }, {
-        date: "2016-05-01",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1519 弄"
-      }, {
-        date: "2016-05-03",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1516 弄"
-      }]
-    };
-  }
+  name: "PersonInfo"
 };
 </script>
 

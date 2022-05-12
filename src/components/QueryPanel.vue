@@ -1,6 +1,6 @@
 <template>
   <div class="query-panel">
-    <PanelLayout @close-panel="$emit('hideQueryPanel')">
+    <PanelLayout @close-panel="$store.commit('SET_componentName','')">
       <template v-slot:title> 框选查询</template>
       <template v-slot:content>
         <div class="query-panel-content">

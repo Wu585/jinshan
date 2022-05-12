@@ -5,6 +5,11 @@ import router from "./router";
 import store from "./store";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
+import CameraVideo from "@/components/CameraVideo";
+import QueryPanel from "@/components/QueryPanel";
+import ViewsPanel from "@/components/ViewsPanel";
+import Fxft from "@/components/Fxft";
+import Houses from "@/components/Houses";
 
 window.entitiesArray = [];
 window.getPosition = function () {
@@ -22,6 +27,12 @@ Vue.use(ElementUI);
 
 console.log('store');
 console.log(store);
+
+Vue.component('camera-video',CameraVideo)
+Vue.component('query-panel',QueryPanel)
+Vue.component('views-panel',ViewsPanel)
+Vue.component('fxft',Fxft)
+Vue.component('house',Houses)
 
 new Vue({
   router,

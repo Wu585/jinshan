@@ -24,7 +24,7 @@ export const nameOfImageMap = {
   档案馆: "danganguan",
   医院: "yiyuan",
   政府机关: "zhengfujiguan",
-  司法机关: "sifa",
+  司法机关: "sifajiguan",
   公厕: "cesuo",
   公用设施: "xiaofangsheshi"
 };

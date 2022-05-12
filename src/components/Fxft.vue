@@ -144,6 +144,11 @@ export default {
           label: "除涝泵闸",
           imagePath: "./images/fxft/clbz.png",
           apiName_: "getAllRecord"
+        },
+        {
+          label: "雨量监测",
+          imagePath: "./images/fxft/clbz.png",
+          apiName_: "getYuLiangJC"
         }
       ],
       defaultProps: {
@@ -191,15 +196,40 @@ export default {
           const res = await apis[apiName_]();
           console.log("res---");
           console.log(res);
-          res.data.data.list.forEach(item => {
-            const attr = {};
-            keys?.forEach(key => {
-              attr[mapItem.engZhMap[key]] = item[key];
+          if (label === "雨量监测") {
+            const data = JSON.parse(res.data.data.result);
+            data.data.forEach(item => {
+              const attr = {};
+              keys?.forEach(key => {
+                attr[mapItem.engZhMap[key]] = item[key];
+              });
+              const { longitude, latitude } = transformGeometricPosition(+item.xx, +item.yy);
+              if (item.yl === 0) {
+                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-0.png", longitude, latitude, JSON.stringify(attr)));
+              } else if (0.1 <= item.yl < 10) {
+                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-0.1-10.png", longitude, latitude, JSON.stringify(attr)));
+              } else if (10 <= item.yl < 25) {
+                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-10-25.png", longitude, latitude, JSON.stringify(attr)));
+              } else if (25 <= item.yl < 50) {
+                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-25-50.png", longitude, latitude, JSON.stringify(attr)));
+              } else if (50 <= item.yl < 100) {
+                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-50-100.png", longitude, latitude, JSON.stringify(attr)));
+              } else if (100 <= item.yl < 200) {
+                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-100-200.png", longitude, latitude, JSON.stringify(attr)));
+              } else {
+                window[traceLayer].entities.add(addEntity("./images/fxft/shuidiover200.png", longitude, latitude, JSON.stringify(attr)));
+              }
             });
-            const { longitude, latitude } = transformGeometricPosition(+item.x, +item.y);
-            window[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr)));
-
-          });
+          } else {
+            res.data.data.list.forEach(item => {
+              const attr = {};
+              keys?.forEach(key => {
+                attr[mapItem.engZhMap[key]] = item[key];
+              });
+              const { longitude, latitude } = transformGeometricPosition(+item.x, +item.y);
+              window[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr)));
+            });
+          }
         }
       }
       /*const res = await getFxft(appid);
@@ -222,8 +252,8 @@ export default {
       console.log("node click");
     },
     handleClose() {
-      this.$emit("hide-fxft");
       bus.$emit("reset-bottom-nav");
+      this.$store.commit("SET_componentName", "");
     },
     async handleChange(item) {
       clickQuery();

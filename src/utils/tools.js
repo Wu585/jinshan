@@ -3,6 +3,7 @@ import { flyTo, transformGeometricPosition } from "@/utils/view";
 import QueryPanel from "@/components/QueryPanel";
 import { getAllInfoByBlockId, getBlockIdByName } from "@/apis/information";
 import { xiaoquMap } from "@/assets/js/xiaoqu";
+import store from "@/store";
 
 let skyline; // 天际线类
 let viewshed3D; // 可视域类
@@ -176,11 +177,17 @@ export function clickQuery(cb = null) {
       addListener();
     } else if (pick && pick.id && pick.id._description) {
       // 针对poi点击
+      // 视频监控poi不弹出bubble面板
+      if (pick.id._name === "monitor") {
+        store.commit("SET_componentName", "camera-video");
+        const description = pick.id._description._value;
+        bus.$emit("update:description", JSON.parse(description) || {}, pick.id.id, pick.id._name);
+        store.commit("SET_firstCameraId", pick.id.id);
+        return;
+      }
       const description = pick.id._description._value;
       bus.$emit("update:description", JSON.parse(description) || {}, pick.id.id, pick.id._name);
       const cartesian = viewer.scene.pickPosition2D(movement.position);
-      console.log("cartesian");
-      console.log(cartesian);
       // const entityId = pick.id._id;
       if (pick.id.name === "小区") {
         // 小区面板信息处理
@@ -200,8 +207,8 @@ export function clickQuery(cb = null) {
           offset: new Cesium.HeadingPitchRange(viewer.camera.heading, viewer.camera.pitch, 45000)
         }
       );*/
-      const {heading,pitch,roll} = viewer.camera
-      flyTo(cartesian.x,cartesian.y,viewer.camera.position.z,heading,pitch,roll)
+      const { heading, pitch, roll } = viewer.camera;
+      flyTo(cartesian.x, cartesian.y, viewer.camera.position.z, heading, pitch, roll);
       const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
       scenePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
       addListener();
@@ -332,10 +339,12 @@ export function initView() {
 
 export function queryByRegion() {
   bus.$emit("setQueryPanelVisible");
+  store.commit("SET_componentName", "query-panel");
 }
 
 export function viewsMange() {
   bus.$emit("setViewsPanelVisible");
+  store.commit("SET_componentName", "views-panel");
 }
 
 export function clearBubble() {

@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <PanelLayout @close-panel="$emit('hide-house')">
+    <PanelLayout @close-panel="$store.commit('SET_componentName','')">
       <template v-slot:title> 小区信息</template>
       <template v-slot:content>
         <ul class="house-content">
@@ -67,16 +67,19 @@ export default {
   top: 232px;
   right: 13px;
   z-index: 999;
-  .house-content{
-    li{
+
+  .house-content {
+    li {
       font-size: 16px;
       font-weight: 400;
       padding: 6px 0;
-      span{
-        &:first-child{
+
+      span {
+        &:first-child {
 
         }
-        &:nth-child(2){
+
+        &:nth-child(2) {
           color: #1CFBFF;
         }
       }

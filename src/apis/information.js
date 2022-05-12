@@ -111,6 +111,13 @@ export function getAllRecord() {
   });
 }
 
+export function getYuLiangJC() {
+  return request({
+    method: "get",
+    url: `${api}/getYuLiangJC`
+  });
+}
+
 export function getFxft(appid) {
   return request({
     method: "get",
@@ -226,9 +233,24 @@ export function getHouseInfoByHouseNumber(houseNumber) {
 }
 
 // 根据房屋编码获取房屋信息
+export function getFWXQBYFWBH(FWBM) {
+  return request({
+    method: "post",
+    url: `${api}/getFWXQBYFWBH?houseId=${FWBM}`
+  });
+}
+
+// 根据房屋编码获取居住人信息
 export function getJZRBYFWBH(FWBM) {
   return request({
     method: "post",
     url: `${api}/getJZRBYFWBH?houseId=${FWBM}`
+  });
+}
+
+export function getWeatherInfo() {
+  return request({
+    method: "post",
+    url: `${api}/getDRQWTQAQI`
   });
 }

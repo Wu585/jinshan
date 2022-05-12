@@ -4,7 +4,8 @@ const buildingDialog = {
     houseUrlPrefix: "上海市金山区山阳镇",
     houseUrlEnd: "",
     houseArray: [],
-    roomInfo: {}
+    roomInfo: {},
+    roomPeopleInfo: []
   },
   mutations: {
     SET_peopleInfo: (state, value) => {
@@ -18,6 +19,9 @@ const buildingDialog = {
     },
     SET_roomInfo: (state, value) => {
       state.roomInfo = value;
+    },
+    SET_roomPeopleInfo: (state, value) => {
+      state.roomPeopleInfo = value;
     }
   },
   actions: {}
