@@ -1,6 +1,6 @@
 export const featureMap = {
   点查询: "clickQuery",
-  框选: "queryByRegion",
+  圈选: "queryByRegion",
   建筑物高度测量: "calcHeight",
   距离测量: "calcDistance",
   全景: "initView",
@@ -9,4 +9,5 @@ export const featureMap = {
   天际线分析: "handleSkyline",
   可视域分析: "handleVisual",
   清除: "clear",
+  还原: "initSystem"
 };

@@ -35,6 +35,7 @@ import { clickQuery, debounce } from "@/utils/tools";
 import { addEntity, addEntityWithDistance, addLabel, addMapLabel, addPolygon, addPolyline } from "@/utils/entity";
 import { findCameraInfoByIndexCode, getIndexCodeByCollectionCode } from "@/apis/information";
 import layersJson from "../assets/json/layer.json";
+import * as turf from "@turf/turf";
 
 let entityArray = [];
 let polygonEntityArray = [];
@@ -315,8 +316,6 @@ export default {
       window[tracyName].entities.add(addPolygon(arr, data.name));*/
     },
     handlePoiCheckChange(data, checked) {
-      console.log("data------");
-      console.log(data);
       const { id } = data;
       let traceLayer = `traceLayer${id}`;
       // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
@@ -337,8 +336,6 @@ export default {
             (item) => item.dataSets.indexOf(name) >= 0
           );
           const res = await queryPoi(serviceName, dataSource, name);
-          console.log("res");
-          console.log(res);
           res.data.features.map(async (item) => {
             const { longitude, latitude } = transformGeometricPosition(
               item.geometry.center.x,
@@ -407,6 +404,7 @@ export default {
       const list = res.data.data.list;
       console.log("list");
       console.log(list);
+      const turfPoints = [];
       if (!window[traceLayer]) {
         /* window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
          viewer.dataSources.add(window[traceLayer]);*/
@@ -420,8 +418,11 @@ export default {
             console.log(res);
           }
         })*/
+
         if (x) {
           const { longitude, latitude } = transformGeometricPosition(+x, +y);
+          turfPoints.push([longitude, latitude]);
+
           const attr = {};
           if (streetTown) {
             attr["点位名"] = name;
@@ -449,6 +450,9 @@ export default {
           console.log("x is null");
         }
       });
+      var ptsWithin = turf.pointsWithinPolygon(turf.points(turfPoints), window.circlePolygon);
+      console.log("ptsWithin");
+      console.log(ptsWithin);
       this.flyTo(window[traceLayer]);
     },
     flyTo: debounce((traceLayer) => {

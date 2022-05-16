@@ -46,6 +46,7 @@
 import { featureMap } from "@/utils/featureMap";
 import * as tools from "@/utils/tools";
 import Weather from "@/components/Weather";
+import bus from "@/utils/bus";
 
 export default {
   name: "Header",
@@ -59,8 +60,8 @@ export default {
         //   isPopover: false,
         // },
         {
-          name: "框选",
-          image: require("../assets/images/header/kuangxuan.png"),
+          name: "圈选",
+          image: require("../assets/images/header/quanxuan.png"),
           isPopover: false
         },
         {
@@ -107,6 +108,11 @@ export default {
           name: "清除",
           image: require("../assets/images/header/clear.png"),
           isPopover: false
+        },
+        {
+          name: "还原",
+          image: require("../assets/images/header/huanyuan.png"),
+          isPopover: false
         }
       ],
       selectedFeature: null
@@ -126,6 +132,9 @@ export default {
     handleSelect(item) {
       this.selectedFeature = item;
       tools[featureMap[item.name]]?.();
+      if (item.name === "圈选") {
+        bus.$emit("active-handler");
+      }
     }
   }
 };

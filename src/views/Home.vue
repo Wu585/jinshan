@@ -1,6 +1,7 @@
 <template>
   <div class="home" id="cesiumContainer">
     <Header />
+    <Streets />
     <Search />
     <SideBar
       ref="sidebar"
@@ -41,10 +42,13 @@ import EntityBubble from "@/components/EntityBubble";
 import bus from "@/utils/bus";
 import BottomNav from "@/components/BottomNav";
 import Search from "@/components/Search";
+import { circle } from "@turf/turf";
+import Streets from "@/components/Streets";
 
 export default {
   name: "Home",
   components: {
+    Streets,
     Search,
     BottomNav,
     EntityBubble,
@@ -109,12 +113,23 @@ export default {
 
     await this.addAllLayers();
     await this.initPoi();
+
+    console.log("turf");
+    console.log(circle);
+    const center = [-0.12350245845442284, -0.4839280278711758];
+    // addCameraEntity(center[0],center[1])
+    var radius = 100;
+    var options = { units: "kilometers", properties: { foo: "bar" } };
+    var x = circle(center, radius, options);
+    console.log("x");
+    console.log(x);
+    window.circlePolygon = x;
   },
   methods: {
     async initPoi() {
       await this.$refs.sidebar.handleClick({
         name: "社会POI数据",
-        defaultKeys: [328,339, 345, 364, 378, 387]
+        defaultKeys: [328, 339, 345, 364, 378, 387]
       });
       setTimeout(() => {
         this.layersTreeVisible = false;

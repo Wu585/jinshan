@@ -61,3 +61,33 @@ export function queryPoiBySpecial(
     data: queryObj
   });
 }
+
+export function queryByCircle(pointsArray,
+                  serviceName,
+                  dataSourceName,
+                  dataSetName,
+                  bufferDistance,
+                  severIp = iServerIP_Port) {
+  const dataServiceUrl =
+    severIp +
+    `/iserver/services/data-${serviceName}/rest/data/featureResults.rjson?returnContent=true`; // 数据服务URL
+  const queryObj = {
+    getFeatureMode: "BUFFER",
+    datasetNames: [dataSourceName + ":" + dataSetName],
+    geometry: {
+      id: 1,
+      parts: [1],
+      points: pointsArray,
+      type: "POINT",
+      style: null
+      // polygon
+    },
+    maxFeatures: -1,
+    bufferDistance
+  };
+  return axios({
+    url: dataServiceUrl,
+    method: "post",
+    data: queryObj
+  });
+}

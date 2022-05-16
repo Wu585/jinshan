@@ -154,19 +154,19 @@ export const addListener = () => {
 };
 
 async function leftClickListenFunc(movement) {
-  console.log("movement");
-  console.log(movement);
   isClickQuery = true;
   const infoboxContainer = document.getElementById("bubble");
   infoboxContainer.style.visibility = "hidden";
   const pick = viewer.scene.pick(movement.position);
   console.log(pick);
-  /*const cartesian = viewer.scene.pickPosition2D(movement.position);
+
+  const cartesian = viewer.scene.pickPosition2D(movement.position);
   console.log("cartesian");
   console.log(cartesian);
   const { longitude, latitude } = transformGeometricPosition(cartesian.x, cartesian.y);
   console.log("lon lat");
-  console.log(longitude, latitude);*/
+  console.log(longitude, latitude);
+
   if (pick?.primitive?._baseUri?.path.indexOf("Camera_Model") >= 0) {
     bus.$emit("update:description", null, "31011619001180026011", "monitor");
     const cartesian = viewer.scene.pickPosition2D(movement.position);
@@ -357,6 +357,7 @@ export function clearBubble() {
 }
 
 export function clear() {
+  bus.$emit("clear");
   handlerDis && handlerDis.deactivate();
   handlerDis && handlerDis.clear();
   handlerHeight && handlerHeight.deactivate();
@@ -390,4 +391,8 @@ export function addS3mModel(url, position) {
     scale: new Cesium.Cartesian3(1, 1, 1),
     color: Cesium.Color.WHITE
   });
+}
+
+export function initSystem(){
+
 }
