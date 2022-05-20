@@ -49,4 +49,16 @@ export const s3mUrlHashmap = [
       `${iServerIP_Port}/iserver/services/3D-FJGZ/rest/realspace/datas.json`,
     ],
   },
+  {
+    name: "街镇",
+    urls: [
+      `${arcgisIP_Port}/iserver/services/3D-jz_black/rest/realspace/datas.json`,
+    ],
+  },
+  {
+    name: "居委会",
+    urls: [
+      `${arcgisIP_Port}/iserver/services/3D-jwh_black/rest/realspace/datas.json`,
+    ],
+  }
 ];

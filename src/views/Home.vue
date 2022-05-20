@@ -27,6 +27,9 @@
     <div id="bubble" class="bubble-wrapper-1">
       <EntityBubble :is-camera="isCamera" :description="poiDescription" />
     </div>
+    <div id="bubble2" class="bubble-wrapper-1">
+      <EntityBubble2 :description="poiDescription" />
+    </div>
   </div>
 </template>
 
@@ -42,12 +45,13 @@ import EntityBubble from "@/components/EntityBubble";
 import bus from "@/utils/bus";
 import BottomNav from "@/components/BottomNav";
 import Search from "@/components/Search";
-import { circle } from "@turf/turf";
 import Streets from "@/components/Streets";
+import EntityBubble2 from "@/components/EntityBubble2";
 
 export default {
   name: "Home",
   components: {
+    EntityBubble2,
     Streets,
     Search,
     BottomNav,
@@ -111,25 +115,19 @@ export default {
       this.poiDescription = description;
     });
 
+    bus.$on("close-layer-tree", () => {
+      this.layersTreeVisible = false;
+    });
+
     await this.addAllLayers();
     await this.initPoi();
-
-    console.log("turf");
-    console.log(circle);
-    const center = [-0.12350245845442284, -0.4839280278711758];
-    // addCameraEntity(center[0],center[1])
-    var radius = 100;
-    var options = { units: "kilometers", properties: { foo: "bar" } };
-    var x = circle(center, radius, options);
-    console.log("x");
-    console.log(x);
-    window.circlePolygon = x;
+    window.traceLayer = {};
   },
   methods: {
     async initPoi() {
       await this.$refs.sidebar.handleClick({
         name: "社会POI数据",
-        defaultKeys: [328, 339, 345, 364, 378, 387]
+        defaultKeys: [387]
       });
       setTimeout(() => {
         this.layersTreeVisible = false;
@@ -173,10 +171,6 @@ export default {
               if (item.name === "Dimian" || item.name === "A01" || item.name === "A02" || item.name === "A03" || item.name === "A04" || item.name === "A05") {
                 viewer.scene.layers.find(item.name).brightness = 4;
               }
-              // if(item.name==="Baimo_SH@JS"){
-              //   viewer.scene.layers.find(item.name).style3D.fillStyle = Cesium.FillStyle.Fill_And_WireFrame;
-              //   viewer.scene.layers.find(item.name).wireFrameMode = Cesium.WireFrameType.EffectOutline;
-              // }
             });
           });
         }

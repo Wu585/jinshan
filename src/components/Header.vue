@@ -54,11 +54,6 @@ export default {
   data() {
     return {
       featuresArray: [
-        // {
-        //   name: "点查询",
-        //   image: require("../assets/images/header/dcx.png"),
-        //   isPopover: false,
-        // },
         {
           name: "圈选",
           image: require("../assets/images/header/quanxuan.png"),

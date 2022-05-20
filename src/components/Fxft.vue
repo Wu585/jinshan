@@ -170,12 +170,12 @@ export default {
       console.log(data);
       const { imagePath, label, apiName, apiName_ } = data;
       const traceLayer = `traceLayer${label}`;
-      if (window[traceLayer]) {
-        window[traceLayer].show = checked;
+      if (window.traceLayer[traceLayer]) {
+        window.traceLayer[traceLayer].show = checked;
         return;
       }
-      window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-      viewer.dataSources.add(window[traceLayer]);
+      window.traceLayer[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+      viewer.dataSources.add(window.traceLayer[traceLayer]);
       const mapItem = fxftMap.find(x => x.name === label);
       console.log("mapItem");
       console.log(mapItem);
@@ -195,7 +195,7 @@ export default {
             });
             if (xx_cd && yy_cd) {
               const { longitude, latitude } = transformGeometricPosition(+xx_cd, +yy_cd);
-              window[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr)));
+              window.traceLayer[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr), "fxft"));
             }
           });
         } else if (apiName_) {
@@ -211,19 +211,19 @@ export default {
               });
               const { longitude, latitude } = transformGeometricPosition(+item.xx, +item.yy);
               if (item.yl === 0) {
-                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-0.png", longitude, latitude, JSON.stringify(attr)));
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-0.png", longitude, latitude, JSON.stringify(attr), "fxft"));
               } else if (0.1 <= item.yl < 10) {
-                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-0.1-10.png", longitude, latitude, JSON.stringify(attr)));
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-0.1-10.png", longitude, latitude, JSON.stringify(attr), "fxft"));
               } else if (10 <= item.yl < 25) {
-                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-10-25.png", longitude, latitude, JSON.stringify(attr)));
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-10-25.png", longitude, latitude, JSON.stringify(attr), "fxft"));
               } else if (25 <= item.yl < 50) {
-                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-25-50.png", longitude, latitude, JSON.stringify(attr)));
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-25-50.png", longitude, latitude, JSON.stringify(attr), "fxft"));
               } else if (50 <= item.yl < 100) {
-                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-50-100.png", longitude, latitude, JSON.stringify(attr)));
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-50-100.png", longitude, latitude, JSON.stringify(attr), "fxft"));
               } else if (100 <= item.yl < 200) {
-                window[traceLayer].entities.add(addEntity("./images/fxft/shuidi-100-200.png", longitude, latitude, JSON.stringify(attr)));
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-100-200.png", longitude, latitude, JSON.stringify(attr), "fxft"));
               } else {
-                window[traceLayer].entities.add(addEntity("./images/fxft/shuidiover200.png", longitude, latitude, JSON.stringify(attr)));
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidiover200.png", longitude, latitude, JSON.stringify(attr), "fxft"));
               }
             });
           } else if (label === "广播站") {
@@ -245,7 +245,7 @@ export default {
                 longitude,
                 latitude
               } = transformGeometricPosition(item.geometry.center.x, item.geometry.center.y);
-              window[traceLayer].entities.add(addEntity("./images/fxft/guangbozhan.png", longitude, latitude, JSON.stringify(attr)));
+              window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/guangbozhan.png", longitude, latitude, JSON.stringify(attr),"fxft"));
             });
           } else {
             res.data.data.list.forEach(item => {
@@ -254,7 +254,7 @@ export default {
                 attr[mapItem.engZhMap[key]] = item[key];
               });
               const { longitude, latitude } = transformGeometricPosition(+item.x, +item.y);
-              window[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr)));
+              window.traceLayer[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr),"fxft"));
             });
           }
         }
@@ -271,7 +271,7 @@ export default {
           console.log("attr");
           console.log(attr);
           const { longitude, latitude } = transformGeometricPosition(xx_cd, yy_cd);
-          window[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr)));
+          window.traceLayer[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr)));
         });
       }*/
     },
@@ -282,44 +282,6 @@ export default {
       bus.$emit("reset-bottom-nav");
       this.$store.commit("SET_componentName", "");
     },
-    async handleChange(item) {
-      clickQuery();
-      const traceLayer = `traceLayer${item.label}`;
-      if (window[traceLayer]) {
-        window[traceLayer].show = item.value;
-        return;
-      }
-      const selected = this.dataArray.find(poi => poi.label === item.label);
-      const apiName = selected["apiName"];
-      const res = await apis[apiName]();
-      console.log("res");
-      console.log(res);
-      window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-      viewer.dataSources.add(window[traceLayer]);
-      const mapItem = fxftMap.find(x => x.name === item.label);
-      const keys = Object.keys(mapItem.engZhMap);
-      const attr = {};
-      if (selected.label === "实时水位" || selected.label === "除涝泵闸") {
-        res.data.data.list.forEach(point => {
-          const { longitude, latitude } = transformGeometricPosition(point.x, point.y);
-          keys.forEach(key => {
-            attr[mapItem.engZhMap[key]] = point[key];
-          });
-          window[traceLayer].entities.add(addEntity(selected.imagePath, longitude, latitude, JSON.stringify(attr)));
-        });
-        return;
-      }
-      res.data.data.forEach(point => {
-        const { xx_cd, yy_cd } = point;
-        keys.forEach(key => {
-          attr[mapItem.engZhMap[key]] = point[key];
-        });
-        if (xx_cd && yy_cd) {
-          const { longitude, latitude } = transformGeometricPosition(+xx_cd, +yy_cd);
-          window[traceLayer].entities.add(addEntity(selected.imagePath, longitude, latitude, JSON.stringify(attr)));
-        }
-      });
-    }
   },
   beforeDestroy() {
     this.treeData.forEach(item => {

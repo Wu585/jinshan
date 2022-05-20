@@ -1,5 +1,4 @@
 const activeShapePoints = [];
-let activeShape;
 let floatingPoint;
 const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 

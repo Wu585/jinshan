@@ -32,10 +32,19 @@ import { flyTo, transformGeometricPosition } from "@/utils/view";
 import bus from "@/utils/bus";
 import { nameOfImageMap } from "@/assets/js/entity-image";
 import { clickQuery, debounce } from "@/utils/tools";
-import { addEntity, addEntityWithDistance, addLabel, addMapLabel, addPolygon, addPolyline } from "@/utils/entity";
+import {
+  addEntity,
+  addEntityWithDistance,
+  addEntityWithLabel,
+  addLabel,
+  addMapLabel,
+  addPolygon,
+  addPolyline
+} from "@/utils/entity";
 import { findCameraInfoByIndexCode, getIndexCodeByCollectionCode } from "@/apis/information";
 import layersJson from "../assets/json/layer.json";
-import * as turf from "@turf/turf";
+import { fxftMap } from "@/assets/js/fxft";
+import * as apis from "@/apis/information";
 
 let entityArray = [];
 let polygonEntityArray = [];
@@ -265,8 +274,6 @@ export default {
     },
     async handleLineChecked(data) {
       const namesArray = layersJson[0].children[0].children[2].children.map(item => item.name);
-      console.log("namesArray");
-      console.log(namesArray);
       if (!namesArray.includes(data.name)) {
         return;
       }
@@ -281,8 +288,6 @@ export default {
       if (!data.children) {
         const { data: result } = await queryPoi("arcgis-sh_jd_boundary", "ArcGISFeatureServer",
           "sh_jd_boundary", "OBJECTID", arcgisIP_Port);
-        console.log("result");
-        console.log(result);
         result.features.forEach(item => {
           const arr = [];
           item.geometry.points.forEach(point => {
@@ -292,8 +297,6 @@ export default {
           const name = item.fieldValues[5];
           console.log(name);
           if (name === data.name) {
-            console.log("name");
-            console.log(name);
             const { center } = item.geometry;
             const { longitude, latitude } = transformGeometricPosition(center.x, center.y);
             const polyline = addPolyline(arr, name);
@@ -318,17 +321,17 @@ export default {
     handlePoiCheckChange(data, checked) {
       const { id } = data;
       let traceLayer = `traceLayer${id}`;
-      // window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-      // viewer.dataSources.add(window[traceLayer]);
-      if (window[traceLayer]) {
-        window[traceLayer].show = checked;
+      // window.traceLayer[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+      // viewer.dataSources.add(window.traceLayer[traceLayer]);
+      if (window.traceLayer[traceLayer]) {
+        window.traceLayer[traceLayer].show = checked;
         return;
       }
       const { datasetName } = data;
       if (datasetName) {
-        if (!window[traceLayer]) {
-          window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-          viewer.dataSources.add(window[traceLayer]);
+        if (!window.traceLayer[traceLayer]) {
+          window.traceLayer[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+          viewer.dataSources.add(window.traceLayer[traceLayer]);
         }
         const arr = [];
         datasetName.map(async (name) => {
@@ -361,24 +364,28 @@ export default {
             });
             arr.push([longitude, latitude, attrObj]);
             if (data?.type3 === "point") {
-              console.log("111");
-              if (!window[traceLayer]) {
-                window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-                viewer.dataSources.add(window[traceLayer]);
+              if (!window.traceLayer[traceLayer]) {
+                window.traceLayer[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+                viewer.dataSources.add(window.traceLayer[traceLayer]);
               }
               addEntity("./images/camera.png", longitude, latitude, JSON.stringify(attrObj));
             }
             if (data.name === "小区") {
               if (JSON.stringify(attrObj).indexOf("万盛金邸东区") >= 0) {
-                window[traceLayer].entities.add(addEntityWithDistance("./images/queryEntities/wsjd-east.png",
+                window.traceLayer[traceLayer].entities.add(addEntityWithDistance("./images/queryEntities/wsjd-east.png",
                   longitude, latitude, JSON.stringify(attrObj), data.name));
               } else {
-                window[traceLayer].entities.add(addEntityWithDistance("./images/queryEntities/" + nameOfImageMap[data.name] + ".png",
+                window.traceLayer[traceLayer].entities.add(addEntityWithDistance("./images/queryEntities/" + nameOfImageMap[data.name] + ".png",
                   longitude, latitude, JSON.stringify(attrObj), data.name));
               }
             } else {
-              window[traceLayer].entities.add(addEntity("./images/queryEntities/" + nameOfImageMap[data.name] + ".png",
-                longitude, latitude, JSON.stringify(attrObj), data.name));
+              if (data.name === "政府机关") {
+                window.traceLayer[traceLayer].entities.add(addEntityWithLabel("./images/queryEntities/" + nameOfImageMap[data.name] + ".png",
+                  longitude, latitude, JSON.stringify(attrObj), data.name, attrObj.NAME, 16));
+              } else {
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/queryEntities/" + nameOfImageMap[data.name] + ".png",
+                  longitude, latitude, JSON.stringify(attrObj), data.name));
+              }
             }
           });
           clickQuery();
@@ -389,13 +396,13 @@ export default {
     async handleMonitorCheckChange(data, checked) {
       const { id } = data;
       let traceLayer = `traceLayer${id}`;
-      /*if (window[traceLayer]) {
-        window[traceLayer].show = checked;
+      /*if (window.traceLayer[traceLayer]) {
+        window.traceLayer[traceLayer].show = checked;
         return;
       }*/
       if (!checked) {
-        window[traceLayer].forEach(item => viewer.entities.remove(item));
-        window[traceLayer] = [];
+        window.traceLayer[traceLayer].forEach(item => viewer.entities.remove(item));
+        window.traceLayer[traceLayer] = [];
         return;
       }
       clickQuery();
@@ -404,11 +411,10 @@ export default {
       const list = res.data.data.list;
       console.log("list");
       console.log(list);
-      const turfPoints = [];
-      if (!window[traceLayer]) {
-        /* window[traceLayer] = new Cesium.CustomDataSource(traceLayer);
-         viewer.dataSources.add(window[traceLayer]);*/
-        window[traceLayer] = [];
+      if (!window.traceLayer[traceLayer]) {
+        /* window.traceLayer[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+         viewer.dataSources.add(window.traceLayer[traceLayer]);*/
+        window.traceLayer[traceLayer] = [];
       }
       list.map(async item => {
         const { x, y, streetTown, name, indexCode } = item;
@@ -421,7 +427,6 @@ export default {
 
         if (x) {
           const { longitude, latitude } = transformGeometricPosition(+x, +y);
-          turfPoints.push([longitude, latitude]);
 
           const attr = {};
           if (streetTown) {
@@ -437,11 +442,11 @@ export default {
             if (+res.data === 1) {
               const entity = addEntity("./images/camera.png",
                 longitude, latitude, JSON.stringify({}), "monitor", indexCode);
-              window[traceLayer].push(entity);
+              window.traceLayer[traceLayer].push(entity);
             } else {
               const entity = addEntity("./images/camera_1.png",
                 longitude, latitude, JSON.stringify({}), "monitor", indexCode);
-              window[traceLayer].push(entity);
+              window.traceLayer[traceLayer].push(entity);
             }
           } catch (e) {
             console.log(e);
@@ -450,18 +455,109 @@ export default {
           console.log("x is null");
         }
       });
-      var ptsWithin = turf.pointsWithinPolygon(turf.points(turfPoints), window.circlePolygon);
-      console.log("ptsWithin");
-      console.log(ptsWithin);
-      this.flyTo(window[traceLayer]);
+      this.flyTo(window.traceLayer[traceLayer]);
     },
     flyTo: debounce((traceLayer) => {
       viewer.flyTo(traceLayer, {
         duration: 1
       });
     }),
+    async handleFxftCheckChange(data, checked) {
+      clickQuery();
+      const { imagePath, name, apiName, apiName_ } = data;
+      const traceLayer = `traceLayer${name}`;
+      if (window.traceLayer[traceLayer]) {
+        window.traceLayer[traceLayer].show = checked;
+        return;
+      }
+      window.traceLayer[traceLayer] = new Cesium.CustomDataSource(traceLayer);
+      viewer.dataSources.add(window.traceLayer[traceLayer]);
+      const mapItem = fxftMap.find(x => x.name === name);
+      if (mapItem) {
+        const keys = Object.keys(mapItem.engZhMap);
+        if (apiName) {
+          const res = await apis[apiName]();
+          console.log("res====");
+          console.log(JSON.parse(res.data.data.result).data);
+          JSON.parse(res.data.data.result).data.forEach(point => {
+            console.log("point");
+            console.log(point);
+            const attr = {};
+            const { xx_cd, yy_cd } = point;
+            keys?.forEach(key => {
+              attr[mapItem.engZhMap[key]] = point[key];
+            });
+            if (xx_cd && yy_cd) {
+              const { longitude, latitude } = transformGeometricPosition(+xx_cd, +yy_cd);
+              window.traceLayer[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr), "fxft"));
+            }
+          });
+        } else if (apiName_) {
+          const res = await apis[apiName_]();
+          console.log("res---");
+          console.log(res);
+          if (name === "雨量监测") {
+            const data = JSON.parse(res.data.data.result);
+            data.data.forEach(item => {
+              const attr = {};
+              keys?.forEach(key => {
+                attr[mapItem.engZhMap[key]] = item[key];
+              });
+              const { longitude, latitude } = transformGeometricPosition(+item.xx, +item.yy);
+              if (item.yl === 0) {
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-0.png", longitude, latitude, JSON.stringify(attr), "fxft"));
+              } else if (0.1 <= item.yl < 10) {
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-0.1-10.png", longitude, latitude, JSON.stringify(attr), "fxft"));
+              } else if (10 <= item.yl < 25) {
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-10-25.png", longitude, latitude, JSON.stringify(attr), "fxft"));
+              } else if (25 <= item.yl < 50) {
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-25-50.png", longitude, latitude, JSON.stringify(attr), "fxft"));
+              } else if (50 <= item.yl < 100) {
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-50-100.png", longitude, latitude, JSON.stringify(attr), "fxft"));
+              } else if (100 <= item.yl < 200) {
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidi-100-200.png", longitude, latitude, JSON.stringify(attr), "fxft"));
+              } else {
+                window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/shuidiover200.png", longitude, latitude, JSON.stringify(attr), "fxft"));
+              }
+            });
+          } else if (name === "广播站") {
+            const res = await queryPoi("GBZ", "GBZ", "应急广播数据_shcity", "SMID", arcgisIP_Port);
+            res.data.features.forEach(item => {
+              const attr = {
+                "小区村名": "",
+                "所属乡镇": "",
+                "业务类型": "",
+                "设备名称": "",
+                "设备品牌型号": "",
+                "安装地址": ""
+              };
+              for (let key in attr) {
+                const index = item.fieldNames.indexOf(key);
+                attr[key] = item.fieldValues[index];
+              }
+              const {
+                longitude,
+                latitude
+              } = transformGeometricPosition(item.geometry.center.x, item.geometry.center.y);
+              window.traceLayer[traceLayer].entities.add(addEntity("./images/fxft/guangbozhan.png", longitude, latitude, JSON.stringify(attr), "fxft"));
+            });
+          } else {
+            res.data.data.list.forEach(item => {
+              const attr = {};
+              keys?.forEach(key => {
+                attr[mapItem.engZhMap[key]] = item[key];
+              });
+              const { longitude, latitude } = transformGeometricPosition(+item.x, +item.y);
+              window.traceLayer[traceLayer].entities.add(addEntity(imagePath, longitude, latitude, JSON.stringify(attr), "fxft"));
+            });
+          }
+        }
+      }
+    },
     async handleCheckChange(data, checked) {
       this.defaultCheckedKeys = this.$refs.tree.getCheckedKeys();
+      console.log("this.defaultCheckedKeys");
+      console.log(this.defaultCheckedKeys);
       sessionStorage.setItem(
         this.title,
         JSON.stringify(this.defaultCheckedKeys)
@@ -471,7 +567,8 @@ export default {
         s3m: "handleS3mCheckChange",
         // line: "handleLineChecked",
         poi: "handlePoiCheckChange",
-        monitor: "handleMonitorCheckChange"  //视频监控设备
+        monitor: "handleMonitorCheckChange",  //视频监控设备
+        fxft: "handleFxftCheckChange"
       };
       data.type && this[hashMap[data.type]]?.(data, checked);
     }

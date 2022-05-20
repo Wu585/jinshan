@@ -144,7 +144,8 @@ export default {
 
     handler.setInputAction(async () => {
       terminateShape();
-      const res = await queryByCircle([this.circleCenter[0]], "POI_all", "JS_POI_type", "POI_type", this.radius, arcgisIP_Port);
+      const res = await queryByCircle([this.circleCenter[0]], "POI_all", "JS_POI_type",
+        "POI_type", this.radius, arcgisIP_Port);
       this.allPoiData = res.data.features;
       const typesArray = [...new Set(res.data.features.map(item => item.fieldValues[30]))];
       this.dropDownData = [...typesArray].filter(poi => poi !== "公司企业" && poi !== "商业设施及服务" && poi !== "卫生社保");

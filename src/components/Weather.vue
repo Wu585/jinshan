@@ -1,13 +1,17 @@
 <template>
   <div class="weather-wrapper">
     <span>气温: </span>
-    <span class="weather-data">{{ this.weatherInfo.temperature }} ℃</span>
+    <span class="weather-data">{{ weatherInfo.temperature }} ℃</span>
     <span>天气: </span>
-    <span class="weather-data">{{ this.weatherInfo.weather }}</span>
+    <span class="weather-data">{{ weatherInfo.weather }}</span>
     <span>AQI: </span>
-    <span class="weather-data">{{ this.weatherInfo.aqi }}</span>
-    <span>时间: </span>
-    <span class="weather-data">{{ this.date }}&nbsp;{{ this.time }}</span>
+    <span class="weather-data">{{ weatherInfo.aqi }}</span>
+    <span>风向: </span>
+    <span class="weather-data">{{ weatherInfo.fx }}</span>
+    <span>风力: </span>
+    <span class="weather-data">{{ weatherInfo.fl }}</span>
+    <span>湿度: </span>
+    <span class="weather-data">{{ weatherInfo.sd }}</span>
   </div>
 </template>
 
@@ -24,12 +28,15 @@ export default {
       weatherInfo: {
         temperature: "",
         aqi: "",
-        weather: ""
+        weather: "",
+        fx:"",
+        fl:"",
+        sd:""
       }
     };
   },
   mounted() {
-    this.getDateAndTime();
+    // this.getDateAndTime();
     setInterval(() => {
       this.getWeatherInfo();
     }, 1000 * 60 * 60);
@@ -50,6 +57,9 @@ export default {
       this.weatherInfo.temperature = res.data.data[0].TEM;
       this.weatherInfo.aqi = res.data.data[0].AQIVAL;
       this.weatherInfo.weather = res.data.data[0].WEATHER;
+      this.weatherInfo.fx = res.data.data[0].FX;
+      this.weatherInfo.fl = res.data.data[0].FL;
+      this.weatherInfo.sd = res.data.data[0].SD;
     }
   }
 };

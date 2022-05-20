@@ -1,5 +1,5 @@
 <template>
-  <ul class="sidebar">
+  <ul class="sidebar custom-scroll">
     <li
       v-for="item in layersArray"
       :key="item.name"
@@ -15,6 +15,7 @@
 
 <script>
 import layersTreeJson from "../assets/json/layer.json";
+import fxftJson from "../assets/json/fxft.json";
 import bus from "@/utils/bus";
 import { getTree } from "@/apis/information";
 
@@ -73,7 +74,7 @@ export default {
           name: "社会POI数据",
           image: require("../assets/images/sidebar/shpoi.png"),
           activeImage: require("../assets/images/sidebar/shpoi-active.png"),
-          defaultKeys: [328, 339, 345, 364, 378, 387]
+          defaultKeys: [387]
         }
       ],
       selectedItem: null,
@@ -96,6 +97,13 @@ export default {
     treeData: {}
   },
   async mounted() {
+    bus.$on("push-fxft", () => {
+      this.layersArray.unshift({
+        name: "防汛防台数据",
+        image: require("../assets/images/sidebar/csdxkj.png"),
+        activeImage: require("../assets/images/sidebar/csdikj-active.png")
+      });
+    });
     this.layersArray.forEach((item) => {
       if (item.defaultKeys) {
         sessionStorage.setItem(item.name, JSON.stringify(item.defaultKeys));
@@ -148,6 +156,11 @@ export default {
       if (item.name === "物联感知数据") {
         treeData.children.find(item => item.name === "视频监控数据").children = this.treeDataChildren;
       }
+      if (item.name === "防汛防台数据") {
+        this.$emit("update:treeData", fxftJson[0].children);
+        this.$emit("show-layers-tree");
+        return;
+      }
       this.$emit("show-layers-tree");
       this.$emit("update:title", item.name);
       this.$emit("update:treeData", treeData.children);
@@ -168,6 +181,8 @@ export default {
   background: rgba(19, 48, 82, 0.6);
   border: 3px solid #2175a9;
   cursor: pointer;
+  overflow: auto;
+  height: 820px;
 
   > li {
     padding: 16px 16px;

@@ -126,11 +126,13 @@ export default {
       this.selected = item;
       await this.clearAllEffects();
       if (item.name === "防汛防台") {
-        this.$store.commit("SET_componentName", "fxft");
+        // this.$store.commit("SET_componentName", "fxft");
+        bus.$emit('push-fxft');
       } else if (item.name === "人房信息") {
         this.$store.commit("SET_componentName", "house");
         await this.addA02ClickListener();
-        flyTo(-12474.4018649403, -54268.983091464266, 483.90533797442913, 5.939856468821999, -0.45023693649058627, 6.283185307179586);
+        flyTo(-12474.4018649403, -54268.983091464266, 483.90533797442913,
+          5.939856468821999, -0.45023693649058627, 6.283185307179586);
         await setAllLayersVisibleOfOneDataset("精模三维模型", true);
         const res = await queryPoi("rfsd", "DemonArea", "区域", "SMID", arcgisIP_Port);
         res.data.features.forEach(item => {

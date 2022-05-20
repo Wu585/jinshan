@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1000,
+    "name": "防汛防台数据",
+    "children": [
+      {
+        "id": 1001,
+        "name": "处理力量",
+        "children": [
+          {
+            "id": 1002,
+            "name": "防汛队伍",
+            "type": "fxft",
+            "imagePath": "./images/fxft/fxdw.png",
+            "apiName": "getFxdw",
+            "appid": "B9bIcP93"
+          },
+          {
+            "id": 1003,
+            "name": "防汛物资",
+            "type": "fxft",
+            "imagePath": "./images/fxft/fxwz.png",
+            "apiName": "getFxwz",
+            "appid": "106M48t3"
+          },
+          {
+            "id": 1004,
+            "name": "安置点",
+            "type": "fxft",
+            "imagePath": "./images/fxft/azd.png",
+            "apiName": "getAzd",
+            "appid": "D2ZS6FR3"
+          },
+          {
+            "id": 1005,
+            "name": "医疗点",
+            "type": "fxft",
+            "imagePath": "./images/fxft/yld.png",
+            "apiName": "getYld",
+            "appid": "3yPexA82"
+          }
+        ]
+      },
+      {
+        "id": 1006,
+        "name": "重点区域",
+        "children": [
+          {
+            "id": 1007,
+            "name": "下立交",
+            "type": "fxft",
+            "imagePath": "./images/fxft/xlj.png",
+            "apiName": "getXiaLiJiao2",
+            "appid": "q71T98MD"
+          },
+          {
+            "id": 1008,
+            "name": "隐患点",
+            "type": "fxft",
+            "imagePath": "./images/fxft/yhd.png",
+            "apiName": "getYhd",
+            "appid": "Bn0i39l9"
+          },
+          {
+            "id": 1009,
+            "name": "危化企业",
+            "type": "fxft",
+            "imagePath": "./images/fxft/whqy.png",
+            "apiName": "getWhqy",
+            "appid": "EhyM0Z8g"
+          },
+          {
+            "id": 1010,
+            "name": "地下空间",
+            "type": "fxft",
+            "imagePath": "./images/fxft/dxkj.png",
+            "apiName": "getDxkj",
+            "appid": "31056588"
+          },
+          {
+            "id": 1011,
+            "name": "在建工地",
+            "type": "fxft",
+            "imagePath": "./images/fxft/zjgd.png",
+            "apiName": "getZjgd",
+            "appid": "P0GP9VLH"
+          },
+          {
+            "id": 1012,
+            "name": "玻璃幕墙",
+            "type": "fxft",
+            "imagePath": "./images/fxft/blmq.png",
+            "apiName": "getBlmq",
+            "appid": "Vw624d0R"
+          }
+        ]
+      },
+      {
+        "id": 1013,
+        "name": "实时水位",
+        "type": "fxft",
+        "imagePath": "./images/fxft/sssw.png",
+        "apiName_": "getAllSW"
+      },
+      {
+        "id": 1014,
+        "name": "除涝泵闸",
+        "type": "fxft",
+        "imagePath": "./images/fxft/clbz.png",
+        "apiName_": "getAllRecord"
+      },
+      {
+        "id": 1015,
+        "name": "雨量监测",
+        "type": "fxft",
+        "imagePath": "./images/fxft/clbz.png",
+        "apiName_": "getYuLiangJC"
+      },
+      {
+        "id": 1016,
+        "name": "广播站",
+        "type": "fxft",
+        "imagePath": "./images/fxft/clbz.png",
+        "apiName_": "getYuLiangJC"
+      }
+    ]
+  }
+]

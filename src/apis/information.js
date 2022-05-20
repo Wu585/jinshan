@@ -254,3 +254,11 @@ export function getWeatherInfo() {
     url: `${api}/getDRQWTQAQI`
   });
 }
+
+// 获取所有摄像头点位
+export function getAllCameraPoints() {
+  return request({
+    method: "post",
+    url: `${api}/point-information/getAllPointInfo`
+  });
+}

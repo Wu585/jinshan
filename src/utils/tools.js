@@ -4,6 +4,10 @@ import QueryPanel from "@/components/QueryPanel";
 import { getAllInfoByBlockId, getBlockIdByName } from "@/apis/information";
 import { xiaoquMap } from "@/assets/js/xiaoqu";
 import store from "@/store";
+import { s3mUrlHashmap } from "@/assets/js/s3m-url";
+import axios from "axios";
+import { findLayer } from "@/utils/layer";
+import layerJson from "../assets/json/layer.json";
 
 let skyline; // 天际线类
 let viewshed3D; // 可视域类
@@ -22,6 +26,9 @@ let handlerDis, handlerHeight;
 let clampMode = 0; // 空间模式
 let scenePosition;
 let hasListener = false;
+let fxftHasListener = false;
+
+let isFxft = false;
 
 // 初始化等高线
 function init() {
@@ -138,11 +145,24 @@ const cb = () => {
       scenePosition,
       windowPosition
     );
-    const infoboxContainer = document.getElementById("bubble");
+    if (isFxft) {
+      console.log("fxft-bubble");
+      const infoboxContainer = document.getElementById("bubble2");
+      infoboxContainer.style.bottom = canvasHeight - windowPosition.y + "px";
+      infoboxContainer.style.left = windowPosition.x - 280 + "px";
+      infoboxContainer.style.visibility = "visible";
+    } else {
+      const infoboxContainer = document.getElementById("bubble");
+      infoboxContainer.style.bottom = canvasHeight - windowPosition.y + "px";
+      infoboxContainer.style.left = windowPosition.x - 280 + "px";
+      console.log("infoboxContainer.offsetWidth", infoboxContainer.offsetWidth);
+      infoboxContainer.style.visibility = "visible";
+    }
+    /*const infoboxContainer = document.getElementById("bubble");
     infoboxContainer.style.bottom = canvasHeight - windowPosition.y + "px";
     infoboxContainer.style.left = windowPosition.x - 280 + "px";
     console.log("infoboxContainer.offsetWidth", infoboxContainer.offsetWidth);
-    infoboxContainer.style.visibility = "visible";
+    infoboxContainer.style.visibility = "visible";*/
   }
 };
 
@@ -150,6 +170,10 @@ export const addListener = () => {
   if (!hasListener) {
     viewer.scene.postRender.addEventListener(cb);
     hasListener = true;
+  }
+  if (!fxftHasListener) {
+    viewer.scene.postRender.addEventListener(cb);
+    fxftHasListener = true;
   }
 };
 
@@ -159,6 +183,9 @@ async function leftClickListenFunc(movement) {
   infoboxContainer.style.visibility = "hidden";
   const pick = viewer.scene.pick(movement.position);
   console.log(pick);
+  isFxft = pick?.id?.name === "fxft";
+  console.log("isFxft");
+  console.log(isFxft);
 
   const cartesian = viewer.scene.pickPosition2D(movement.position);
   console.log("cartesian");
@@ -175,6 +202,13 @@ async function leftClickListenFunc(movement) {
     addListener();
   } else if (pick && pick.id && pick.id._description) {
     // 针对poi点击
+    if (pick.id.name === "fxft") {
+      console.log("here fxft");
+      console.log("cartesian");
+      console.log(cartesian);
+      const cartesian = viewer.scene.pickPosition2D(movement.position);
+      store.commit("SET_currentClickPoint", { x: cartesian.x, y: cartesian.y });
+    }
     // 视频监控poi不弹出bubble面板
     if (pick.id._name === "monitor") {
       store.commit("SET_componentName", "camera-video");
@@ -356,6 +390,12 @@ export function clearBubble() {
   document.getElementById("bubble").style.visibility = "hidden";
 }
 
+export function clearFxftBubble() {
+  viewer.scene.postRender.removeEventListener(cb);
+  fxftHasListener = false;
+  document.getElementById("bubble2").style.visibility = "hidden";
+}
+
 export function clear() {
   bus.$emit("clear");
   handlerDis && handlerDis.deactivate();
@@ -393,6 +433,46 @@ export function addS3mModel(url, position) {
   });
 }
 
-export function initSystem(){
+export async function initSystem() {
+  initView();
+  bus.$emit("close-layer-tree");
+  layerJson.forEach(item => {
+    sessionStorage.setItem(item.name, "[]");
+  });
+  sessionStorage.setItem("时空基础数据", "[101,103]");
+  viewer.imageryLayers._layers.forEach((item, index) => {
+    if (
+      index > 0 &&
+      item._imageryProvider.name !== "村居行政区" &&
+      item._imageryProvider.name !== "区级行政区"
+    ) {
+      item.show = false;
+    }
+  });
+  for (let i = 0; i < s3mUrlHashmap.length; i++) {
+    for (let j = 0; j < s3mUrlHashmap[i].urls.length; j++) {
+      const { data } = await axios.get(s3mUrlHashmap[i].urls[j]);
+      data.map((layer) => {
+        findLayer(layer.name).visible = false;
+      });
+    }
+  }
+  store.commit("SET_componentName", "");
+  clear();
+  viewer.entities.removeAll();
+  for (let i in window.traceLayer) {
+    window.traceLayer[i].show = false;
+  }
+}
 
+// 对象数组去重
+export function ArraySet(array, key) {
+  const newArray = [];
+  for (const item of array) {
+    if (newArray.find(c => c[key] === item[key])) {
+      continue;
+    }
+    newArray.push(item);
+  }
+  return newArray;
 }

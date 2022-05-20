@@ -53,6 +53,26 @@ export function addEntity(imagePath, lon, lat, description = "", name = "", id) 
   });
 }
 
+export function addEntityWithLabel(imagePath, lon, lat, description = "", name = "", text, fontsize,id) {
+  return viewer.entities.add({
+    id,
+    name,
+    label: {
+      text,
+      horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+      font:`bold ${fontsize}px Microsoft YaHei`,
+      pixelOffset: new Cesium.Cartesian2(15, -3)
+    },
+    position: Cesium.Cartesian3.fromDegrees(lon, lat, 20),
+    billboard: {
+      image: imagePath,
+      width: 20,
+      height: 25
+    },
+    description
+  });
+}
+
 export function addEntityWithDistance(imagePath, lon, lat, description = "", name = "", id) {
   return viewer.entities.add({
     id,
@@ -61,7 +81,7 @@ export function addEntityWithDistance(imagePath, lon, lat, description = "", nam
     billboard: {
       image: imagePath,
       width: 20,
-      height: 25,
+      height: 22,
       distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 30000)
     },
     description

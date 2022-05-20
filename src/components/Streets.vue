@@ -1,7 +1,7 @@
 <template>
   <div class="street-container">
     <div class="selector">
-      <span>金山区</span>
+      <span style="white-space: nowrap">{{ streetName }}</span>
       <i class="el-icon-arrow-down" @click="streetsListVisible=true" v-show="!streetsListVisible"></i>
       <i class="el-icon-arrow-up" @click="streetsListVisible=false" v-show="streetsListVisible"></i>
     </div>
@@ -22,9 +22,9 @@
         <div class="street-info-wrapper custom-scroll" v-show="jwList.length">
           <span v-for="item in jwList"
                 :key="item.ID"
-                @click="handleClickJw(item.fieldValues[11])"
+                @click="handleClickJw(item.fieldValues[10])"
           >
-            {{ item.fieldValues[11] }}
+            {{ item.fieldValues[10] }}
           </span>
         </div>
       </div>
@@ -34,6 +34,9 @@
 
 <script>
 import { queryPoi } from "@/apis/queryPoi";
+import { findLayer } from "@/utils/layer";
+import { flyTo } from "@/utils/view";
+import { initView } from "@/utils/tools";
 
 export default {
   name: "Streets",
@@ -41,13 +44,17 @@ export default {
     return {
       state: "city",  //区 、街道、居委
       cityName: "金山区",  // 区名
-      streetName: "", // 街道名
+      streetName: "金山区", // 街道名
       jwName: "", //居委名
       currentName: "金山区", // 当前显示名
       streetsListVisible: false,
       streetsList: [],
       jwList: [],
-      nameIndex: 0
+      nameIndex: 0,
+      streetSmid: 0,
+      streetCenter: { x: 0, y: 0 },
+      jwSmid: 0,
+      jwCenter: { x: 0, y: 0 }
     };
   },
   mounted() {
@@ -58,32 +65,59 @@ export default {
       if (this.state === "jw") {
         this.state = "street";
         this.currentName = this.streetName;
+        findLayer("jwh@xzqh").visible = false;
+        findLayer("jz@xzqh").visible = true;
+        findLayer("jz@xzqh").setObjsVisible(this.streetSmid, false);
+        flyTo(this.streetCenter.x, this.streetCenter.y, 33000, 0.01614302261320244, -1.5446777533264031, 0);
       } else if (this.state === "street") {
+        initView();
         this.currentName = this.cityName;
+        this.streetName = "金山区";
         this.getStreetsList();
         this.jwList = [];
+        findLayer("jwh@xzqh").visible = false;
+        findLayer("jz@xzqh").visible = false;
       }
     },
     async getStreetsList() {
       const res = await queryPoi("jw", "xzqh", "jz", "SMID", arcgisIP_Port);
-      console.log("res---street");
-      console.log(res);
       this.streetsList = res.data.features;
       this.nameIndex = this.streetsList[0].fieldNames.indexOf("NAME");
     },
-    async handleClickStreet(name) {
+    handleClickStreet(name) {
       this.currentName = name;
       this.state = "street";
       this.streetName = name;
-      const res = await queryPoi("jw", "xzqh", "jw", "SMID", arcgisIP_Port);
-      console.log("res---jw");
-      console.log(res);
-      this.jwList = res.data.features.filter(item => item.fieldValues[14] === name);
+      queryPoi("jz_jw", "xzqh", "jz", "SMID", arcgisIP_Port).then(res => {
+        const selectedStreet = res.data.features.find(item => item.fieldValues[10] === name);
+        const { center } = selectedStreet.geometry;
+        this.streetCenter = center;
+        flyTo(center.x, center.y, 33000, 0.01614302261320244, -1.5446777533264031, 0);
+        const smid = selectedStreet.fieldValues[0];
+        this.streetSmid = +smid;
+        findLayer("jwh@xzqh").visible = false;
+        findLayer("jz@xzqh").visible = true;
+        findLayer("jz@xzqh").setObjsVisible([+smid], false);
+      });
+      queryPoi("jz_jw", "xzqh", "jw_all", "SMID", arcgisIP_Port).then(res => {
+        this.jwList = res.data.features.filter(item => item.fieldValues[13] === name);
+      });
     },
     handleClickJw(name) {
       this.state = "jw";
       this.currentName = name;
       this.jwName = name;
+      queryPoi("jz_jw", "xzqh", "jw_all", "SMID", arcgisIP_Port).then(res => {
+        const selectedJw = res.data.features.find(item => item.fieldValues[10] === name);
+        const smid = selectedJw.fieldValues[0];
+        const { center } = selectedJw.geometry;
+        this.jwCenter = center;
+        flyTo(center.x, center.y, 11000, 0.01614302261320244, -1.5446777533264031, 0);
+        this.jwSmid = +smid;
+        findLayer("jz@xzqh").visible = false;
+        findLayer("jwh@xzqh").visible = true;
+        findLayer("jwh@xzqh").setObjsVisible([+smid], false);
+      });
     }
   }
 };

@@ -6,7 +6,8 @@ const getters = {
   roomInfo: state => state["building-dialog"].roomInfo,
   roomPeopleInfo: state => state["building-dialog"].roomPeopleInfo,
   componentName: state => state["dynamic-component"].componentName,
-  firstCameraId: state => state["dynamic-component"].firstCameraId
+  firstCameraId: state => state["dynamic-component"].firstCameraId,
+  currentClickPoint: state => state["system"].currentClickPoint
 };
 
 export default getters;
